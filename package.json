@@ -1,0 +1,16 @@
+{
+  "name": "insidious",
+  "version": "0.1.0",
+  "description": "Insidious Video Game",
+  "main": "index.ts",
+  "scripts": {
+    "test": "npm test",
+    "build": "npm fuse"
+  },
+  "author": "Victor Nicollet",
+  "license": "GPL-2.0-only",
+  "devDependencies": {
+    "fuse-box": "^3.7.1",
+    "typescript": "^4.0.3"
+  }
+}
