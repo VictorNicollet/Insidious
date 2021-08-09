@@ -86,6 +86,11 @@ export class Grid {
     // Converts valid coordinates to a cell. 
     public cell(x:number, y:number): Cell { return y + x * this.side; }
 
+    // Inverse of 'cell'
+    public uncell(cell: Cell): [number,number] {
+        return [Math.floor(cell / this.side), cell % this.side]
+    }
+
     // The cells adjacent to a given cell.
     public adjacent(cell: Cell): readonly Cell[] { return this.adjacents[cell] }
 
