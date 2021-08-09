@@ -1,19 +1,10 @@
 import { generate } from 'model/generation/worldgen';
 import { h, render } from "preact"
-import { Container } from 'components/Container';
-import { LocationList } from 'components/LocationList';
-import { MapView } from 'components/MapView';
-import { LeftPanel } from 'components/LeftPanel';
+import { Screen } from 'components/Screen';
 
 const world = generate();
 
-const screenH = window.innerHeight;
-const screenW = window.innerWidth;
-
 render(
-    <div>
-        <MapView map={world.map}/>
-        <LeftPanel screenH={screenH} screenW={screenW} world={world}/>
-    </div>,
+    <Screen world={world}/>,
     document.body);
 
