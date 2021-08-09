@@ -138,8 +138,8 @@ button.go.right:disabled {
 .hex {
     background-repeat: no-repeat;
     position: absolute;
-    width: 256px;
-    height: 384px;
+    width: 128px;
+    height: 192px;
 }
 
 .hex.plains {
@@ -152,4 +152,28 @@ button.go.right:disabled {
 
 .hex.ocean {
     background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Hex Samples/hexOceanCalm00.png")
+}
+
+.hex.castle {
+    background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Hex Samples/hexPlainsCastle00.png")
+}
+
+.hex.fog {
+    filter: saturate(0.5)
+}
+
+.map.unselected .hex {
+    filter: brightness(0.5)
+}
+
+.map.unselected .hex.selected {
+    filter: none;
+}
+
+.hex.selected:after {
+    height: 192px;
+    width: 128px;
+    content: "";
+    display: block;
+    background: linear-gradient(0, rgba(255,255,255,0.3), rgba(255,255,255,0))
 }
