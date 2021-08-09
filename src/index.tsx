@@ -8,11 +8,6 @@ const world = generate();
 const locations = world.locations();
 
 render(
-    <div>
-        <MapView map={world.map}/>
-        <Container position="centered" top={40} width={400}>
-            <LocationList locations={locations} pagesize={7} />
-        </Container>
-    </div>,
+    <MapView map={world.map}/>,
     document.body);
 
