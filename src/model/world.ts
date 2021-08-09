@@ -1,20 +1,21 @@
 import { Location } from "./locations"
 import { Person } from "./people"
 import { PersonName, LocationName } from './names';
-import { Coords } from './grid';
+import { WorldMap } from './map';
+import { Cell } from './grid';
 
 export class World {
     private readonly _locations : Location[]
     private readonly _people : Person[]
 
-    constructor() {
+    constructor(public readonly map : WorldMap) {
         this._locations = [];
         this._people = [];
     }
 
     public newLocation(
         name: LocationName,
-        coords: Coords) : Location
+        coords: Cell) : Location
     {
         const location = new Location(this, name, coords);
         this._locations.push(location);

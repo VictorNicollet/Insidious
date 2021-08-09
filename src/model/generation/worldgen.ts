@@ -1,15 +1,26 @@
 import { World } from "../world"
 import { randomLocation } from './namegen';
-import { Cell, Grid, grid32 } from 'model/grid';
+import { Cell, grid32 } from 'model/grid';
+import { WorldMap, ocean, plains, castle } from 'model/map';
 
 // Produces a set of random location coordinates such that
 //  1. locations form a connected graph with edges of distance=3
 //     between pairs of locations
 //  2. no two locations are closer to one another than distance=3
 //  3. all locations fit in the provided grid
+//
 // The returned set contains up to 'max' locations
-function randomCoords(grid: Grid, max: number): Cell[] {
+//
+// At the same time, this alters the provided map to set the 
+// tiles to either ocean or plains, such that: 
+//  1. the returned locations all end on a plains.
+//  2. all cells which can be reached from the boundaries without
+//     being adjacent to a returned location become ocean
+//  3. some cells adjacent to a returned location randomly
+//     become ocean as well.
+function randomCoords(map: WorldMap, max: number): Cell[] {
     
+    const grid = map.grid;
     const returned : Cell[] = [];
 
     // We eliminate cells from the grid once they are at distance<3
@@ -19,7 +30,7 @@ function randomCoords(grid: Grid, max: number): Cell[] {
     //  - 1 if the cell is a selected location.
     //  - 2..4 equal to one plus the distance to the closest location to
     //    that cell. 
-    const eliminated = new Uint8Array(grid.count)
+    const eliminated = new Uint8Array(map.grid.count)
 
     // Cells at distance exactly 3 (i.e. eliminated[c] == 4) from 
     // the nearest location. 
@@ -58,22 +69,56 @@ function randomCoords(grid: Grid, max: number): Cell[] {
         // Candidate may have been eliminated while it was in the list.
         if (eliminated[next] != 4) continue;
 
+        // Candidate should not be too close to map boundary
+        if (grid.adjacent(next).length != 6) continue;
+
         returned.push(next);
         relax(next, 1);
     }
+
+    // Now, flood-fill the map by setting `eliminated` to 42 
+    // (indicating ocean filling) and 43 (indicating that an 
+    // ocean filling will be picked randomly in a subsequent pass).
+    const flood : Cell[] = []
+    for (let n = 0; n < grid.side; ++n) {
+        flood.push(grid.cell(n, 0), 
+                   grid.cell(0, n), 
+                   grid.cell(n, grid.side-1),
+                   grid.cell(grid.side-1, n))
+    }
+
+    while (flood.length > 0) {
+        const next = flood.pop();
+        const old = eliminated[next];
+        if (old == 42 || old == 43) continue; // Already visited
+        if (old == 1) continue; // Is a picked location
+        if (old == 2) { eliminated[next] = 43; continue; }
+        eliminated[next] = 42;
+        for (let adj of grid.adjacent(next)) flood.push(adj);
+    }
+
+    // Use the flood-filled values to set ocean/plains appropriately
+    for (let cell = 0; cell < grid.count; ++cell)
+    {
+        const value = eliminated[cell];
+        map.cells[cell] = (value == 42 || value == 43 && Math.random() < 0.5)
+            ? ocean
+            : plains;
+    }            
 
     return returned;
 }
 
 export function generate() : World {
-    const world = new World();
+    
+    const map = new WorldMap(grid32);
+    const world = new World(map);
 
-    for (let coords of randomCoords(grid32, 80))
+    for (let coords of randomCoords(map, 80))
     {
         const location = world.newLocation(randomLocation(), coords);
+        map.cells[coords] = castle;
     }
-
-    console.log("Locations: %d", world.locations().length)
 
     return world;
 }

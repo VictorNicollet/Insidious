@@ -9,7 +9,7 @@ const locations = world.locations();
 
 render(
     <div>
-        <MapView n={13}/>
+        <MapView map={world.map}/>
         <Container position="centered" top={40} width={400}>
             <LocationList locations={locations} pagesize={7} />
         </Container>

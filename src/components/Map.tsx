@@ -1,4 +1,5 @@
 import { h } from "preact"
+import { WorldMap } from 'model/map';
 
 type TileInfo = {
     readonly aspect: "plains" | "ocean" | "mountain" | "castle"
@@ -15,14 +16,14 @@ function yshift(y: number) {
     return 0.5;
 }
 
-export function Map(props: {n: number}) {
+export function Map(props: {map: WorldMap}) {
 
+    const {cells, grid} = props.map;
     const tiles : TileInfo[] = []
-    const aspects : TileInfo["aspect"][] = ["plains","ocean","mountain","castle"]
 
-    for (let y = 0; y < 20; ++y) {
-        for (let x = 0; x < 20; ++x) {
-            const aspect = aspects[((y + props.n * x) % aspects.length)];
+    for (let y = 0; y < grid.side; ++y) {
+        for (let x = 0; x < grid.side; ++x) {
+            const aspect = cells[grid.cell(x,y)].aspect;
             tiles.push({x, y, aspect})
         }
     }
