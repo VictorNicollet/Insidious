@@ -1,0 +1,155 @@
+@font-face {
+    font-family: "GenBkBas";
+    src: url("../../BigAssets/Citadel RPG GUI/Fonts/GenBkBasR.ttf") format("truetype");
+}
+
+* {
+    box-sizing: border-box;
+    font-family: "GenBkBas";
+}
+
+.gui-container {
+    position: relative;
+}
+
+/* .gui-box */
+
+.gui-box-title {
+    height: 90px;
+    border-image: url(/* 0 0 304 90 */ "../../BigAssets/Citadel RPG GUI/Sliced/9-Slice Box 1/content_box_3.png") 30 131 fill / 30px 131px;
+    border-image-repeat: repeat;
+    padding: 24px 120px 38px;
+    text-align: center;
+    line-height: 28px;
+    color: #311;
+    font-size: 18px;
+}
+
+.gui-box.gui-bottom-ornament {
+    background: url(/* 0 0 114 45 */ "../../BigAssets/Citadel RPG GUI/Sliced/9-Slice Box 1/bottom_box_ornament.png") no-repeat bottom center;
+    padding-bottom: 42px;
+}
+
+.gui-box-body {
+    border-image: url(/* 0 90 304 252 */ "../../BigAssets/Citadel RPG GUI/Sliced/9-Slice Box 1/content_box_3.png") 30 30 fill / 30px 30px;
+    border-image-repeat: repeat;
+    padding: 24px 28px;
+    color: #DCC;
+    text-shadow: black 2px 0 0;
+}
+
+.gui-box-body p {
+    margin: 0 0 1em;
+}
+
+.gui-box-body p .name {
+    color: #DD3;
+}
+
+/* .gui-locations */
+
+ul.gui-locations {
+    padding: 0;
+    margin: 0;
+}
+
+ul.gui-locations li {
+    list-style-type: none;
+    position: relative;
+    height: 50px;
+    padding: 4px 4px 4px 52px;
+    cursor: pointer;
+}
+
+ul.gui-locations li:hover {
+    background: linear-gradient(90deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 35%, rgba(255,255,255,0) 100%);
+}
+
+ul.gui-locations .flag {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    bottom: 2px;
+    width: 46px;
+    background: url("../../BigAssets/Citadel RPG GUI/Sliced/Box - Loot/slot_frame.png") center center no-repeat;
+}
+
+ul.gui-locations .name {
+    height: 18px;
+    margin-top: 4px;
+}
+
+ul.gui-locations .info {
+    font-size: 14px;
+    color: #877;
+}
+
+/* .gui-pagination */
+
+.gui-pagination {
+    height: 38px;
+    padding: 4px;
+}
+
+button.go {
+    border: none;
+    height: 30px;
+    width: 30px;
+    cursor: pointer;
+}
+
+button.go:disabled {
+    cursor: default;
+}
+
+button.go.left {
+    float: left;
+    background: url("../../BigAssets/Citadel RPG GUI/Sliced/Box - Character Sheet/left_n.png") center center no-repeat;
+}
+
+button.go.left:hover {
+    background-image: url("../../BigAssets/Citadel RPG GUI/Sliced/Box - Character Sheet/left_h.png");
+}
+
+button.go.left:disabled {
+    background-image: url("../../BigAssets/Citadel RPG GUI/Sliced/Box - Character Sheet/left_p.png") !important;
+}
+
+button.go.right {
+    float: right;
+    background: url("../../BigAssets/Citadel RPG GUI/Sliced/Box - Character Sheet/right_n.png") center center no-repeat;
+}
+
+button.go.right:hover {
+    background-image: url("../../BigAssets/Citadel RPG GUI/Sliced/Box - Character Sheet/right_h.png");
+}
+
+button.go.right:disabled {
+    background-image: url("../../BigAssets/Citadel RPG GUI/Sliced/Box - Character Sheet/right_p.png") !important;
+}
+
+/* .map */
+
+.map {
+    position: relative;
+    height: 100vh;
+}
+
+.hex {
+    background-repeat: no-repeat;
+    position: absolute;
+    width: 256px;
+    height: 384px;
+}
+
+.hex.plains {
+    background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Hex Samples/hexPlains00.png")
+}
+
+.hex.mountain {
+    background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Hex Samples/hexMountain00.png")
+}
+
+.hex.ocean {
+    background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Hex Samples/hexOceanCalm00.png")
+}

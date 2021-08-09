@@ -3,6 +3,7 @@
     "module": "CommonJS",
     "target": "ES2018",
     "jsx": "react",
+    "jsxFactory": "h",
     "baseUrl": ".",
     "importHelpers": true,
     "emitDecoratorMetadata": true,
