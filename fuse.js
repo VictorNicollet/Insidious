@@ -5,6 +5,7 @@ const fuse = fusebox({
   target: "browser",
   homeDir: "src",
   output: "dist/$name.js",
+  devServer: true,
 });
  
 fuse.runDev({
