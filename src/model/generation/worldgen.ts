@@ -48,11 +48,10 @@ function randomCoords(map: WorldMap, max: number): Cell[] {
             for (let adj of grid.adjacent(cell)) relax(adj, distPlus1+1)
     }
 
-    // Pick a random cell anywhere on the grid (except on the very
-    // borders). 
+    // Pick a random cell more or less in the middle of the grid
     const first = grid.cell(
-        1 + Math.floor(Math.random() * (grid.side-2)),
-        1 + Math.floor(Math.random() * (grid.side-2)));
+        4 + Math.floor(Math.random() * (grid.side-8)),
+        4 + Math.floor(Math.random() * (grid.side-8)));
     
     returned.push(first);
     relax(first, 1);
