@@ -1,15 +1,28 @@
 import { h, JSX } from "preact"
 import { useState } from "preact/hooks"
-import { Box } from "./Box"
+import * as B from "./Box"
 import { Location } from "../model/locations"
-import { Pagination } from './Pagination';
+import * as P from './Pagination';
+import { Cell } from 'model/grid';
+
+// The height, in pixels, of an element in the locations list
+const ITEMSIZE = 50;
 
 export function LocationList(props: {
-    locations: readonly Location[],
-    pagesize: number
+    // The locations to display
+    locations: readonly Location[]
+    // The pixel height available for the component to display in
+    height: number
+    // Invoke to flag a cell on the map as "selected"
+    select: (cell: Cell) => void
 }): JSX.Element {
     
-    const {locations, pagesize} = props;
+    console.log("LocationList: %o", props.select)
+
+    const {locations, height} = props;
+
+    const innerHeight = B.innerHeight(height) - P.height;
+    const pagesize = Math.floor(innerHeight / ITEMSIZE);
 
     const [page, setPage] = useState(0)
     const pages = Math.ceil(locations.length / pagesize);
@@ -18,10 +31,11 @@ export function LocationList(props: {
 
     const shown = props.locations.slice(start, end);
 
-    return <Box title="Locations">
+    return <B.Box title="Locations">
         <ul className="gui-locations" style={{height: 50*pagesize}}>
             {shown.map(location => 
-                <li key={location.name.short}>
+                <li key={location.name.short} 
+                    onClick={() => props.select(location.cell)}>
                     <div className="flag"/>
                     <div className="name">
                         {location.name.short}
@@ -31,6 +45,6 @@ export function LocationList(props: {
                     </div>
                 </li>)}
         </ul>
-        <Pagination page={page} pages={pages} setPage={setPage}/>
-    </Box>
+        <P.Pagination page={page} pages={pages} setPage={setPage}/>
+    </B.Box>
 }

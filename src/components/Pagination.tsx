@@ -16,3 +16,6 @@ export function Pagination(props: {
                 onClick={() => setPage(page + 1)}/>
     </div>
 }
+
+// Height of the pagination component, in pixels.
+export const height = 40;

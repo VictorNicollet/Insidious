@@ -9,3 +9,11 @@ export function Box(props: {
         <div className="gui-box-body">{props.children}</div>
     </div>
 }
+
+// The pixels "wasted" on non-content data above and below
+// the inner region of the box.
+const WASTED_HEIGHT = 185;
+
+export function innerHeight(outerHeight: number) {
+    return outerHeight - WASTED_HEIGHT;
+}

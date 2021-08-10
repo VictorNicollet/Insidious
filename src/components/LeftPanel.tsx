@@ -1,27 +1,29 @@
 import { h, JSX } from "preact"
 import { LocationList } from './LocationList'
 import { World } from 'model/world';
+import { Cell } from 'model/grid';
+
+const MARGIN = 10;
 
 // The left panel provides top-level lists of things (all locations,
 // all priests, etc.)
-
-const FLUFF = 220;
-const ITEMSIZE = 50;
-
 export function LeftPanel(props: {
     screenH: number
     screenW: number
     world: World
+    select: (cell: Cell) => void
 }): JSX.Element {
-    const pagesize = Math.floor((props.screenH - FLUFF) / ITEMSIZE);
+    const height = props.screenH - 2*MARGIN;
+    console.log("LeftPanel: %o", props.select)
     return <div style={{
         position: "fixed",
-        left: 10,
-        top: 10,
-        bottom: 10,
+        left: MARGIN,
+        top: MARGIN,
+        bottom: MARGIN,
         width: 340
     }}>
         <LocationList locations={props.world.locations()}
-                      pagesize={pagesize} />
+                      height={height} 
+                      select={props.select} />
     </div>
 }

@@ -48,6 +48,7 @@ export function Screen(props: { world: World }): JSX.Element {
         <LeftPanel
             screenH={screenH} 
             screenW={screenW} 
-            world={props.world}/>
+            world={props.world}
+            select={select}/>
     </div>
 }
