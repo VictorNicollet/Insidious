@@ -1,5 +1,5 @@
 import { World } from "../world"
-import { randomLocation } from './namegen';
+import { randomLocation, randomPerson } from './namegen';
 import { Cell, grid32 } from 'model/grid';
 import { WorldMap, ocean, plains, castle } from 'model/map';
 
@@ -109,15 +109,31 @@ function randomCoords(map: WorldMap, max: number): Cell[] {
     return returned;
 }
 
+// Given a number of persons-of-interest, give a location population
+// that would support this number.
+export function popByInterest(interest: number) {
+    const exponent = (interest + 10 + 5 * Math.random()) / 5;
+    return Math.max(5 + 2 * interest, Math.pow(10, exponent));
+}
+
 export function generate() : World {
     
     const map = new WorldMap(grid32);
     const world = new World(map);
 
+    let interestBaseline = 12;
     for (let coords of randomCoords(map, 80))
     {
         const location = world.newLocation(randomLocation(), coords);
         map.cells[coords] = castle;
+
+        // Persons of interest
+        const interest = Math.max(2, Math.floor(interestBaseline + 5 * Math.random()))
+        for (let i = 0; i < interest; ++i) 
+            world.newPerson(randomPerson(), location);
+        
+        location.population = popByInterest(interest);
+        interestBaseline *= 0.8;
     }
 
     return world;

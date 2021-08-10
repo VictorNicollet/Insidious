@@ -28,7 +28,7 @@ export class World {
         name: PersonName,
         location: Location) : Person
     {
-        const person = new Person(this, name, location);
+        const person = new Person(this, name, location, location.cell);
         this._people.push(person);
         return person;
     }

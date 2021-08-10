@@ -9,6 +9,7 @@ export class Location {
         public name: LocationName,
         public readonly cell: Cell) {}
 
-    // For each age, in years, the number of inhabitants of that age
-    private readonly ages : number[]
+    // Population count, fractional in order to support
+    // slow growth over several turns (only display the floor)
+    public population : number
 }

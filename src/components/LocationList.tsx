@@ -2,8 +2,9 @@ import { h, JSX } from "preact"
 import { useState } from "preact/hooks"
 import * as B from "./Box"
 import { Location } from "../model/locations"
-import * as P from './Pagination';
-import { Cell } from 'model/grid';
+import * as P from './Pagination'
+import { Cell } from 'model/grid'
+import * as Numbers from './numbers'
 
 // The height, in pixels, of an element in the locations list
 const ITEMSIZE = 50;
@@ -17,8 +18,6 @@ export function LocationList(props: {
     select: (cell: Cell) => void
 }): JSX.Element {
     
-    console.log("LocationList: %o", props.select)
-
     const {locations, height} = props;
 
     const innerHeight = B.innerHeight(height) - P.height;
@@ -31,7 +30,7 @@ export function LocationList(props: {
 
     const shown = props.locations.slice(start, end);
 
-    return <B.Box title="Locations">
+    return <B.Box title="Locations" decorate={true}>
         <ul className="gui-locations" style={{height: 50*pagesize}}>
             {shown.map(location => 
                 <li key={location.name.short} 
@@ -41,7 +40,7 @@ export function LocationList(props: {
                         {location.name.short}
                     </div>
                     <div className="info">
-                        Pop 352
+                        Pop {Numbers.population(location.population)}
                     </div>
                 </li>)}
         </ul>
