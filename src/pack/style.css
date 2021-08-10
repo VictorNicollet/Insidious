@@ -12,6 +12,35 @@
     position: relative;
 }
 
+/* .gui-navbar */
+
+.gui-navbar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 47px;
+    border-image: url("../../BigAssets/Citadel RPG GUI/Sliced/Various Content Box Slices/heading_type_2.png") 15 70 fill / 15px 70px;
+    border-image-repeat: repeat;
+    padding: 12px 70px;
+}
+
+.gui-navbar button {
+    border: none;
+    background: none;
+    color: #DDC;
+    text-shadow: #887 0 0 2px;
+    font-size: 16px;
+    padding: 14px;
+    margin: -12px 0;
+    cursor: pointer;
+}
+
+.gui-navbar button:hover {
+    text-shadow: #998 0 0 8px;
+    color: #FFE;
+}
+
 /* .gui-box */
 
 .gui-box-title {

@@ -50,5 +50,12 @@ export function Screen(props: { world: World }): JSX.Element {
             screenW={screenW} 
             world={props.world}
             select={select}/>
+        <div className="gui-navbar">
+            <button>Locations</button>
+            <button>Agents</button>
+            <button>Cult</button>
+            <button>Rituals</button>
+            <button>Artifacts</button>
+        </div>
     </div>
 }
