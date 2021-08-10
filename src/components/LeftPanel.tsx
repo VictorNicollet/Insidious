@@ -14,7 +14,6 @@ export function LeftPanel(props: {
     select: (cell: Cell) => void
 }): JSX.Element {
     const height = props.screenH - 2*MARGIN;
-    console.log("LeftPanel: %o", props.select)
     return <div style={{
         position: "fixed",
         left: MARGIN,

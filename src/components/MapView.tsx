@@ -32,7 +32,6 @@ export function MapView(props: {
         }}>
             <Map map={props.map} selected={props.selected} />
         </div>
-        <div style={{position:"fixed",left:"50%",top:"50%",width:2,height:2,background:"red"}}/>
     </div>
 
     function onClick(e: h.JSX.TargetedEvent<HTMLDivElement, MouseEvent>) {
