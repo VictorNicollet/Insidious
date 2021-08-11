@@ -1,7 +1,7 @@
 import { h, JSX } from "preact"
 import { MapScroller } from './MapScroller';
 import { cellPos, pick } from "./Map"
-import { LeftPanel, LeftPanelShown } from './LeftPanel';
+import { useLeftPanel } from './LeftPanel';
 import { useState, useCallback } from 'preact/hooks';
 import { Cell } from 'model/grid';
 import { WorldView } from 'view/world';
@@ -17,15 +17,8 @@ export function Screen(props: { world: WorldView }): JSX.Element {
     // control the center when something is selected.
     const [[centerX, centerY, selected], setCenter] = 
         useState<[number,number,Cell?]>([0,0,undefined]);
-
-    // Choice of left panel happens at this level, to let the 
-    // navbar buttons open/close it. 
-    const [leftPanel, setLeftPanel] = 
-        useState<LeftPanelShown>(undefined)
-    const closeLeftPanel = useCallback(() => setLeftPanel(undefined), [setLeftPanel])
-    const toggleLeftPanel = useCallback((shown: LeftPanelShown) =>
-        setLeftPanel(old => old == shown ? undefined : shown),
-        [setLeftPanel]);
+ 
+    const LeftPanel = useLeftPanel();
 
     // Invoke on a cell to center on its position.
     const select = useCallback(function (cell: Cell) {
@@ -59,10 +52,8 @@ export function Screen(props: { world: WorldView }): JSX.Element {
             screenH={screenH} 
             screenW={screenW} 
             world={props.world}
-            select={select}
-            shown={leftPanel}
-            close={closeLeftPanel}/>
+            select={select}/>
         <Navbar 
-            left={toggleLeftPanel} />
+            left={LeftPanel.toggle} />
     </div>
 }
