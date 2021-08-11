@@ -114,6 +114,27 @@ ul.gui-locations .info {
     color: #877;
 }
 
+.location-mini {
+    overflow: hidden;
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    bottom: 2px;
+    width: 46px;
+}
+
+.location-mini:after {    
+    position: absolute;
+    inset: 0;
+    content: "";
+    background: url("../../BigAssets/Citadel RPG GUI/Sliced/Box - Loot/slot_frame.png") center center no-repeat;
+}
+
+.location-mini .hex {
+    transform: scale(0.5);
+}
+
+
 /* .gui-pagination */
 
 .gui-pagination {
@@ -401,7 +422,7 @@ button.go.right:disabled {
 }
 
 .hex.temple {
-    background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Medieval-Fantasy Hex Locations/Tiles/hexPlainsTempleRuins00.png")
+    background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Medieval-Fantasy Hex Locations/Tiles/hexPlainsTemple00.png")
 }
 
 .hex.elven-lodge {

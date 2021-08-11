@@ -30,7 +30,6 @@ export function Screen(props: { world: WorldView }): JSX.Element {
     return <div>
         <MapScroller 
             world={props.world}
-            map={props.world.map}
             screenH={screenH}
             screenW={screenW} />
         <LeftPanel

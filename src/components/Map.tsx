@@ -1,17 +1,7 @@
-import { h } from "preact"
+import { h, JSX } from "preact"
 import { Cell, Grid } from 'model/grid';
 import { MapView } from 'view/map';
-import { LocationView } from 'view/locations';
 import { WorldView } from 'view/world';
-
-type TileInfo = {
-    readonly aspect: string
-    readonly x: number
-    readonly y: number
-    readonly cell: number
-    readonly variant: boolean
-    readonly location: LocationView|undefined
-}
 
 const ABOVE = 128/2;
 const TILEWIDTH = 256/2;
@@ -33,43 +23,60 @@ function variant(cell: Cell) {
     return (((cell >> 6) ^ (cell >> 4) ^ (cell >> 2) ^ cell) & 3).toString()
 }
 
+// A cell in the grid.
+export function Cell(props: {
+    world: WorldView,
+    cell: Cell,
+    selected?: boolean,
+    top: number,
+    left: number, 
+    // Naked: draw only the hex, no other decoration.
+    naked?: boolean
+}): JSX.Element {
+
+    const {cells, locations} = props.world.map;
+
+    const {aspect, hasVariants} = cells[props.cell];
+    const location = props.naked || typeof locations[props.cell] == "undefined"
+        ? undefined : props.world.locations[locations[props.cell]];
+    
+    return <div className={"hex " + aspect + 
+                           (hasVariants ? variant(props.cell) : "") +
+                           (props.selected ? " selected" : "") }  
+             style={{left:props.left, top:props.top}}>
+        {location && <span className="name">{location.name.short}</span>}
+    </div>
+}
 
 export function Map(props: {
     world: WorldView, 
-    map: MapView, 
     selected: Cell|undefined
 }) {
 
-    const {cells, grid, locations} = props.map;
-    const tiles : TileInfo[] = []
+    const grid = props.world.map.grid;
+    const tiles : JSX.Element[] = []
 
     for (let y = 0; y < grid.side; ++y) {
         for (let x = 0; x < grid.side; ++x) {
             const cell = grid.cell(x,y);
-            const aspect = cells[cell].aspect;
-            const variant = cells[cell].hasVariants;
-            const location = typeof locations[cell] == "undefined"
-                ? undefined : props.world.locations[locations[cell]];
-            tiles.push({x, y, aspect, cell, variant, location})
+            tiles.push(<Cell 
+                key={cell} 
+                world={props.world} 
+                cell={cell} 
+                selected={props.selected === cell}
+                top={y * TILEYOFFSET - CENTERY} 
+                left={(x + yshift(y)) * TILEWIDTH - CENTERX}/>)
         }
     }
 
-    return <div className={typeof props.selected == "undefined" 
-                            ? "map" : "map unselected"}
+    const cn = typeof props.selected == "undefined" ? "map" : "map unselected";
+
+    return <div className={cn}
                 style={{
                     width: 20.5 * TILEWIDTH,
                     height: TILEHEIGHT + 20*TILEYOFFSET
                 }}>
-        {tiles.map(tile => 
-            <div className={"hex " + tile.aspect + 
-                            (tile.variant ? variant(tile.cell) : "") +
-                            (tile.cell == props.selected ? " selected" : "") }  
-                 key={tile.cell}
-                 style={{top: tile.y * TILEYOFFSET - CENTERY, 
-                         left: (tile.x + yshift(tile.y)) * TILEWIDTH - CENTERX}}>
-                {tile.location && <span className="name">{tile.location.name.short}</span>}
-            </div>
-        )}
+        {tiles}
     </div>
 }
 

@@ -5,11 +5,14 @@ import * as P from './Pagination'
 import { Cell } from 'model/grid'
 import * as Numbers from './numbers'
 import { LocationView } from 'view/locations'
+import * as M from './Map'
+import { WorldView } from 'view/world'
 
 // The height, in pixels, of an element in the locations list
 const ITEMSIZE = 50;
 
 export function LocationList(props: {
+    world: WorldView,
     // The locations to display
     locations: readonly LocationView[]
     // The pixel height available for the component to display in
@@ -35,7 +38,12 @@ export function LocationList(props: {
             {shown.map(location => 
                 <li key={location.name.short} 
                     onClick={() => props.select(location.cell)}>
-                    <div className="flag"/>
+                    <div className="location-mini">
+                        <M.Cell world={props.world}
+                                cell={location.cell}
+                                top={-77} left={-39}
+                                naked={true}/>
+                    </div>
                     <div className="name">
                         {location.name.short}
                     </div>

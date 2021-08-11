@@ -49,6 +49,7 @@ export function useLeftPanel(): LeftPanel {
             }}>
                 {shown == "locations" 
                     ? <LocationList locations={props.world.locations}
+                                    world={props.world}
                                     height={height} 
                                     select={props.select} />
                     : shown == "agents" 
