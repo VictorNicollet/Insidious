@@ -31,8 +31,20 @@ export class World {
     {
         const person = new Agent(this, name, location, location.cell);
         this._agents.push(person);
+        this.visitLocation(location);
+        this.map.addViewer(location.cell);
         return person;
     }
  
     public agents() : readonly Agent[] { return this._agents; }
+
+    public visitLocation(location: Location) {
+        // View 2 around the location
+        this.map.makeSeen(location.cell, 2);
+        // For other locations at distance 3, view 1
+        for (let other of this._locations) {
+            if (this.map.grid.distance(location.cell, other.cell) == 3)
+                this.map.makeSeen(other.cell, 1)
+        }
+    }
 }

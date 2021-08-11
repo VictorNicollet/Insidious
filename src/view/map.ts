@@ -5,6 +5,9 @@ export type MapView = {
     readonly grid : Grid
     readonly cells : readonly CellKind[]
     readonly locations : readonly (number|undefined)[]
+    
+    // 0 if not visible, 1 if in fog, > 1 if visible.
+    readonly vision : Uint32Array
 }
 
 export function map(m: WorldMap): MapView {
@@ -18,6 +21,7 @@ export function map(m: WorldMap): MapView {
     return {
         grid: m.grid,
         cells: [...m.cells],
-        locations
+        locations,
+        vision: new Uint32Array(m.vision)
     }
 }

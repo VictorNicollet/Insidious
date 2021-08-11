@@ -25,11 +25,12 @@ function variant(cell: Cell) {
 
 // A cell in the grid.
 export function Cell(props: {
-    world: WorldView,
-    cell: Cell,
-    selected?: boolean,
-    top: number,
-    left: number, 
+    world: WorldView
+    cell: Cell
+    fog?: boolean
+    selected?: boolean
+    top: number
+    left: number 
     // Naked: draw only the hex, no other decoration.
     naked?: boolean
 }): JSX.Element {
@@ -42,6 +43,7 @@ export function Cell(props: {
     
     return <div className={"hex " + aspect + 
                            (hasVariants ? variant(props.cell) : "") +
+                           (props.fog ? " fog" : "") + 
                            (props.selected ? " selected" : "") }  
              style={{left:props.left, top:props.top}}>
         {location && <span className="name">{location.name.short}</span>}
@@ -53,15 +55,17 @@ export function Map(props: {
     selected: Cell|undefined
 }) {
 
-    const grid = props.world.map.grid;
+    const {grid,vision} = props.world.map;
     const tiles : JSX.Element[] = []
 
     for (let y = 0; y < grid.side; ++y) {
         for (let x = 0; x < grid.side; ++x) {
             const cell = grid.cell(x,y);
+            if (!vision[cell]) continue;
             tiles.push(<Cell 
                 key={cell} 
                 world={props.world} 
+                fog={vision[cell] < 2}
                 cell={cell} 
                 selected={props.selected === cell}
                 top={y * TILEYOFFSET - CENTERY} 

@@ -1,4 +1,4 @@
-import type { Grid } from './grid'
+import type { Grid, Cell } from './grid'
 import type { World } from './world'
 
 export const allCells : CellKind[] = []
@@ -61,6 +61,11 @@ export const fortB        = new CellKind("dwarven-fort",    false, 1, "l")
 
 export class WorldMap { 
     public readonly cells: CellKind[]
+    // For every cell: 
+    //   - 0 if never seen
+    //   - 1 if already seen, currently in fog of war
+    //   - 1+N if currently seen by N agents
+    public readonly vision: Uint32Array
     constructor(
         public readonly grid : Grid,
         public readonly world : World
@@ -68,5 +73,34 @@ export class WorldMap {
         const cells : CellKind[] = []
         while (cells.length < grid.count) cells.push(ocean);
         this.cells = cells;
+        this.vision = new Uint32Array(grid.count);
+    }
+
+    // Mark a cell, and surrounding cells in a radius of 1,
+    // as having been seen (if not already)
+    public makeSeen(cell: Cell, distance: number) {
+        
+        const seen = this.vision;
+        const grid = this.grid;
+
+        if (distance <= 1) {
+            if (seen[cell] == 0) seen[cell] = 1;
+            if (distance == 0) return;
+            for (let adj of grid.adjacent(cell)) 
+                if (seen[cell] == 0) seen[cell] = 1;
+        }
+
+        for (let test = 0; test < this.grid.count; ++test)
+            if (seen[test] == 0 && grid.distance(test, cell) <= distance)
+                seen[test] = 1;
+    }
+
+    // Add a viewer to a cell and the adjecent cells.
+    public addViewer(cell: Cell) {
+        const seen = this.vision;
+        const grid = this.grid;
+        seen[cell] = 1 + (seen[cell] || 1);
+        for (let adj of grid.adjacent(cell))
+            seen[adj] = 1 + (seen[adj] || 1);
     }
 }

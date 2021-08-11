@@ -493,13 +493,16 @@ button.go.right:disabled {
 }
 
 .hex.fog {
-    filter: saturate(0.5)
+    filter: saturate(0.3) brightness(0.8)
 }
 
 .map.unselected .hex {
     filter: brightness(0.5)
 }
 
+.map.unselected .hex.fog {
+    filter: saturate(0.3) brightness(0.5)
+}
 .map.unselected .hex.selected {
     filter: none;
 }

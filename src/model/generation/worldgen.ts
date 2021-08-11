@@ -256,6 +256,7 @@ export function generate() : World {
     const locs = world.locations();
     const last = locs[locs.length - 1];
     world.newAgent(randomPerson(), last);
+    
 
     return world;
 }
