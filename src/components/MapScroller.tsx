@@ -3,8 +3,10 @@ import { Map, pick, cellPos } from 'components/Map'
 import { Cell, Grid } from 'model/grid';
 import { MapView } from 'view/map';
 import { StateUpdater, useRef, useMemo, useState, useCallback, useEffect } from 'preact/hooks';
+import { WorldView } from 'view/world';
 
 export type MapScrollerProps = {
+    world: WorldView,
     map: MapView,
     // Dimensions of the screen
     screenH: number
@@ -59,7 +61,9 @@ export function useMapScroller(grid: Grid): MapScroller {
                     transitionDuration: "0.2s",
                     transitionTimingFunction: "ease-out"
                 }}>
-                    <Map map={props.map} selected={selected} />
+                    <Map world={props.world} 
+                         map={props.map} 
+                         selected={selected} />
                 </div>
             </div>
         }) as MapScroller;

@@ -1,6 +1,8 @@
 import { h } from "preact"
 import { Cell, Grid } from 'model/grid';
 import { MapView } from 'view/map';
+import { LocationView } from 'view/locations';
+import { WorldView } from 'view/world';
 
 type TileInfo = {
     readonly aspect: string
@@ -8,6 +10,7 @@ type TileInfo = {
     readonly y: number
     readonly cell: number
     readonly variant: boolean
+    readonly location: LocationView|undefined
 }
 
 const ABOVE = 128/2;
@@ -31,9 +34,13 @@ function variant(cell: Cell) {
 }
 
 
-export function Map(props: {map: MapView, selected: Cell|undefined}) {
+export function Map(props: {
+    world: WorldView, 
+    map: MapView, 
+    selected: Cell|undefined
+}) {
 
-    const {cells, grid} = props.map;
+    const {cells, grid, locations} = props.map;
     const tiles : TileInfo[] = []
 
     for (let y = 0; y < grid.side; ++y) {
@@ -41,7 +48,9 @@ export function Map(props: {map: MapView, selected: Cell|undefined}) {
             const cell = grid.cell(x,y);
             const aspect = cells[cell].aspect;
             const variant = cells[cell].hasVariants;
-            tiles.push({x, y, aspect, cell, variant})
+            const location = typeof locations[cell] == "undefined"
+                ? undefined : props.world.locations[locations[cell]];
+            tiles.push({x, y, aspect, cell, variant, location})
         }
     }
 
@@ -57,7 +66,9 @@ export function Map(props: {map: MapView, selected: Cell|undefined}) {
                             (tile.cell == props.selected ? " selected" : "") }  
                  key={tile.cell}
                  style={{top: tile.y * TILEYOFFSET - CENTERY, 
-                         left: (tile.x + yshift(tile.y)) * TILEWIDTH - CENTERX}} />
+                         left: (tile.x + yshift(tile.y)) * TILEWIDTH - CENTERX}}>
+                {tile.location && <span className="name">{tile.location.name.short}</span>}
+            </div>
         )}
     </div>
 }

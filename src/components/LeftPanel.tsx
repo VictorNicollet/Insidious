@@ -44,7 +44,8 @@ export function useLeftPanel(): LeftPanel {
                 left: 10,
                 top: MARGINTOP,
                 bottom: MARGINBOT,
-                width: 340
+                width: 340,
+                zIndex: 100
             }}>
                 {shown == "locations" 
                     ? <LocationList locations={props.world.locations}
