@@ -35,8 +35,9 @@ export function LocationList(props: {
 
     return <B.Box title="Locations" decorate={true}>
         <ul className="gui-locations" style={{height: 50*pagesize}}>
-            {shown.map(location => 
-                <li key={location.name.short} 
+            {shown.map(location => {
+                const cell = props.world.map.cells[location.cell];
+                return <li key={location.name.short} 
                     onClick={() => props.select(location.cell)}>
                     <div className="location-mini">
                         <M.Cell world={props.world}
@@ -48,9 +49,10 @@ export function LocationList(props: {
                         {location.name.short}
                     </div>
                     <div className="info">
-                        Pop {Numbers.population(location.population)}
+                        {cell.name} &middot; Pop {Numbers.population(location.population)}
                     </div>
-                </li>)}
+                </li>
+            })}
         </ul>
         <P.Pagination page={page} pages={pages} setPage={setPage}/>
     </B.Box>
