@@ -47,7 +47,7 @@ export function useRightPanel(): RightPanel {
                                             location={shown.location} 
                                             height={height} />;
                 return <div>Agent {shown.agent.name.short}</div>;
-            }, [shown]);
+            }, [shown, height]);
 
             return <div style={{
                 position: "fixed",

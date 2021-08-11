@@ -186,6 +186,21 @@ ul.gui-locations .gui-agent-count {
     transform: scale(0.5);
 }
 
+/* .gui-info-table */
+
+.gui-info-table {
+    width: 100%;
+}
+
+.gui-info-table th {
+    font-weight: normal;
+    text-align: left;
+    color: #877;
+}
+
+.gui-info-table td {
+    text-align: right;
+}
 
 /* .gui-pagination */
 
