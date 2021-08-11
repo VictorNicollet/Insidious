@@ -1,6 +1,5 @@
 import { h, JSX } from "preact"
 import { Cell, Grid } from 'model/grid';
-import { MapView } from 'view/map';
 import { WorldView } from 'view/world';
 
 const ABOVE = 128/2;

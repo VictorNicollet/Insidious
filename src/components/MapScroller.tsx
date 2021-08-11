@@ -24,11 +24,14 @@ export function useMapScroller(grid: Grid): MapScroller {
     {
         const Component = ((props: MapScrollerProps): JSX.Element => {
 
-            const {screenW, screenH} = props;
-            const locByCell = props.world.map.locations;
+            const {screenW, screenH, world} = props;
+            const locByCell = world.map.locations;
+
+            // Initially center on the first location
+            const [ix, iy] = cellPos(world.initial, grid)
 
             const [[x,y,selected], setState] = 
-                useState<MapScrollerState>([0, 0, undefined]);
+                useState<MapScrollerState>([ix, iy, undefined]);
 
             useEffect(() => {ctrl.current = setState});
 
