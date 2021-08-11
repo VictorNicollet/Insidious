@@ -18,10 +18,23 @@ const TILEHEIGHT = 384/2;
 const CENTERX = TILEWIDTH/2;
 const CENTERY = ABOVE + (TILEHEIGHT - ABOVE)/2; 
 
+// Odd hex rows are shifted
 function yshift(y: number) {
     if (y % 2 == 0) return 0;
     return 0.5;
 }
+
+// The variant (0..3) for cells that have one.
+function variant(cell: Cell) {
+    return (((cell >> 6) ^ (cell >> 4) ^ (cell >> 2) ^ cell) & 3).toString()
+}
+
+// Identifies whether an aspect has variants
+const withVariants = {
+    "plains": true,
+    "ocean": true
+}
+
 
 export function Map(props: {map: MapView, selected: Cell|undefined}) {
 
@@ -44,6 +57,7 @@ export function Map(props: {map: MapView, selected: Cell|undefined}) {
                 }}>
         {tiles.map(tile => 
             <div className={"hex " + tile.aspect + 
+                            (withVariants[tile.aspect] ? variant(tile.cell) : "") +
                             (tile.cell == props.selected ? " selected" : "") }  
                  key={tile.cell}
                  style={{top: tile.y * TILEYOFFSET - CENTERY, 

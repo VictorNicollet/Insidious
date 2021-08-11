@@ -171,20 +171,40 @@ button.go.right:disabled {
     height: 192px;
 }
 
-.hex.plains {
-    background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Hex Samples/hexPlains00.png")
+.hex.plains0 {
+    background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Terrain Hexes/Tiles/hexPlains00.png")
 }
 
-.hex.mountain {
-    background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Hex Samples/hexMountain00.png")
+.hex.plains1 {
+    background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Terrain Hexes/Tiles/hexPlains01.png")
 }
 
-.hex.ocean {
-    background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Hex Samples/hexOceanCalm00.png")
+.hex.plains2 {
+    background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Terrain Hexes/Tiles/hexPlains02.png")
+}
+
+.hex.plains3 {
+    background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Terrain Hexes/Tiles/hexPlains03.png")
+}
+
+.hex.ocean0 {
+    background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Terrain Hexes/Tiles/hexOcean00.png")
+}
+
+.hex.ocean1 {
+    background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Terrain Hexes/Tiles/hexOcean01.png")
+}
+
+.hex.ocean2 {
+    background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Terrain Hexes/Tiles/hexOcean02.png")
+}
+
+.hex.ocean3 {
+    background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Terrain Hexes/Tiles/hexOcean03.png")
 }
 
 .hex.castle {
-    background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Hex Samples/hexPlainsCastle00.png")
+    background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Medieval-Fantasy Hex Locations/Tiles/hexPlainsCastle00.png")
 }
 
 .hex.fog {
