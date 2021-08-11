@@ -4,15 +4,28 @@ import { cellPos, pick } from "./Map"
 import { useLeftPanel } from './LeftPanel';
 import { WorldView } from 'view/world';
 import { Navbar } from './Navbar';
+import { useState, useEffect } from 'preact/hooks';
+
 
 export function Screen(props: { world: WorldView }): JSX.Element {
     
-    const grid = props.world.map.grid;
-    const screenH = window.innerHeight;
-    const screenW = window.innerWidth;
+    // Screen size management ================================================
+
+    const [[screenW, screenH], setScreenSize] = 
+        useState([window.innerWidth, window.innerHeight]);
+
+    useEffect(() => {
+        function onResize() {
+            setScreenSize([window.innerWidth, window.innerHeight]);
+        }
+        window.addEventListener("resize", onResize);
+        return () => window.removeEventListener("resize", onResize);
+    })
+
+    // Sub-components ========================================================
 
     const LeftPanel = useLeftPanel();
-    const MapScroller = useMapScroller(grid);
+    const MapScroller = useMapScroller(props.world.map.grid);
 
     return <div>
         <MapScroller 
