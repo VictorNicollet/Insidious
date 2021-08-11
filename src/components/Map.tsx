@@ -1,6 +1,7 @@
 import { h, JSX } from "preact"
 import { Cell, Grid } from 'model/grid';
 import { WorldView } from 'view/world';
+import { AgentCount } from './AgentCount';
 
 const ABOVE = 128/2;
 const TILEWIDTH = 256/2;
@@ -45,7 +46,10 @@ export function Cell(props: {
                            (props.fog ? " fog" : "") + 
                            (props.selected ? " selected" : "") }  
              style={{left:props.left, top:props.top}}>
-        {location && <span className="name">{location.name.short}</span>}
+        {location && <span className="name">
+                        <AgentCount count={location.agents.length}/>
+                        {location.name.short}
+                     </span>}
     </div>
 }
 

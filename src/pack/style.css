@@ -540,3 +540,16 @@ button.go.right:disabled {
 }
 
 .unselected .hex .name { display: none }
+
+.hex .name .gui-agent-count {
+    background: url("../../BigAssets/Citadel RPG GUI/Sliced/Party Frames/party_level.png") no-repeat center center;
+    width: 28px;
+    height: 28px;
+    padding: 4px;
+    text-align: center;
+    font-size: 13px;
+    line-height: 21px;
+    display: inline-block;
+    margin: -4px 2px -4px -30px;
+    vertical-align: middle;
+}
