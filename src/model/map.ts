@@ -78,21 +78,26 @@ export class WorldMap {
 
     // Mark a cell, and surrounding cells in a radius of 1,
     // as having been seen (if not already)
-    public makeSeen(cell: Cell, distance: number) {
+    // Returns the number of cells that are now seen that 
+    // were previously unseed.
+    public makeSeen(cell: Cell, distance: number): number {
         
+        let discovered = 0;
         const seen = this.vision;
         const grid = this.grid;
 
         if (distance <= 1) {
-            if (seen[cell] == 0) seen[cell] = 1;
+            if (seen[cell] == 0) { ++discovered; seen[cell] = 1; }
             if (distance == 0) return;
             for (let adj of grid.adjacent(cell)) 
-                if (seen[cell] == 0) seen[cell] = 1;
+                if (seen[cell] == 0) { ++discovered; seen[cell] = 1; }
         }
 
         for (let test = 0; test < this.grid.count; ++test)
             if (seen[test] == 0 && grid.distance(test, cell) <= distance)
-                seen[test] = 1;
+                { ++discovered; seen[test] = 1; }
+
+        return discovered;
     }
 
     // Add a viewer to a cell and the adjecent cells.

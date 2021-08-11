@@ -14,7 +14,7 @@ export function map(m: WorldMap): MapView {
 
     const locations : (number|undefined)[] = [];
     while (locations.length < m.grid.count) locations.push(undefined);
-    let worldLocations = m.world.locations();
+    let worldLocations = m.world.seenLocations;
     for (let i = 0; i < worldLocations.length; ++i)
         locations[worldLocations[i].cell] = i;
 

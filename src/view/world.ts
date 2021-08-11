@@ -12,11 +12,11 @@ export type WorldView = {
 }
 
 export function world(w: World): WorldView {
-    const locations = w.locations()
+    const locations = w.seenLocations
     return {
         locations: locations.map(location),
         agents: w.agents().map(agent),
         map: map(w.map),
-        initial: locations[locations.length-1].cell
+        initial: locations[0].cell
     }
 }
