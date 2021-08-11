@@ -7,6 +7,7 @@ import * as Numbers from './numbers'
 import { LocationView } from 'view/locations'
 import * as M from './Map'
 import { WorldView } from 'view/world'
+import { AgentCount } from './AgentCount'
 
 // The height, in pixels, of an element in the locations list
 const ITEMSIZE = 50;
@@ -45,6 +46,7 @@ export function LocationList(props: {
                                 top={-77} left={-39}
                                 naked={true}/>
                     </div>
+                    <AgentCount count={location.agents.length}/>
                     <div className="name">
                         {location.name.short}
                     </div>

@@ -42,6 +42,18 @@
     color: #FFE;
 }
 
+/* .gui-agent-count  */
+
+.gui-agent-count {
+    background: url("../../BigAssets/Citadel RPG GUI/Sliced/Party Frames/party_level.png") no-repeat center center;
+    width: 28px;
+    height: 28px;
+    padding: 4px;
+    text-align: center;
+    font-size: 13px;
+    line-height: 21px;
+}
+
 /* .gui-box */
 
 .gui-box-title {
@@ -147,6 +159,11 @@ ul.gui-locations .name {
 ul.gui-locations .info {
     font-size: 14px;
     color: #877;
+}
+
+ul.gui-locations .gui-agent-count {
+    float: right;
+    margin-top: 6px;
 }
 
 .location-mini {
@@ -542,13 +559,6 @@ button.go.right:disabled {
 .unselected .hex .name { display: none }
 
 .hex .name .gui-agent-count {
-    background: url("../../BigAssets/Citadel RPG GUI/Sliced/Party Frames/party_level.png") no-repeat center center;
-    width: 28px;
-    height: 28px;
-    padding: 4px;
-    text-align: center;
-    font-size: 13px;
-    line-height: 21px;
     display: inline-block;
     margin: -4px 2px -4px -30px;
     vertical-align: middle;
