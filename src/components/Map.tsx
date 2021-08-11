@@ -1,6 +1,6 @@
 import { h } from "preact"
-import { WorldMap } from 'model/map';
 import { Cell, Grid } from 'model/grid';
+import { MapView } from 'view/map';
 
 type TileInfo = {
     readonly aspect: "plains" | "ocean" | "mountain" | "castle"
@@ -23,8 +23,7 @@ function yshift(y: number) {
     return 0.5;
 }
 
-
-export function Map(props: {map: WorldMap, selected: Cell|undefined}) {
+export function Map(props: {map: MapView, selected: Cell|undefined}) {
 
     const {cells, grid} = props.map;
     const tiles : TileInfo[] = []

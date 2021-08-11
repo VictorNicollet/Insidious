@@ -1,16 +1,18 @@
 import { Location } from "./locations"
-import { Person } from "./people"
+import { Agent } from "./agents"
 import { PersonName, LocationName } from './names';
 import { WorldMap } from './map';
-import { Cell } from './grid';
+import { Cell, Grid } from './grid';
 
 export class World {
     private readonly _locations : Location[]
-    private readonly _people : Person[]
+    private readonly _agents : Agent[]
+    public readonly map : WorldMap
 
-    constructor(public readonly map : WorldMap) {
+    constructor(grid: Grid) {
         this._locations = [];
-        this._people = [];
+        this._agents = [];
+        this.map = new WorldMap(grid, this)
     }
 
     public newLocation(
@@ -24,13 +26,14 @@ export class World {
 
     public locations() : readonly Location[] { return this._locations; }
 
-    public newPerson(
+    public newAgent(
         name: PersonName,
-        location: Location) : Person
+        location: Location) : Agent
     {
-        const person = new Person(this, name, location, location.cell);
-        this._people.push(person);
+        const person = new Agent(this, name, location, location.cell);
+        this._agents.push(person);
         return person;
     }
  
+    public agents() : readonly Agent[] { return this._agents; }
 }

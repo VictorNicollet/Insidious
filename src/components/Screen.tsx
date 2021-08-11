@@ -1,12 +1,12 @@
 import { h, JSX } from "preact"
-import { World } from 'model/world';
-import { MapView } from './MapView';
+import { MapScroller } from './MapScroller';
 import { cellPos, pick } from "./Map"
 import { LeftPanel } from './LeftPanel';
 import { useState, useCallback } from 'preact/hooks';
 import { Cell } from 'model/grid';
+import { WorldView } from 'view/world';
 
-export function Screen(props: { world: World }): JSX.Element {
+export function Screen(props: { world: WorldView }): JSX.Element {
     
     const grid = props.world.map.grid;
     const screenH = window.innerHeight;
@@ -37,7 +37,7 @@ export function Screen(props: { world: World }): JSX.Element {
     }, [setCenter, grid])
 
     return <div>
-        <MapView 
+        <MapScroller 
             map={props.world.map}
             screenH={screenH}
             screenW={screenW}

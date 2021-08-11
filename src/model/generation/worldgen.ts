@@ -117,8 +117,8 @@ export function popByInterest(interest: number) {
 
 export function generate() : World {
     
-    const map = new WorldMap(grid32);
-    const world = new World(map);
+    const world = new World(grid32);
+    const map = world.map;
 
     let interestBaseline = 12;
     for (let coords of randomCoords(map, 80))
@@ -129,7 +129,7 @@ export function generate() : World {
         // Persons of interest
         const interest = Math.max(2, Math.floor(interestBaseline + 5 * Math.random()))
         for (let i = 0; i < interest; ++i) 
-            world.newPerson(randomPerson(), location);
+            world.newAgent(randomPerson(), location);
         
         location.population = popByInterest(interest);
         interestBaseline *= 0.8;

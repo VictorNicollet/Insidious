@@ -1,4 +1,5 @@
-import { Grid } from './grid'
+import type { Grid } from './grid'
+import type { World } from './world'
 
 // The type of a cell on the map.
 export type CellAspect = "plains" | "ocean" | "mountain" | "castle"
@@ -15,7 +16,10 @@ export const castle = new CellKind(3, "castle")
 
 export class WorldMap { 
     public readonly cells: CellKind[]
-    constructor(public readonly grid : Grid) {
+    constructor(
+        public readonly grid : Grid,
+        public readonly world : World
+    ) {
         const cells : CellKind[] = []
         while (cells.length < grid.count) cells.push(ocean);
         this.cells = cells;

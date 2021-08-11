@@ -1,7 +1,7 @@
 import { h, JSX } from "preact"
 import { LocationList } from './LocationList'
-import { World } from 'model/world';
 import { Cell } from 'model/grid';
+import { WorldView } from 'view/world';
 
 const MARGINTOP = 10;
 const MARGINBOT = 57;
@@ -10,7 +10,7 @@ const MARGINBOT = 57;
 export function LeftPanel(props: {
     screenH: number
     screenW: number
-    world: World
+    world: WorldView
     select: (cell: Cell) => void
 }): JSX.Element {
     const height = props.screenH - MARGINTOP - MARGINBOT;
@@ -21,7 +21,7 @@ export function LeftPanel(props: {
         bottom: MARGINBOT,
         width: 340
     }}>
-        <LocationList locations={props.world.locations()}
+        <LocationList locations={props.world.locations}
                       height={height} 
                       select={props.select} />
     </div>

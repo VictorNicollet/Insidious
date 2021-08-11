@@ -3,7 +3,7 @@ import { PersonName } from './names'
 import { Location } from "./locations"
 import { Cell } from './grid'
 
-export class Person {
+export class Agent {
     constructor(
         private readonly world : World,
         public name: PersonName,

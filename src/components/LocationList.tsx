@@ -1,17 +1,17 @@
 import { h, JSX } from "preact"
 import { useState } from "preact/hooks"
 import * as B from "./Box"
-import { Location } from "../model/locations"
 import * as P from './Pagination'
 import { Cell } from 'model/grid'
 import * as Numbers from './numbers'
+import { LocationView } from 'view/locations'
 
 // The height, in pixels, of an element in the locations list
 const ITEMSIZE = 50;
 
 export function LocationList(props: {
     // The locations to display
-    locations: readonly Location[]
+    locations: readonly LocationView[]
     // The pixel height available for the component to display in
     height: number
     // Invoke to flag a cell on the map as "selected"

@@ -5,7 +5,7 @@ import { Cell } from "./grid"
 export class Location {
 
     constructor(
-        private readonly world : World,
+        public readonly world : World,
         public name: LocationName,
         public readonly cell: Cell) {}
 

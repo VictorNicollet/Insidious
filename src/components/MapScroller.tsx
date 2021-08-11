@@ -1,10 +1,10 @@
 import { h } from "preact"
 import { Map } from 'components/Map'
-import { WorldMap } from 'model/map';
 import { Cell } from 'model/grid';
+import { MapView } from 'view/map';
 
-export function MapView(props: {
-    map: WorldMap,
+export function MapScroller(props: {
+    map: MapView,
     // Dimensions of the screen
     screenH: number
     screenW: number
