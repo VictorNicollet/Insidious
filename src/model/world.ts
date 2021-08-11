@@ -17,11 +17,10 @@ export class World {
 
     public newLocation(
         name: LocationName,
-        coords: Cell) : Location
+        coords: Cell,
+        population: number)
     {
-        const location = new Location(this, name, coords);
-        this._locations.push(location);
-        return location;
+        this._locations.push(new Location(this, name, coords, population));
     }
 
     public locations() : readonly Location[] { return this._locations; }

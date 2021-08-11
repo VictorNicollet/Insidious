@@ -221,11 +221,16 @@ function generateTiles(map: Map.WorldMap) {
     }
 }
 
-// Given a number of persons-of-interest, give a location population
-// that would support this number.
-export function popByInterest(interest: number) {
-    const exponent = (interest + 10 + 5 * Math.random()) / 5;
-    return Math.max(5 + 2 * interest, Math.pow(10, exponent));
+// Given the current baseline (which decreases exponentially 
+// as new locations are generated), produce a population 
+// count for a location.
+function popFromBaseline(popBaseline: number) {
+    const exponent = 
+        ( popBaseline 
+        + 5 * Math.random() 
+        + 5 * Math.random()
+        + 10 ) / 5;
+    return Math.pow(10, exponent);
 }
 
 export function generate() : World {
@@ -233,21 +238,24 @@ export function generate() : World {
     const world = new World(grid32);
     const map = world.map;
 
-    let interestBaseline = 12;
+    // Generate all locations on the map
+    let popBaseline = 12;
     for (let coords of randomCoords(map, 80))
     {
-        const location = world.newLocation(randomLocation(), coords);
-
-        // Persons of interest
-        const interest = Math.max(2, Math.floor(interestBaseline + 5 * Math.random()))
-        for (let i = 0; i < interest; ++i) 
-            world.newAgent(randomPerson(), location);
-        
-        location.population = popByInterest(interest);
-        interestBaseline *= 0.8;
+        world.newLocation(
+            randomLocation(), 
+            coords, 
+            popFromBaseline(popBaseline));
+        popBaseline *= 0.8;
     }
 
+    // Generate tiles compatible with locations
     generateTiles(map);
+
+    // Generate an agent in the last location
+    const locs = world.locations();
+    const last = locs[locs.length - 1];
+    world.newAgent(randomPerson(), last);
 
     return world;
 }
