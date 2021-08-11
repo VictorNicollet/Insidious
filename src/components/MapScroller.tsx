@@ -25,7 +25,8 @@ export function useMapScroller(grid: Grid): MapScroller {
         const Component = ((props: MapScrollerProps): JSX.Element => {
 
             const {screenW, screenH, world} = props;
-            const locByCell = world.map.locations;
+            const map = world.map;
+            const locByCell = map.locations;
 
             // Initially center on the first location
             const [ix, iy] = cellPos(world.initial, grid)
@@ -49,11 +50,13 @@ export function useMapScroller(grid: Grid): MapScroller {
                     const y = e.clientY - (screenH/2 - state[1]);
                     const cell = pick(x, y, grid);
                     if (typeof cell === "undefined") return state;
+                    // Check that the clicked cell is visible
+                    if (!map.vision[cell]) return state;
                     const [cx,cy] = cellPos(cell, grid);
                     const sel = locByCell[cell] === undefined ? undefined : cell;
                     return [cx,cy,sel];
                 });                
-            }, [screenW, screenH, setState, grid, locByCell])
+            }, [screenW, screenH, setState, grid, locByCell, map.vision])
             
             return <div className="gui-map" onClick={onClick}>
                 <div style={{
