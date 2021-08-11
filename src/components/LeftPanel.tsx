@@ -38,6 +38,7 @@ export function useLeftPanel(): LeftPanel {
             const [shown, setShown] = useState<LeftPanelShown>();
             useEffect(() => {ctrl.current = setShown});
             const height = props.screenH - MARGINTOP - MARGINBOT;
+            if (!shown) return <div></div>;
             return <div style={{
                 position: "fixed",
                 left: 10,

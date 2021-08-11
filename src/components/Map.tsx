@@ -3,10 +3,11 @@ import { Cell, Grid } from 'model/grid';
 import { MapView } from 'view/map';
 
 type TileInfo = {
-    readonly aspect: "plains" | "ocean" | "mountain" | "castle"
+    readonly aspect: string
     readonly x: number
     readonly y: number
     readonly cell: number
+    readonly variant: boolean
 }
 
 const ABOVE = 128/2;
@@ -29,12 +30,6 @@ function variant(cell: Cell) {
     return (((cell >> 6) ^ (cell >> 4) ^ (cell >> 2) ^ cell) & 3).toString()
 }
 
-// Identifies whether an aspect has variants
-const withVariants = {
-    "plains": true,
-    "ocean": true
-}
-
 
 export function Map(props: {map: MapView, selected: Cell|undefined}) {
 
@@ -45,7 +40,8 @@ export function Map(props: {map: MapView, selected: Cell|undefined}) {
         for (let x = 0; x < grid.side; ++x) {
             const cell = grid.cell(x,y);
             const aspect = cells[cell].aspect;
-            tiles.push({x, y, aspect, cell})
+            const variant = cells[cell].hasVariants;
+            tiles.push({x, y, aspect, cell, variant})
         }
     }
 
@@ -57,7 +53,7 @@ export function Map(props: {map: MapView, selected: Cell|undefined}) {
                 }}>
         {tiles.map(tile => 
             <div className={"hex " + tile.aspect + 
-                            (withVariants[tile.aspect] ? variant(tile.cell) : "") +
+                            (tile.variant ? variant(tile.cell) : "") +
                             (tile.cell == props.selected ? " selected" : "") }  
                  key={tile.cell}
                  style={{top: tile.y * TILEYOFFSET - CENTERY, 

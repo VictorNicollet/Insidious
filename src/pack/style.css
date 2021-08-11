@@ -187,6 +187,54 @@ button.go.right:disabled {
     background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Terrain Hexes/Tiles/hexPlains03.png")
 }
 
+.hex.farm0 {
+    background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Medieval-Fantasy Hex Locations/Tiles/hexPlainsFarm00.png")
+}
+
+.hex.farm1 {
+    background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Medieval-Fantasy Hex Locations/Tiles/hexPlainsFarm01.png")
+}
+
+.hex.farm2 {
+    background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Medieval-Fantasy Hex Locations/Tiles/hexPlainsFarm02.png")
+}
+
+.hex.farm3 {
+    background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Medieval-Fantasy Hex Locations/Tiles/hexPlainsFarm03.png")
+}
+
+.hex.mountain0 {
+    background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Terrain Hexes/Tiles/hexMountain00.png")
+}
+
+.hex.mountain1 {
+    background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Terrain Hexes/Tiles/hexMountain01.png")
+}
+
+.hex.mountain2 {
+    background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Terrain Hexes/Tiles/hexMountain02.png")
+}
+
+.hex.mountain3 {
+    background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Terrain Hexes/Tiles/hexMountain03.png")
+}
+
+.hex.forest0 {
+    background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Terrain Hexes/Tiles/hexForestBroadleaf00.png")
+}
+
+.hex.forest1 {
+    background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Terrain Hexes/Tiles/hexForestBroadleaf01.png")
+}
+
+.hex.forest2 {
+    background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Terrain Hexes/Tiles/hexForestBroadleaf02.png")
+}
+
+.hex.forest3 {
+    background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Terrain Hexes/Tiles/hexForestBroadleaf03.png")
+}
+
 .hex.ocean0 {
     background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Terrain Hexes/Tiles/hexOcean00.png")
 }
@@ -203,8 +251,188 @@ button.go.right:disabled {
     background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Terrain Hexes/Tiles/hexOcean03.png")
 }
 
-.hex.castle {
+.hex.marsh0 {
+    background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Terrain Hexes/Tiles/hexMarsh00.png")
+}
+
+.hex.marsh1 {
+    background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Terrain Hexes/Tiles/hexMarsh01.png")
+}
+
+.hex.marsh2 {
+    background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Terrain Hexes/Tiles/hexMarsh02.png")
+}
+
+.hex.marsh3 {
+    background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Terrain Hexes/Tiles/hexMarsh03.png")
+}
+
+.hex.hills0 {
+    background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Terrain Hexes/Tiles/hexHills00.png")
+}
+
+.hex.hills1 {
+    background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Terrain Hexes/Tiles/hexHills01.png")
+}
+
+.hex.hills2 {
+    background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Terrain Hexes/Tiles/hexHills02.png")
+}
+
+.hex.hills3 {
+    background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Terrain Hexes/Tiles/hexHills03.png")
+}
+
+.hex.moor0 {
+    background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Terrain Hexes/Tiles/hexScrublands00.png")
+}
+
+.hex.moor1 {
+    background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Terrain Hexes/Tiles/hexScrublands01.png")
+}
+
+.hex.moor2 {
+    background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Terrain Hexes/Tiles/hexScrublands02.png")
+}
+
+.hex.moor3 {
+    background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Terrain Hexes/Tiles/hexScrublands03.png")
+}
+
+.hex.village0 {
+    background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Medieval-Fantasy Hex Locations/Tiles/hexPlainsVillage00.png")
+}
+
+.hex.village1 {
+    background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Medieval-Fantasy Hex Locations/Tiles/hexPlainsVillage01.png")
+}
+
+.hex.village2 {
+    background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Medieval-Fantasy Hex Locations/Tiles/hexPlainsVillage02.png")
+}
+
+.hex.village3 {
+    background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Medieval-Fantasy Hex Locations/Tiles/hexPlainsVillage03.png")
+}
+
+.hex.village-small0 {
+    background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Medieval-Fantasy Hex Locations/Tiles/hexPlainsVillageSmall00.png")
+}
+
+.hex.village-small1 {
+    background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Medieval-Fantasy Hex Locations/Tiles/hexPlainsVillageSmall01.png")
+}
+
+.hex.village-small2 {
+    background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Medieval-Fantasy Hex Locations/Tiles/hexPlainsVillageSmall02.png")
+}
+
+.hex.village-small3 {
+    background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Medieval-Fantasy Hex Locations/Tiles/hexPlainsVillageSmall03.png")
+}
+
+.hex.graveyard {
+    background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Medieval-Fantasy Hex Locations/Tiles/hexMarshGraveyard00.png")
+}
+
+.hex.henge {
+    background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Medieval-Fantasy Hex Locations/Tiles/hexPlainsHenge00.png")
+}
+
+.hex.forester0 {
+    background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Medieval-Fantasy Hex Locations/Tiles/hexForestBroadleafForester00.png")
+}
+
+.hex.forester1 {
+    background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Medieval-Fantasy Hex Locations/Tiles/hexForestBroadleafForester01.png")
+}
+
+.hex.temple-ruins {
+    background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Medieval-Fantasy Hex Locations/Tiles/hexPlainsTempleRuins00.png")
+}
+
+.hex.village-under {
+    background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Medieval-Fantasy Hex Locations/Tiles/hexPlainsHalflingVillage00.png")
+}
+
+.hex.smithy {
+    background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Medieval-Fantasy Hex Locations/Tiles/hexPlainsSmithy00.png")
+}
+
+.hex.mountain-mine0 {
+    background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Medieval-Fantasy Hex Locations/Tiles/hexMountainMine00.png")
+}
+
+.hex.mountain-mine1 {
+    background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Medieval-Fantasy Hex Locations/Tiles/hexMountainMine01.png")
+}
+
+.hex.mountain-mine2 {
+    background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Medieval-Fantasy Hex Locations/Tiles/hexMountainMine02.png")
+}
+
+.hex.mountain-mine3 {
+    background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Medieval-Fantasy Hex Locations/Tiles/hexMountainMine03.png")
+}
+
+.hex.hills-mine0 {
+    background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Medieval-Fantasy Hex Locations/Tiles/hexHillsMine00.png")
+}
+
+.hex.hills-mine1 {
+    background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Medieval-Fantasy Hex Locations/Tiles/hexHillsMine01.png")
+}
+
+.hex.hills-mine2 {
+    background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Medieval-Fantasy Hex Locations/Tiles/hexHillsMine02.png")
+}
+
+.hex.hills-mine3 {
+    background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Medieval-Fantasy Hex Locations/Tiles/hexHillsMine03.png")
+}
+
+.hex.forest-ruins {
+    background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Medieval-Fantasy Hex Locations/Tiles/hexForestCastleRuins00.png")
+}
+
+.hex.inn {
+    background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Medieval-Fantasy Hex Locations/Tiles/hexPlainsInn00.png")
+}
+
+.hex.temple {
+    background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Medieval-Fantasy Hex Locations/Tiles/hexPlainsTempleRuins00.png")
+}
+
+.hex.elven-lodge {
+    background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Medieval-Fantasy Hex Locations/Tiles/hexForestElvenLodge00.png")
+}
+
+.hex.castle-red {
     background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Medieval-Fantasy Hex Locations/Tiles/hexPlainsCastle00.png")
+}
+
+.hex.castle-green {
+    background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Medieval-Fantasy Hex Locations/Tiles/hexPlainsCastle00_green.png")
+}
+
+.hex.castle-blue {
+    background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Medieval-Fantasy Hex Locations/Tiles/hexPlainsCastle00_blue.png")
+}
+
+.hex.mountain-castle {
+    background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Medieval-Fantasy Hex Locations/Tiles/hexMountainCastle00.png")
+}
+
+.hex.walled-city {
+    background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Medieval-Fantasy Hex Locations/Tiles/hexPlainsWalledCity00.png")
+}
+
+.hex.fortress {
+    background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Medieval-Fantasy Hex Locations/Tiles/hexMountainFortress00.png")
+}
+
+.hex.dwarven-fort {
+    background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Medieval-Fantasy Hex Locations/Tiles/hexMountainDwarfFortress00.png")
 }
 
 .hex.fog {

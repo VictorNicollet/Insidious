@@ -1,7 +1,9 @@
 import { World } from "../world"
+import { Location } from "../locations"
 import { randomLocation, randomPerson } from './namegen';
 import { Cell, grid32 } from 'model/grid';
-import { WorldMap, ocean, plains, castle } from 'model/map';
+import * as Map from 'model/map';
+import { RandomBag } from './randombag';
 
 // Produces a set of random location coordinates such that
 //  1. locations form a connected graph with edges of distance=3
@@ -18,7 +20,7 @@ import { WorldMap, ocean, plains, castle } from 'model/map';
 //     being adjacent to a returned location become ocean
 //  3. some cells adjacent to a returned location randomly
 //     become ocean as well.
-function randomCoords(map: WorldMap, max: number): Cell[] {
+function randomCoords(map: Map.WorldMap, max: number): Cell[] {
     
     const grid = map.grid;
     const returned : Cell[] = [];
@@ -96,16 +98,118 @@ function randomCoords(map: WorldMap, max: number): Cell[] {
         for (let adj of grid.adjacent(next)) flood.push(adj);
     }
 
-    // Use the flood-filled values to set ocean/plains appropriately
+    // Use the flood-filled values to set ocean/none appropriately
     for (let cell = 0; cell < grid.count; ++cell)
     {
         const value = eliminated[cell];
         map.cells[cell] = (value == 42 || value == 43 && Math.random() < 0.5)
-            ? ocean
-            : plains;
+            ? Map.ocean
+            : Map.none;
     }            
 
     return returned;
+}
+
+const tinyBag = new RandomBag<Map.CellKind>(Map.tinyLocationCells);
+const smallBag = new RandomBag<Map.CellKind>(Map.smallLocationCells);
+const mediumBag = new RandomBag<Map.CellKind>(Map.mediumLocationCells);
+const largeBag = new RandomBag<Map.CellKind>(Map.largeLocationCells);
+
+const mountainsBag = new RandomBag<Map.CellKind>(
+    [Map.mountain, Map.forest, Map.hills, Map.moor, Map.plains], 
+    [          10,          3,         3,        1,          1])
+
+const hillsBag = new RandomBag<Map.CellKind>(
+    [Map.hills, Map.forest, Map.mountain, Map.plains, Map.moor], 
+    [       10,          3,            3,          3,        1])
+
+const forestBag = new RandomBag<Map.CellKind>(
+    [Map.forest, Map.hills, Map.mountain, Map.plains, Map.marsh], 
+    [        10,         1,            1,          1,         1])
+
+const cityBag = new RandomBag<Map.CellKind>(
+    [Map.farm, Map.village],
+    [       2,           1])
+
+const villageBag = new RandomBag<Map.CellKind>(
+    [Map.farm, Map.forest, Map.plains],
+    [       1,          1,          1]);
+
+const marshBag = new RandomBag<Map.CellKind>(
+    [Map.marsh, Map.plains], 
+    [        4,          1])
+
+const oceanBag = new RandomBag<Map.CellKind>([Map.ocean])
+
+const plainsBag = new RandomBag<Map.CellKind>(
+    [Map.plains, Map.moor, Map.marsh, Map.mountain, Map.forest],
+    [        10,        5,         1,            1,          1]);
+
+// Generate terrain tiles, using the locations to provide believable
+// surroundings to each of them.
+function generateTiles(map: Map.WorldMap) {
+    const {grid, cells} = map;
+    const locations = map.world.locations();
+
+    // Start by mapping cells to locations.
+    const locByCell : (Location|undefined)[] = [];
+    while (locByCell.length < grid.count) locByCell.push(undefined);
+    for (let loc of map.world.locations()) locByCell[loc.cell] = loc;
+
+    // First traversal: convert locations and their surroundings
+    for (let cell = 0; cell < grid.count; ++cell)
+    {
+        const loc = locByCell[cell];
+        if (typeof loc == "undefined") continue;
+        
+        const kind = loc.population < 900 ? tinyBag.pick() : 
+                        loc.population < 1200 ? smallBag.pick() : 
+                        loc.population < 8000 ? mediumBag.pick() : 
+                        largeBag.pick();
+                        
+        cells[cell] = kind;
+
+        // Surround the city with the appropriate terrain
+        const bag = kind === Map.mountainMine || 
+                    kind === Map.castleD ||
+                    kind === Map.fortA ||
+                    kind === Map.fortB 
+                    ? mountainsBag : 
+                    kind === Map.hillsMine ||
+                    kind === Map.villageUnder
+                    ? hillsBag : 
+                    kind === Map.castleA ||
+                    kind === Map.castleB || 
+                    kind === Map.castleC ||
+                    kind === Map.castleE 
+                    ? cityBag : 
+                    kind === Map.village ||
+                    kind === Map.villageSmall
+                    ? villageBag :
+                    kind === Map.graveyard 
+                    ? marshBag : 
+                    forestBag;
+        for (let adj of grid.adjacent(cell)) 
+            if (cells[adj] != Map.ocean) cells[adj] = bag.pick();
+    }
+
+    // Second traversal: fill 'none' locations based on surroundings
+    for (let cell = 0; cell < grid.count; ++cell) {
+        if (cells[cell] !== Map.none) continue;
+        // Pick a random adjacent, non-"none" tile kind
+        const adjacent = grid.adjacent(cell)
+            .map(adj => cells[adj])
+            .filter(adj => adj !== Map.none)
+        const adj = new RandomBag<Map.CellKind>(adjacent).pick();
+        const bag = adj === Map.mountain ? mountainsBag : 
+                    adj === Map.ocean ? oceanBag :
+                    adj === Map.forest ? forestBag : 
+                    adj === Map.marsh ? marshBag : 
+                    adj === Map.hills ? hillsBag :
+                    adj === Map.farm || adj === Map.villageUnder ? villageBag :
+                    plainsBag; 
+        cells[cell] = bag.pick();
+    }
 }
 
 // Given a number of persons-of-interest, give a location population
@@ -124,7 +228,6 @@ export function generate() : World {
     for (let coords of randomCoords(map, 80))
     {
         const location = world.newLocation(randomLocation(), coords);
-        map.cells[coords] = castle;
 
         // Persons of interest
         const interest = Math.max(2, Math.floor(interestBaseline + 5 * Math.random()))
@@ -134,6 +237,8 @@ export function generate() : World {
         location.population = popByInterest(interest);
         interestBaseline *= 0.8;
     }
+
+    generateTiles(map);
 
     return world;
 }
