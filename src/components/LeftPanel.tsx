@@ -3,6 +3,7 @@ import { LocationList } from './LocationList'
 import { Cell } from 'model/grid';
 import { WorldView } from 'view/world';
 import { useState, useMemo, useRef, useEffect, StateUpdater } from 'preact/hooks';
+import { AgentList } from './AgentList';
 
 export type LeftPanelShown = 
     "locations" | 
@@ -53,7 +54,9 @@ export function useLeftPanel(): LeftPanel {
                                     height={height} 
                                     select={props.select} />
                     : shown == "agents" 
-                    ? undefined
+                    ? <AgentList agents={props.world.agents}
+                                 world={props.world}
+                                 height={height} />
                     : shown == "cult"
                     ? undefined
                     : shown == "rituals"

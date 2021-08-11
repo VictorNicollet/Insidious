@@ -25,6 +25,7 @@ export function useMapScroller(grid: Grid): MapScroller {
         const Component = ((props: MapScrollerProps): JSX.Element => {
 
             const {screenW, screenH} = props;
+            const locByCell = props.world.map.locations;
 
             const [[x,y,selected], setState] = 
                 useState<MapScrollerState>([0, 0, undefined]);
@@ -46,9 +47,10 @@ export function useMapScroller(grid: Grid): MapScroller {
                     const cell = pick(x, y, grid);
                     if (typeof cell === "undefined") return state;
                     const [cx,cy] = cellPos(cell, grid);
-                    return [cx,cy,cell];
+                    const sel = locByCell[cell] === undefined ? undefined : cell;
+                    return [cx,cy,sel];
                 });                
-            }, [screenW, screenH, setState, grid])
+            }, [screenW, screenH, setState, grid, locByCell])
             
             return <div className="gui-map" onClick={onClick}>
                 <div style={{

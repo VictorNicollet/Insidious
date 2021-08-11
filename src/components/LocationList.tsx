@@ -31,7 +31,7 @@ export function LocationList(props: {
     const start = page * pagesize;
     const end   = Math.min(start + pagesize, locations.length);
 
-    const shown = props.locations.slice(start, end);
+    const shown = locations.slice(start, end);
 
     return <B.Box title="Locations" decorate={true}>
         <ul className="gui-locations" style={{height: 50*pagesize}}>

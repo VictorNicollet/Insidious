@@ -76,6 +76,41 @@
     color: #DD3;
 }
 
+/* .gui-agents */
+
+ul.gui-agents {
+    padding: 0;
+    margin: 0;
+}
+
+ul.gui-agents li {
+    list-style-type: none;
+    position: relative;
+    height: 50px;
+    padding: 4px 4px 4px 52px;
+    cursor: pointer;
+}
+
+ul.gui-agents li:hover {
+    background: linear-gradient(90deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 35%, rgba(255,255,255,0) 100%);
+}
+
+ul.gui-agents .job {
+    margin-left: 8px;
+    font-size: 14px;
+    color: #A99;
+}
+
+ul.gui-agents .name {
+    height: 18px;
+    margin-top: 4px;
+}
+
+ul.gui-agents .info {
+    font-size: 14px;
+    color: #877;
+}
+
 /* .gui-locations */
 
 ul.gui-locations {
