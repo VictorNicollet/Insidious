@@ -63,7 +63,7 @@ export function useMapScroller(grid: Grid): MapScroller {
                     if (sel === undefined) return [cx,cy,undefined];
                     onLocation(locations[sel]);
                     return [cx,cy,cell];
-                });      
+                });
             }, [screenW, screenH, setState, grid, locByCell, map.vision, onLocation, locations])
             
             return <div className="gui-map" onClick={onClick}>

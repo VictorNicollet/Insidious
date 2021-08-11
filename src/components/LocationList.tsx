@@ -2,7 +2,6 @@ import { h, JSX } from "preact"
 import { useState } from "preact/hooks"
 import * as B from "./Box"
 import * as P from './Pagination'
-import { Cell } from 'model/grid'
 import * as Numbers from './numbers'
 import { LocationView } from 'view/locations'
 import * as M from './Map'

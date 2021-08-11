@@ -3,6 +3,7 @@ import { WorldView } from 'view/world';
 import { useState, useMemo, useRef, useEffect, StateUpdater } from 'preact/hooks';
 import { LocationView } from 'view/locations';
 import { AgentView } from 'view/agents';
+import { LocationDetails } from './LocationDetails';
 
 export type RightPanelShown = { 
     what: "location"
@@ -42,8 +43,10 @@ export function useRightPanel(): RightPanel {
 
             const contents = useMemo(() => {
                 if (shown.what === "location") 
-                    return <div>Location {shown.location.name}</div>;
-                return <div>Agent {shown.agent.name}</div>;
+                    return <LocationDetails world={props.world} 
+                                            location={shown.location} 
+                                            height={height} />;
+                return <div>Agent {shown.agent.name.short}</div>;
             }, [shown]);
 
             return <div style={{
@@ -61,7 +64,6 @@ export function useRightPanel(): RightPanel {
         }
 
         Component.showLocation = function(location: LocationView|undefined) {
-            console.log("showLocation(%o)", location)
             ctrl.current && ctrl.current(old => 
                 // If want to show no location, hide the current location
                 (location === undefined && old && old.what === "location") ? undefined :
