@@ -117,7 +117,7 @@ const largeBag = new RandomBag<Map.CellKind>(Map.largeLocationCells);
 
 const mountainsBag = new RandomBag<Map.CellKind>(
     [Map.mountain, Map.forest, Map.hills, Map.moor, Map.plains], 
-    [          10,          3,         3,        1,          1])
+    [          15,          3,         1,        1,          1])
 
 const hillsBag = new RandomBag<Map.CellKind>(
     [Map.hills, Map.forest, Map.mountain, Map.plains, Map.moor], 
@@ -157,16 +157,24 @@ function generateTiles(map: Map.WorldMap) {
     for (let loc of map.world.locations()) locByCell[loc.cell] = loc;
 
     // First traversal: convert locations and their surroundings
+    let usedByKindId : number[] = [];
     for (let cell = 0; cell < grid.count; ++cell)
     {
         const loc = locByCell[cell];
         if (typeof loc == "undefined") continue;
         
-        const kind = loc.population < 900 ? tinyBag.pick() : 
-                        loc.population < 1200 ? smallBag.pick() : 
-                        loc.population < 8000 ? mediumBag.pick() : 
-                        largeBag.pick();
+        const locBag = loc.population < 900 ? tinyBag : 
+                        loc.population < 1200 ? smallBag : 
+                        loc.population < 8000 ? mediumBag : 
+                        largeBag;
                         
+        let kind = locBag.pick()
+ 
+        // Re-roll if we have already reached the maximum count 
+        // for a given kind.
+        while ((usedByKindId[kind.id] || 0) >= kind.maxCount) kind = locBag.pick();
+        usedByKindId[kind.id] = (usedByKindId[kind.id] || 0) + 1;
+ 
         cells[cell] = kind;
 
         // Surround the city with the appropriate terrain
@@ -188,7 +196,8 @@ function generateTiles(map: Map.WorldMap) {
                     ? villageBag :
                     kind === Map.graveyard 
                     ? marshBag : 
-                    forestBag;
+                      forestBag;
+
         for (let adj of grid.adjacent(cell)) 
             if (cells[adj] != Map.ocean) cells[adj] = bag.pick();
     }
