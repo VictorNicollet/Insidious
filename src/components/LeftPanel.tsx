@@ -4,6 +4,7 @@ import { Cell } from 'model/grid';
 import { WorldView } from 'view/world';
 import { useState, useMemo, useRef, useEffect, StateUpdater } from 'preact/hooks';
 import { AgentList } from './AgentList';
+import { LocationView } from 'view/locations';
 
 export type LeftPanelShown = 
     "locations" | 
@@ -17,7 +18,7 @@ export type LeftPanelProps = {
     screenH: number
     screenW: number
     world: WorldView
-    select: (cell: Cell) => void
+    onLocation: (location: LocationView) => void
 }
 
 const MARGINTOP = 10;
@@ -52,7 +53,7 @@ export function useLeftPanel(): LeftPanel {
                     ? <LocationList locations={props.world.locations}
                                     world={props.world}
                                     height={height} 
-                                    select={props.select} />
+                                    select={props.onLocation} />
                     : shown == "agents" 
                     ? <AgentList agents={props.world.agents}
                                  world={props.world}

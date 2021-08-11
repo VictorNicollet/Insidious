@@ -18,8 +18,10 @@ export function LocationList(props: {
     locations: readonly LocationView[]
     // The pixel height available for the component to display in
     height: number
-    // Invoke to flag a cell on the map as "selected"
-    select: (cell: Cell) => void
+    // Invoke to flag a location as "selected"
+    //  - on the map
+    //  - in the right panel
+    select: (location: LocationView) => void
 }): JSX.Element {
     
     const {locations, height} = props;
@@ -39,7 +41,7 @@ export function LocationList(props: {
             {shown.map(location => {
                 const cell = props.world.map.cells[location.cell];
                 return <li key={location.name.short} 
-                    onClick={() => props.select(location.cell)}>
+                    onClick={() => props.select(location)}>
                     <div className="location-mini">
                         <M.Cell world={props.world}
                                 cell={location.cell}
