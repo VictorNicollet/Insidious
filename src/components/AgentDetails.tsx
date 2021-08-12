@@ -23,9 +23,13 @@ export function AgentDetails(props: {
 
     return <B.Box title={agent.name.full} close={props.close}>
         <div style={{height:B.innerHeight(height)}}>
-            <table class="gui-info-table">
-                <tr><th>Location</th><td>{where}</td></tr>
-            </table>
+            <div style={{paddingLeft:55}}>
+                <table class="gui-info-table">
+                    <tr><th>Location</th><td>{where}</td></tr>
+                    <tr><th>Occupation</th><td>{agent.occupation}</td></tr>
+                    <tr><th>Level</th><td>{agent.levels[agent.occupation]}</td></tr>
+                </table>
+            </div>
         </div>
     </B.Box>
 }

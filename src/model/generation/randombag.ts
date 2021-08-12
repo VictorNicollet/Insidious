@@ -20,7 +20,7 @@ export class RandomBag<T> {
     // are used, and the weight of each value decreases every time it
     // is picked.
     constructor(
-        private readonly values: T[],
+        private readonly values: readonly T[],
         explicitWeights?: number[]) 
     {
         const count = values.length;

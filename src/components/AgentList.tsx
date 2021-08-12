@@ -2,10 +2,6 @@ import { h, JSX } from "preact"
 import { useState } from "preact/hooks"
 import * as B from "./Box"
 import * as P from './Pagination'
-import { Cell } from 'model/grid'
-import * as Numbers from './numbers'
-import { LocationView } from 'view/locations'
-import * as M from './Map'
 import { WorldView } from 'view/world'
 import { AgentView } from 'view/agents'
 
@@ -48,7 +44,7 @@ export function AgentList(props: {
                     onClick={() => props.select(agent)}>
                     <div className="name">
                         {agent.name.full}
-                        <span className="job">Merchant</span>
+                        <span className="job">{agent.occupation}</span>
                     </div>
                     <div className="info">
                         Undercover &middot; {where}

@@ -3,6 +3,7 @@ import { Agent } from "./agents"
 import { PersonName, LocationName } from './names';
 import { WorldMap } from './map';
 import { Cell, Grid } from './grid';
+import { ByOccupation, Occupation } from './occupation';
 
 export class World {
     private readonly _locations : Location[]
@@ -29,9 +30,12 @@ export class World {
 
     public newAgent(
         name: PersonName,
-        location: Location) : Agent
+        location: Location,
+        occupation: Occupation, 
+        levels: ByOccupation<number>) : Agent
     {
-        const person = new Agent(this, name, location, location.cell);
+        const person = new Agent(
+            this, name, location, location.cell, occupation, levels);
         this._agents.push(person);
         this.visitLocation(location);
         this.map.addViewer(location.cell);
