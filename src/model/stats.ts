@@ -21,7 +21,7 @@ function stat(reasons: readonly StatReason[]): Stat {
 
 // Numerical statistics of an agent, computed from the 
 // agent's situation. This is DENSE.
-type StatsOf<T> = {
+export type StatsOf<T> = {
     // Gold income produced every week by the 'idle' 
     // action. Fractional values are interpreted as a 
     // probability of producing one unit. 
@@ -119,12 +119,6 @@ export const maxStats : StatsOf<number> = {
     weeklyIdleIncome:  50,
     agentRecruitPower: 10,
     outdoors:          20,
-}
-
-export const statName : StatsOf<string> = {
-    agentRecruitPower: "Recruitment",
-    weeklyIdleIncome:  "Weekly Income",
-    outdoors:          "Outdoors",
 }
 
 // Compute the current stats for an agent
