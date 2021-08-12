@@ -18,6 +18,8 @@ export function AgentList(props: {
     agents: readonly AgentView[],
     // The pixel height available for the component to display in
     height: number
+    // Invoke to select an agent in the right panel
+    select: (agent: AgentView) => void
 }): JSX.Element {
 
     const {agents, height, world} = props;
@@ -40,7 +42,8 @@ export function AgentList(props: {
                     : <span className="named-entity">
                         {world.locations[world.map.locations[agent.cell]].name.short}
                       </span>;
-                return <li key={agent.id}>
+                return <li key={agent.id} 
+                    onClick={() => props.select(agent)}>
                     <div className="name">
                         {agent.name.full}
                         <span className="job">Merchant</span>

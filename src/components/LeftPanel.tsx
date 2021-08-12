@@ -5,6 +5,7 @@ import { WorldView } from 'view/world';
 import { useState, useMemo, useRef, useEffect, StateUpdater } from 'preact/hooks';
 import { AgentList } from './AgentList';
 import { LocationView } from 'view/locations';
+import { AgentView } from 'view/agents';
 
 export type LeftPanelShown = 
     "locations" | 
@@ -19,6 +20,7 @@ export type LeftPanelProps = {
     screenW: number
     world: WorldView
     onLocation: (location: LocationView) => void
+    onAgent: (agent: AgentView) => void
 }
 
 const MARGINTOP = 10;
@@ -57,7 +59,8 @@ export function useLeftPanel(): LeftPanel {
                     : shown == "agents" 
                     ? <AgentList agents={props.world.agents}
                                  world={props.world}
-                                 height={height} />
+                                 height={height} 
+                                 select={props.onAgent} />
                     : shown == "cult"
                     ? undefined
                     : shown == "rituals"

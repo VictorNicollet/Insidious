@@ -4,6 +4,7 @@ import { useState, useMemo, useRef, useEffect, StateUpdater } from 'preact/hooks
 import { LocationView } from 'view/locations';
 import { AgentView } from 'view/agents';
 import { LocationDetails } from './LocationDetails';
+import { AgentDetails } from './AgentDetails';
 
 export type RightPanelShown = { 
     what: "location"
@@ -46,7 +47,9 @@ export function useRightPanel(): RightPanel {
                     return <LocationDetails world={props.world} 
                                             location={shown.location} 
                                             height={height} />;
-                return <div>Agent {shown.agent.name.short}</div>;
+                return <AgentDetails world={props.world}
+                                     agent={shown.agent}
+                                     height={height} />;
             }, [shown, height]);
 
             return <div style={{

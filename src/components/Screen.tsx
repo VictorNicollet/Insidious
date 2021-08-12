@@ -8,6 +8,7 @@ import { useState, useEffect, useCallback } from 'preact/hooks';
 import { useRightPanel } from './RightPanel';
 import { Cell } from 'model/grid';
 import { LocationView } from 'view/locations';
+import { AgentView } from 'view/agents';
 
 
 export function Screen(props: { world: WorldView }): JSX.Element {
@@ -33,7 +34,12 @@ export function Screen(props: { world: WorldView }): JSX.Element {
 
     const selectLocation = useCallback((location: LocationView) => {
         MapScroller.select(location.cell);
-        RightPanel.show({what: "location", location: location});
+        RightPanel.show({what: "location", location});
+    }, [MapScroller, RightPanel])
+
+    const selectAgent = useCallback((agent: AgentView) => {
+        MapScroller.select(agent.cell);
+        RightPanel.show({what: "agent", agent})
     }, [MapScroller, RightPanel])
 
     return <div>
@@ -46,7 +52,8 @@ export function Screen(props: { world: WorldView }): JSX.Element {
             screenH={screenH} 
             screenW={screenW} 
             world={props.world}
-            onLocation={selectLocation}/>
+            onLocation={selectLocation}
+            onAgent={selectAgent}/>
         <RightPanel
             screenH={screenH}
             screenW={screenW}

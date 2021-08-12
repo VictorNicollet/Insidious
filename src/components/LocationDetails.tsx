@@ -1,9 +1,7 @@
 import { h, JSX } from "preact"
-import { useState } from "preact/hooks"
 import * as B from "./Box"
 import { LocationView } from 'view/locations'
 import { WorldView } from 'view/world'
-import { AgentCount } from './AgentCount'
 import { population } from './numbers'
 
 export function LocationDetails(props: {
