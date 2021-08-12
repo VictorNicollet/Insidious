@@ -22,12 +22,16 @@ export function AgentDetails(props: {
         </span>;
 
     return <B.Box title={agent.name.full} close={props.close}>
-        <div style={{height:B.innerHeight(height)}}>
-            <div style={{paddingLeft:55}}>
+        <div className="gui-agent-details"
+             style={{height:B.innerHeight(height)}}>
+            <div className="portrait"/>
+            <div className="top">
                 <table class="gui-info-table">
                     <tr><th>Location</th><td>{where}</td></tr>
-                    <tr><th>Occupation</th><td>{agent.occupation}</td></tr>
-                    <tr><th>Level</th><td>{agent.levels[agent.occupation]}</td></tr>
+                    <tr><th>Occupation</th><td>
+                        {agent.occupation} Lv.{agent.levels[agent.occupation]}
+                    </td></tr>
+                    <tr><th>Orders</th><td>Stay undercover</td></tr>
                 </table>
             </div>
         </div>

@@ -271,6 +271,21 @@ button.go.right:disabled {
     background-image: url("../../BigAssets/Citadel RPG GUI/Sliced/Box - Character Sheet/right_p.png") !important;
 }
 
+/* .gui-agent-details */
+
+.gui-agent-details .top {
+    padding: 5px 0 0 88px;
+    height: 88px;
+    margin-bottom: 8px;
+}
+
+.gui-agent-details .portrait {
+    width: 79px;
+    height: 77px;
+    float: left;
+    background: url("../../BigAssets/Citadel RPG GUI/Sliced/Party Frames/party_portrait_frame.png")
+}
+
 /* .map */
 
 .map {
