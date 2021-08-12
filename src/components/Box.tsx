@@ -3,10 +3,14 @@ import { h, ComponentChildren, JSX } from "preact"
 export function Box(props: {
     title: string,
     decorate?: boolean,
-    children: ComponentChildren
+    children: ComponentChildren,
+    close?: () => void
 }) : JSX.Element {
     return <div className={props.decorate ? "gui-box gui-bottom-ornament" : "gui-box"}>
-        <div className="gui-box-title">{props.title}</div>
+        <div className="gui-box-title">
+            {props.title}
+            {props.close && <button className="gui-box-close" onClick={props.close}/>}
+        </div>
         <div className="gui-box-body">{props.children}</div>
     </div>
 }

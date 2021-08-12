@@ -9,6 +9,8 @@ export function AgentDetails(props: {
     agent: AgentView
     // The pixel height available for the component to display in
     height: number
+    // Close this panel
+    close: () => void
 }): JSX.Element {
     
     const {world, agent, height} = props;
@@ -19,7 +21,7 @@ export function AgentDetails(props: {
             {world.locations[world.map.locations[agent.cell]].name.short}
         </span>;
 
-    return <B.Box title={agent.name.full}>
+    return <B.Box title={agent.name.full} close={props.close}>
         <div style={{height:B.innerHeight(height)}}>
             <table class="gui-info-table">
                 <tr><th>Location</th><td>{where}</td></tr>

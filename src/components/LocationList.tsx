@@ -21,6 +21,8 @@ export function LocationList(props: {
     //  - on the map
     //  - in the right panel
     select: (location: LocationView) => void
+    // Close this list
+    close: () => void
 }): JSX.Element {
     
     const {locations, height} = props;
@@ -35,7 +37,7 @@ export function LocationList(props: {
 
     const shown = locations.slice(start, end);
 
-    return <B.Box title="Locations" decorate={true}>
+    return <B.Box title="Locations" decorate={true} close={props.close}>
         <ul className="gui-locations" style={{height: 50*pagesize}}>
             {shown.map(location => {
                 return <li key={location.name.short} 

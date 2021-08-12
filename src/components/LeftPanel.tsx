@@ -2,7 +2,7 @@ import { h, JSX } from "preact"
 import { LocationList } from './LocationList'
 import { Cell } from 'model/grid';
 import { WorldView } from 'view/world';
-import { useState, useMemo, useRef, useEffect, StateUpdater } from 'preact/hooks';
+import { useState, useMemo, useRef, useEffect, StateUpdater, useCallback } from 'preact/hooks';
 import { AgentList } from './AgentList';
 import { LocationView } from 'view/locations';
 import { AgentView } from 'view/agents';
@@ -39,10 +39,17 @@ export function useLeftPanel(): LeftPanel {
     return useMemo(() => 
     {
         const Component = ((props: LeftPanelProps): JSX.Element => {
+            
             const [shown, setShown] = useState<LeftPanelShown>();
+            
             useEffect(() => {ctrl.current = setShown});
-            const height = props.screenH - MARGINTOP - MARGINBOT;
+            
+            const close = useCallback(() => setShown(undefined), [setShown]);
+
             if (!shown) return <div></div>;
+
+            const height = props.screenH - MARGINTOP - MARGINBOT;
+                        
             return <div style={{
                 position: "fixed",
                 left: 10,
@@ -55,12 +62,14 @@ export function useLeftPanel(): LeftPanel {
                     ? <LocationList locations={props.world.locations}
                                     world={props.world}
                                     height={height} 
-                                    select={props.onLocation} />
+                                    select={props.onLocation}
+                                    close={close} />
                     : shown == "agents" 
                     ? <AgentList agents={props.world.agents}
                                  world={props.world}
                                  height={height} 
-                                 select={props.onAgent} />
+                                 select={props.onAgent}
+                                 close={close} />
                     : shown == "cult"
                     ? undefined
                     : shown == "rituals"

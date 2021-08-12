@@ -1,6 +1,6 @@
 import { h, JSX } from "preact"
 import { WorldView } from 'view/world';
-import { useState, useMemo, useRef, useEffect, StateUpdater } from 'preact/hooks';
+import { useState, useMemo, useRef, useEffect, StateUpdater, useCallback } from 'preact/hooks';
 import { LocationView } from 'view/locations';
 import { AgentView } from 'view/agents';
 import { LocationDetails } from './LocationDetails';
@@ -37,20 +37,28 @@ export function useRightPanel(): RightPanel {
     return useMemo(() => 
     {
         const Component = ((props: RightPanelProps): JSX.Element => {
+            
             const [shown, setShown] = useState<RightPanelShown>();
+            
             useEffect(() => {ctrl.current = setShown});
-            const height = props.screenH - MARGINTOP - MARGINBOT;
+
+            const close = useCallback(() => setShown(undefined), [setShown]);
+
             if (!shown) return <div></div>;
 
-            const contents = useMemo(() => {
+            const height = props.screenH - MARGINTOP - MARGINBOT;
+
+            function contents() {
                 if (shown.what === "location") 
                     return <LocationDetails world={props.world} 
                                             location={shown.location} 
-                                            height={height} />;
+                                            height={height}
+                                            close={close} />;
                 return <AgentDetails world={props.world}
                                      agent={shown.agent}
-                                     height={height} />;
-            }, [shown, height]);
+                                     height={height}
+                                     close={close} />;
+            }
 
             return <div style={{
                 position: "fixed",
@@ -59,7 +67,7 @@ export function useRightPanel(): RightPanel {
                 bottom: MARGINBOT,
                 width: 480,
                 zIndex: 100
-            }}>{contents}</div>
+            }}>{contents()}</div>
         }) as RightPanel;
 
         Component.show = function(shown?: RightPanelShown) {

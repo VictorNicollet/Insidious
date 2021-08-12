@@ -20,6 +20,8 @@ export function AgentList(props: {
     height: number
     // Invoke to select an agent in the right panel
     select: (agent: AgentView) => void
+    // Close this panel
+    close: () => void
 }): JSX.Element {
 
     const {agents, height, world} = props;
@@ -34,7 +36,7 @@ export function AgentList(props: {
 
     const shown = agents.slice(start, end);
 
-    return <B.Box title="Agents" decorate={true}>
+    return <B.Box title="Agents" decorate={true} close={props.close}>
         <ul className="gui-agents" style={{height: 50*pagesize}}>
             {shown.map(agent => {
                 const where = world.map.locations[agent.cell] === undefined

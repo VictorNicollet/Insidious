@@ -88,6 +88,31 @@
     color: #DD3;
 }
 
+.gui-box-close {
+    width: 45px;
+    height: 55px;
+    position: absolute;
+    border: none;
+    top: 18px;
+    right: -5px;
+    cursor: pointer;
+    background: url("../../BigAssets/Citadel RPG GUI/Sliced/Standalone Close Button/close_ornament_texture.png")
+}
+
+.gui-box-close:after {
+    width: 25px;
+    height: 25px;
+    display: block;
+    content: "";
+    margin-top: -12px;
+    margin-left: 7px;
+    background: url("../../BigAssets/Citadel RPG GUI/Sliced/Standalone Close Button/close_n.png");
+}
+
+.gui-box-close:hover:after {
+    background: url("../../BigAssets/Citadel RPG GUI/Sliced/Standalone Close Button/close_h.png");
+}
+
 /* .gui-agents */
 
 ul.gui-agents {

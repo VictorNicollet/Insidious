@@ -10,11 +10,13 @@ export function LocationDetails(props: {
     location: LocationView
     // The pixel height available for the component to display in
     height: number
+    // Close this panel
+    close: () => void
 }): JSX.Element {
     
     const {location, height} = props;
 
-    return <B.Box title={location.name.short}>
+    return <B.Box title={location.name.short} close={props.close}>
         <div style={{height:B.innerHeight(height)}}>
             <table class="gui-info-table">
                 <tr><th>Location Type</th><td>{location.cellKind.name}</td></tr>
