@@ -12,7 +12,7 @@ export function Pagination(props: {
                 disabled={page == 0} 
                 onClick={() => setPage(page - 1)}/>
         <button class="go right" 
-                disabled={page + 1 == pages} 
+                disabled={page + 1 >= pages} 
                 onClick={() => setPage(page + 1)}/>
     </div>
 }

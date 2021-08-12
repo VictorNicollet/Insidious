@@ -88,6 +88,11 @@
     color: #DD3;
 }
 
+.gui-box-body hr {
+    border: none;
+    border-bottom: 1px solid #433;
+}
+
 .gui-box-close {
     width: 45px;
     height: 55px;
