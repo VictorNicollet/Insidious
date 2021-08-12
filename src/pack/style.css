@@ -268,19 +268,19 @@ button.go.right:disabled {
 }
 
 .hex.plains0::before {
-    background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Terrain Hexes/Tiles/hexPlains00.png")
+    background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Terrain Hexes/Tiles/hexWoodlands00.png")
 }
 
 .hex.plains1::before {
-    background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Terrain Hexes/Tiles/hexPlains01.png")
+    background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Terrain Hexes/Tiles/hexWoodlands01.png")
 }
 
 .hex.plains2::before {
-    background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Terrain Hexes/Tiles/hexPlains02.png")
+    background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Terrain Hexes/Tiles/hexWoodlands02.png")
 }
 
 .hex.plains3::before {
-    background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Terrain Hexes/Tiles/hexPlains03.png")
+    background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Terrain Hexes/Tiles/hexWoodlands03.png")
 }
 
 .hex.farm0::before {
