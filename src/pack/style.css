@@ -350,6 +350,47 @@ button.go.right:disabled {
     height: 15px;
 }
 
+/* .tooltip */
+
+.tooltip { 
+    position: absolute;
+    left: 0;
+}
+
+.tooltip > div {
+    position: absolute;
+    right: 41px;
+    background: rgba(0,0,0,0.7);
+    padding: 12px;
+    color: #DCC;
+    text-shadow: black 0 0 2px;
+    top: -6px;
+    width: 400px;
+    font-size: 14px;
+    border-radius: 4px;
+}
+
+.tooltip > div::after {
+    content: '';
+    display: block;
+    width: 0;
+    height: 0;
+    position: absolute;
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+    border-left: 10px solid rgba(0,0,0,0.7);
+    right: -10px;
+    top: 7px;
+}
+
+.tooltip p {
+    margin: 0;
+}
+
+.tooltip p + * {
+    margin-top: 8px;
+}
+
 /* .map */
 
 .map {

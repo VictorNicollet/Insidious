@@ -34,6 +34,8 @@ export type StatsOf<T> = {
     // Related to travel time outdoors, also decreases dangers
     // of moving or being outdoors.
     outdoors: T
+    // General ability to fight
+    combat: T
 }
 
 export type Stats = StatsOf<Stat>
@@ -66,7 +68,7 @@ const agentRecruitPowerByOccupation : ByOccupation<[number,number]> = {
 }
 
 const outdoorsByOccupation : ByOccupation<[number,number]> = {
-    // Initial, and per-level bonus
+    // Initial, and per-level bonus (ignored when negative)
     //                     Lv.0 Lv.1 Lv.2 Lv.3 Lv.4 Lv.5 Lv.6 Lv.7 Lv.8 Lv.9
     Noble:     [0,  0], //    0    0    0    0    0    0    0    0    0    0
     Arcanist:  [0,  0], //    0    0    0    0    0    0    0    0    0    0
@@ -76,6 +78,19 @@ const outdoorsByOccupation : ByOccupation<[number,number]> = {
     Farmer:    [0,  1], //    0    1    2    3    4    5    6    7    8    9
     Mercenary: [0,  2], //    0    2    4    6    8   10   12   14   16   18
     Hunter:    [0,  3]  //    0    3    6    9   12   15   18   21   24   27
+}
+
+const combatByOccupation : ByOccupation<[number,number]> = {
+    // Initial, and per-level bonus (ignored when negative)
+    //                      Lv.0 Lv.1 Lv.2 Lv.3 Lv.4 Lv.5 Lv.6 Lv.7 Lv.8 Lv.9
+    Noble:     [0,   2], //    0    2    4    6    8   10   12   14   16   18
+    Arcanist:  [-12, 5], //    0    0    0    3    8   13   18   23   28   33
+    Merchant:  [1,   0], //    0    1    1    1    1    1    1    1    1    1
+    Criminal:  [3,   1], //    0    4    5    6    7    8    9   10   11   12
+    Artisan:   [0,   0], //    0    0    0    0    0    0    0    0    0    0
+    Farmer:    [-6,  1], //    0    0    0    0    0    0    0    1    2    3
+    Mercenary: [3,   3], //    0    6    9   12   15   18   21   24   27   30
+    Hunter:    [-1,  3], //    0    2    5    8   11   14   17   20   23   26
 }
 
 // The rules to compute all the stats based on an agent.
@@ -101,11 +116,21 @@ const rules: StatsOf<(reasons: StatReason[], agent: Agent) => void> = {
         }
     },
     outdoors: function(reasons: StatReason[], agent: Agent) {
+        reasons.push({ why: "Base", contrib: 1})
         for (let occupation in outdoorsByOccupation) {
             const [base, byLevel] = outdoorsByOccupation[occupation];
             const level = agent.levels[occupation];
-            const value = Math.max(0, base + level * byLevel);
-            if (value > 0 || occupation == agent.occupation) 
+            const value = Math.max(0, base + level * byLevel);    
+            if (value > 0) 
+                reasons.push({ why: occupation + " Lv." + level, contrib: value/5 })
+        }
+    },
+    combat: function(reasons: StatReason[], agent: Agent) {
+        for (let occupation in combatByOccupation) {
+            const [base, byLevel] = combatByOccupation[occupation];
+            const level = agent.levels[occupation];
+            const value = Math.max(0, base + level * byLevel);    
+            if (level > 0 && (value > 0 || occupation == agent.occupation)) 
                 reasons.push({ why: occupation + " Lv." + level, contrib: value })
         }
     }
@@ -118,7 +143,8 @@ export const allStats = Object.keys(rules) as StatKey[]
 export const maxStats : StatsOf<number> = {
     weeklyIdleIncome:  50,
     agentRecruitPower: 10,
-    outdoors:          20,
+    outdoors:          5,
+    combat:            30
 }
 
 // Compute the current stats for an agent
