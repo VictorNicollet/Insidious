@@ -11,5 +11,6 @@ export function Navbar(props: {
         <button onClick={() => left("cult")}>Cult</button>
         <button onClick={() => left("rituals")}>Rituals</button>
         <button onClick={() => left("artifacts")}>Artifacts</button>
+        <button className="turn">End Turn</button>
     </div>
 }

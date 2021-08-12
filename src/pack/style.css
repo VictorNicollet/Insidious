@@ -42,6 +42,22 @@
     color: #FFE;
 }
 
+.gui-navbar button.turn {
+    float: right;
+    /*  extend to the right to cover entire corner, makes it easier to 
+        click the button. */
+    width: 171px;
+    padding: 14px 84px 18px 24px;
+    margin-right: -70px;
+    font-size: 15px;
+    text-shadow: black 0 -1px 0;
+    background: url(/* 0 0 101 32 90 */ "../../BigAssets/Citadel RPG GUI/Sliced/Standalone Content Buttons/small_button_n.png") no-repeat 10px 8px;
+}
+
+.gui-navbar button.turn:hover {
+    background-image: url(/* 0 0 101 32 90 */ "../../BigAssets/Citadel RPG GUI/Sliced/Standalone Content Buttons/small_button_h.png");
+}
+
 /* .gui-agent-count  */
 
 .gui-agent-count {

@@ -35,7 +35,7 @@ const styleWithHoles = style.replace(/url\([^)]*\)/g, function(url) {
 
             if (typeof sscale !== "undefined") {
                 const scale = Number(sscale) / 100;
-                img = img.resize(width * scale, height * scale);
+                img = img.resize(Math.floor(width * scale), Math.floor(height * scale));
             }
 
             const buffer = await img.toBuffer();
