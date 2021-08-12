@@ -48,7 +48,6 @@ export function Screen(props: { world: WorldView }): JSX.Element {
     return <div>
         <Context world={props.world} agent={selectAgent} location={selectLocation}>
             <MapScroller 
-                world={props.world}
                 screenH={screenH}
                 screenW={screenW}
                 onLocation={RightPanel.showLocation} />

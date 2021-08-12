@@ -2,11 +2,10 @@ import { h, JSX } from "preact"
 import { Map, pick, cellPos } from 'components/Map'
 import { Cell, Grid } from 'model/grid';
 import { StateUpdater, useRef, useMemo, useState, useCallback, useEffect } from 'preact/hooks';
-import { WorldView } from 'view/world';
 import { LocationView } from 'view/locations';
+import { useWorld } from './Context';
 
 export type MapScrollerProps = {
-    world: WorldView,
     // Dimensions of the screen
     screenH: number
     screenW: number
@@ -27,7 +26,8 @@ export function useMapScroller(grid: Grid): MapScroller {
     {
         const Component = ((props: MapScrollerProps): JSX.Element => {
 
-            const {screenW, screenH, world, onLocation} = props;
+            const {screenW, screenH, onLocation} = props;
+            const world = useWorld();
             const {map, locations} = world;
             const locByCell = map.locations;
 
