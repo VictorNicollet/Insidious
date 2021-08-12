@@ -307,6 +307,49 @@ button.go.right:disabled {
     background: url("../../BigAssets/Citadel RPG GUI/Sliced/Party Frames/party_portrait_frame.png")
 }
 
+.gui-agent-details .stat {
+    position: relative;
+    padding-left: 120px;
+    margin-bottom: 4px;
+}
+
+.gui-agent-details .stat-name {
+    position: absolute;
+    left: 0;
+    top: 3px;
+    color: #877;
+}
+
+.gui-agent-details .stat .value {
+    position: absolute;
+    top: 6px;
+    right: 12px;
+    font-size: 13px;
+}
+
+.progress {
+    border-image: url("../../BigAssets//Citadel RPG GUI/Sliced/Player Cast Bar/cb_frame_empty.png") 15 10 fill / 15px 10px;
+    border-image-repeat: repeat;
+    height: 27px;
+    padding: 6px;
+    position: relative;
+}
+
+.progress::after {
+    display: block;
+    position: absolute;
+    content: "";
+    inset: 6px;
+    border-image: url("../../BigAssets//Citadel RPG GUI/Sliced/Player Cast Bar/cb_gloss.png") 7 1 fill / 7px 1px;
+    border-image-repeat: repeat;
+}
+
+.progress > div {
+    border-image: url("../../BigAssets/Citadel RPG GUI/Sliced/Player Cast Bar/cb_fill.png") 7 1 fill / 7px 1px;
+    border-image-repeat: repeat;
+    height: 15px;
+}
+
 /* .map */
 
 .map {
@@ -637,5 +680,15 @@ button.go.right:disabled {
 .hex .name .gui-agent-count {
     display: inline-block;
     margin: -4px 2px -4px -30px;
+    vertical-align: middle;
+}
+
+/* icons */
+
+span.gold {
+    background: url("../../BigAssets/Citadel RPG GUI/Sliced/Box - Inventory/coin_gold.png");
+    width: 15px;
+    height: 18px;
+    display: inline-block;
     vertical-align: middle;
 }

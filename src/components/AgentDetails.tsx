@@ -2,6 +2,26 @@ import { h, JSX } from "preact"
 import * as B from "./Box"
 import { AgentView } from 'view/agents'
 import { useWorld, useSelectors } from './Context';
+import { statName, Stats, Stat, allStats, maxStats } from 'model/stats';
+import { decimal } from './numbers';
+
+function Stat(props: {
+    stat: keyof(Stats),
+    value: Stat
+}): JSX.Element {
+    const value = props.value.value;
+    const max = maxStats[props.stat];
+    return <div className="stat">
+        <span className="stat-name">{statName[props.stat]}</span>
+        <div className="progress">
+            <div style={{width: (Math.max(0, value/max) * 100) + "%"}} />
+        </div>
+        <div className="value">
+            {props.stat === "weeklyIdleIncome" && <span className="gold"/>}
+            {decimal(props.value.value)}
+        </div>
+    </div>
+}
 
 export function AgentDetails(props: {
     // The agent to display
@@ -36,6 +56,11 @@ export function AgentDetails(props: {
                     </td></tr>
                     <tr><th>Orders</th><td>Stay undercover</td></tr>
                 </table>
+            </div>
+            <hr/>
+            <div class="stats">
+                {allStats.map(stat => 
+                    <Stat key={stat} stat={stat} value={agent.stats[stat]}/>)}
             </div>
         </div>
     </B.Box>
