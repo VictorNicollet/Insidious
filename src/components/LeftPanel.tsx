@@ -1,11 +1,8 @@
 import { h, JSX } from "preact"
 import { LocationList } from './LocationList'
-import { Cell } from 'model/grid';
-import { WorldView } from 'view/world';
 import { useState, useMemo, useRef, useEffect, StateUpdater, useCallback } from 'preact/hooks';
 import { AgentList } from './AgentList';
-import { LocationView } from 'view/locations';
-import { AgentView } from 'view/agents';
+import { useWorld } from './Context';
 
 export type LeftPanelShown = 
     "locations" | 
@@ -18,9 +15,6 @@ export type LeftPanelShown =
 export type LeftPanelProps = {
     screenH: number
     screenW: number
-    world: WorldView
-    onLocation: (location: LocationView) => void
-    onAgent: (agent: AgentView) => void
 }
 
 const MARGINTOP = 10;
@@ -45,7 +39,8 @@ export function useLeftPanel(): LeftPanel {
             useEffect(() => {ctrl.current = setShown});
             
             const close = useCallback(() => setShown(undefined), [setShown]);
-
+            const world = useWorld();
+            
             if (!shown) return <div></div>;
 
             const height = props.screenH - MARGINTOP - MARGINBOT;
@@ -59,16 +54,12 @@ export function useLeftPanel(): LeftPanel {
                 zIndex: 100
             }}>
                 {shown == "locations" 
-                    ? <LocationList locations={props.world.locations}
-                                    world={props.world}
+                    ? <LocationList locations={world.locations}
                                     height={height} 
-                                    select={props.onLocation}
                                     close={close} />
                     : shown == "agents" 
-                    ? <AgentList agents={props.world.agents}
-                                 world={props.world}
+                    ? <AgentList agents={world.agents}
                                  height={height} 
-                                 select={props.onAgent}
                                  close={close} />
                     : shown == "cult"
                     ? undefined

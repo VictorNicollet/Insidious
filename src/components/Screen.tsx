@@ -9,6 +9,9 @@ import { useRightPanel } from './RightPanel';
 import { Cell } from 'model/grid';
 import { LocationView } from 'view/locations';
 import { AgentView } from 'view/agents';
+import { Context } from './Context';
+
+
 
 
 export function Screen(props: { world: WorldView }): JSX.Element {
@@ -43,22 +46,16 @@ export function Screen(props: { world: WorldView }): JSX.Element {
     }, [MapScroller, RightPanel])
 
     return <div>
-        <MapScroller 
-            world={props.world}
-            screenH={screenH}
-            screenW={screenW}
-            onLocation={RightPanel.showLocation} />
-        <LeftPanel
-            screenH={screenH} 
-            screenW={screenW} 
-            world={props.world}
-            onLocation={selectLocation}
-            onAgent={selectAgent}/>
-        <RightPanel
-            screenH={screenH}
-            screenW={screenW}
-            world={props.world}/>
-        <Navbar 
-            left={LeftPanel.toggle} />
+        <Context world={props.world} agent={selectAgent} location={selectLocation}>
+            <MapScroller 
+                world={props.world}
+                screenH={screenH}
+                screenW={screenW}
+                onLocation={RightPanel.showLocation} />
+            <LeftPanel screenH={screenH} screenW={screenW} />
+            <RightPanel screenH={screenH} screenW={screenW} />
+            <Navbar 
+                left={LeftPanel.toggle} />
+        </Context>
     </div>
 }

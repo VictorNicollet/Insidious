@@ -17,7 +17,6 @@ export type RightPanelShown = {
 export type RightPanelProps = {
     screenH: number
     screenW: number
-    world: WorldView
 }
 
 const MARGINTOP = 10;
@@ -50,12 +49,10 @@ export function useRightPanel(): RightPanel {
 
             function contents() {
                 if (shown.what === "location") 
-                    return <LocationDetails world={props.world} 
-                                            location={shown.location} 
+                    return <LocationDetails location={shown.location} 
                                             height={height}
                                             close={close} />;
-                return <AgentDetails world={props.world}
-                                     agent={shown.agent}
+                return <AgentDetails agent={shown.agent}
                                      height={height}
                                      close={close} />;
             }

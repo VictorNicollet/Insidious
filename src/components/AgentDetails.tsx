@@ -1,10 +1,9 @@
 import { h, JSX } from "preact"
 import * as B from "./Box"
-import { WorldView } from 'view/world'
 import { AgentView } from 'view/agents'
+import { useWorld, useSelectors } from './Context';
 
 export function AgentDetails(props: {
-    world: WorldView,
     // The agent to display
     agent: AgentView
     // The pixel height available for the component to display in
@@ -13,11 +12,15 @@ export function AgentDetails(props: {
     close: () => void
 }): JSX.Element {
     
-    const {world, agent, height} = props;
+    const {agent, height} = props;
+
+    const world = useWorld();
+    const selectors = useSelectors();
 
     const where = world.map.locations[agent.cell] === undefined
         ? <span>Outdoors</span>
-        : <span className="named-entity">
+        : <span className="named-entity" 
+            onClick={() => selectors.location(world.locations[world.map.locations[agent.cell]])}>
             {world.locations[world.map.locations[agent.cell]].name.short}
         </span>;
 

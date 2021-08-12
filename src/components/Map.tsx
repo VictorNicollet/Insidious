@@ -2,6 +2,7 @@ import { h, JSX } from "preact"
 import { Cell, Grid } from 'model/grid';
 import { WorldView } from 'view/world';
 import { AgentCount } from './AgentCount';
+import { useWorld } from './Context';
 
 const ABOVE = 128/2;
 const TILEWIDTH = 256/2;
@@ -25,7 +26,6 @@ function variant(cell: Cell) {
 
 // A cell in the grid.
 export function Cell(props: {
-    world: WorldView
     cell: Cell
     fog?: boolean
     selected?: boolean
@@ -35,11 +35,12 @@ export function Cell(props: {
     naked?: boolean
 }): JSX.Element {
 
-    const {cells, locations} = props.world.map;
+    const world = useWorld();
+    const {cells, locations} = world.map;
 
     const {aspect, hasVariants} = cells[props.cell];
     const location = props.naked || typeof locations[props.cell] == "undefined"
-        ? undefined : props.world.locations[locations[props.cell]];
+        ? undefined : world.locations[locations[props.cell]];
     
     return <div className={"hex " + aspect + 
                            (hasVariants ? variant(props.cell) : "") +
@@ -58,7 +59,7 @@ export function Map(props: {
     selected: Cell|undefined
 }) {
 
-    const {grid,vision} = props.world.map;
+    const {map: {grid, vision}} = useWorld();
     const tiles : JSX.Element[] = []
 
     for (let y = 0; y < grid.side; ++y) {
@@ -67,7 +68,6 @@ export function Map(props: {
             if (!vision[cell]) continue;
             tiles.push(<Cell 
                 key={cell} 
-                world={props.world} 
                 fog={vision[cell] < 2}
                 cell={cell} 
                 selected={props.selected === cell}

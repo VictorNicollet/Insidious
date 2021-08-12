@@ -7,25 +7,22 @@ import { LocationView } from 'view/locations'
 import * as M from './Map'
 import { WorldView } from 'view/world'
 import { AgentCount } from './AgentCount'
+import { useSelectors } from './Context'
 
 // The height, in pixels, of an element in the locations list
 const ITEMSIZE = 50;
 
 export function LocationList(props: {
-    world: WorldView,
-    // The locations to display
+    // The locations to displa
     locations: readonly LocationView[]
     // The pixel height available for the component to display in
     height: number
-    // Invoke to flag a location as "selected"
-    //  - on the map
-    //  - in the right panel
-    select: (location: LocationView) => void
     // Close this list
     close: () => void
 }): JSX.Element {
     
     const {locations, height} = props;
+    const selectors = useSelectors();
 
     const innerHeight = B.innerHeight(height) - P.height;
     const pagesize = Math.floor(innerHeight / ITEMSIZE);
@@ -41,10 +38,9 @@ export function LocationList(props: {
         <ul className="gui-locations" style={{height: 50*pagesize}}>
             {shown.map(location => {
                 return <li key={location.name.short} 
-                    onClick={() => props.select(location)}>
+                    onClick={() => selectors.location(location)}>
                     <div className="location-mini">
-                        <M.Cell world={props.world}
-                                cell={location.cell}
+                        <M.Cell cell={location.cell}
                                 top={-77} left={-39}
                                 naked={true}/>
                     </div>

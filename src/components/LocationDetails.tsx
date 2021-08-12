@@ -1,16 +1,15 @@
 import { h, JSX } from "preact"
 import * as B from "./Box"
 import { LocationView } from 'view/locations'
-import { WorldView, world } from 'view/world'
 import { population } from './numbers'
 import { InnerAgentList } from './AgentList'
 import { useMemo } from 'preact/hooks'
+import { useWorld } from './Context'
 
 // Size of the top-of-box info region
 const INFOHEIGHT = 48 /* table */ + 17 /* h4 */;
 
 export function LocationDetails(props: {
-    world: WorldView,
     // The location to display
     location: LocationView
     // The pixel height available for the component to display in
@@ -19,7 +18,8 @@ export function LocationDetails(props: {
     close: () => void
 }): JSX.Element {
     
-    const {location, height, world} = props;
+    const {location, height} = props;
+    const world = useWorld();
 
     const innerHeight = B.innerHeight(height);
 
@@ -33,9 +33,7 @@ export function LocationDetails(props: {
             <tr><th>Adult Population</th><td>{population(location.population)}</td></tr>
         </table>
         <hr/>
-        <InnerAgentList world={world}
-                        agents={agents} 
-                        select={() => {}} 
+        <InnerAgentList agents={agents} 
                         noLocation={true}
                         height={innerHeight  - INFOHEIGHT}/>
     </B.Box>
