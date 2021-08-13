@@ -1,19 +1,22 @@
-import { h, ComponentChildren, JSX } from "preact"
+import { h, JSX } from "preact"
 import type { LeftPanelShown } from './LeftPanel';
 import { useWorld } from './Context';
 import { Tooltip } from './Tooltip';
 import { useState } from 'preact/hooks';
 import { Stat } from 'model/stats';
-import { decimal, signedDecimal } from './numbers';
+import { decimal, signedDecimal, integer } from './numbers';
 
 function Resource(props: {
-    children: ComponentChildren,
-    tooltip: JSX.Element
+    kind: string
+    current: number
+    daily: Stat
+    Tooltip: (props: {daily: Stat}) => JSX.Element
 }): JSX.Element {
     const [tip, setTip] = useState(false);
     return <div class="resource" onMouseEnter={() => setTip(true)} onMouseLeave={() => setTip(false)}>
-        {tip && props.tooltip}
-        {props.children}
+        {tip && <props.Tooltip daily={props.daily}/>}
+        <span className={props.kind}/> {integer(props.current)} 
+        <span style={{opacity:0.7}}>&nbsp;{signedDecimal(props.daily.value)}</span>
     </div>
 }
 
@@ -58,6 +61,7 @@ export function Navbar(props: {
 }) {
     const left = props.left;
     const world = useWorld();
+    const {gold, touch} = world.resources;
     return <div className="gui-navbar">
         <button onClick={() => left("locations")}>Locations</button>
         <button onClick={() => left("agents")}>Agents</button>
@@ -66,11 +70,7 @@ export function Navbar(props: {
         <button onClick={() => left("artifacts")}>Artifacts</button>
         {/* float:right appear in reverse order */}
         <button className="turn">End Turn</button>
-        <Resource tooltip={<GoldTooltip daily={world.resources.gold.daily}/>}>
-            <span className="gold"></span> {world.resources.gold.current}
-        </Resource>
-        <Resource tooltip={<TouchTooltip daily={world.resources.touch.daily}/>}>
-            <span className="touch"></span> {world.resources.touch.current}
-        </Resource>
+        <Resource kind="gold" current={gold.current} daily={gold.daily} Tooltip={GoldTooltip}/>
+        <Resource kind="touch" current={touch.current} daily={touch.daily} Tooltip={TouchTooltip}/>
     </div>
 }
