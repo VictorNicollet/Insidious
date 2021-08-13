@@ -4,11 +4,11 @@ export type Occupation = keyof(ByOccupation<number>)
 export type ByOccupation<T> = {
     Merchant: T
     Farmer: T
-    Artisan: T
+    Smith: T
     Hunter: T
     Mercenary: T
     Criminal: T
-    Arcanist: T
+    Mage: T
     Noble: T
 }
 
@@ -16,11 +16,11 @@ export function byOccupation<T>(value: T): ByOccupation<T> {
     return { 
         Merchant: value,
         Farmer: value,
-        Artisan: value,
+        Smith: value,
         Hunter: value,
         Mercenary: value,
         Criminal: value,
-        Arcanist: value,
+        Mage: value,
         Noble: value
     }
 }
@@ -28,9 +28,9 @@ export function byOccupation<T>(value: T): ByOccupation<T> {
 export const occupations : readonly Occupation[] = [ 
     "Merchant",
     "Farmer",
-    "Artisan",
+    "Smith",
     "Hunter",
     "Mercenary",
     "Criminal",
-    "Arcanist",
+    "Mage",
     "Noble" ];

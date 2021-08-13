@@ -58,11 +58,11 @@ const weeklyIdleIncomeByOccupation : ByOccupation<[number,number]> = {
     // Initial, and per-level increase
     //                        Lv.0 Lv.1 Lv.2 Lv.3 Lv.4 Lv.5 Lv.6 Lv.7 Lv.8 Lv.9
     Noble:     [-10, 5  ], //  -10   -5    0    5   10   15   20   25   30   35
-    Arcanist:  [-16, 7  ], //  -16   -9   -2    5   12   19   26   33   40   47
+    Mage:      [-16, 7  ], //  -16   -9   -2    5   12   19   26   33   40   47
     Merchant:  [ -5, 5  ], //   -5    0    5   10   15   20   25   30   35   40
     Mercenary: [  0, 1  ], //    0    1    2    3    4    5    6    7    8    9
     Criminal:  [  0, 1  ], //    0    1    2    3    4    5    6    7    8    9
-    Artisan:   [ -1, 1  ], //   -1    0    1    2    3    4    5    6    7    8
+    Smith:     [ -1, 1  ], //   -1    0    1    2    3    4    5    6    7    8
     Farmer:    [  0, 0.4], //    0  0.4  0.8  1.2  1.6    2  2.4  2.8  3.2  3.6  
     Hunter:    [  0, 0.4], //    0  0.4  0.8  1.2  1.6    2  2.4  2.8  3.2  3.6  
 }
@@ -71,11 +71,11 @@ const agentRecruitPowerByOccupation : ByOccupation<[number,number]> = {
     // Per-level bonus if main, per-level bonus if secondary
     // Skill on 1-10 range. 
     Noble:     [0.5, 0.2],
-    Arcanist:  [0.1, 0  ],
+    Mage:      [0.1, 0  ],
     Merchant:  [0.9, 0.6],
     Mercenary: [0.3, 0.1],
     Criminal:  [0.2, 0.2],
-    Artisan:   [0.1, 0  ],
+    Smith:     [0.1, 0  ],
     Farmer:    [0.1, 0  ],
     Hunter:    [0.1, 0  ]
 }
@@ -84,10 +84,10 @@ const outdoorsByOccupation : ByOccupation<[number,number]> = {
     // Initial, and per-level bonus (ignored when negative)
     //                     Lv.0 Lv.1 Lv.2 Lv.3 Lv.4 Lv.5 Lv.6 Lv.7 Lv.8 Lv.9
     Noble:     [0,  0], //    0    0    0    0    0    0    0    0    0    0
-    Arcanist:  [0,  0], //    0    0    0    0    0    0    0    0    0    0
+    Mage:      [0,  0], //    0    0    0    0    0    0    0    0    0    0
     Merchant:  [-2, 2], //    0    0    2    4    6    8   10   12   14   16
     Criminal:  [-2, 1], //    0    0    0    1    2    3    4    5    6    7
-    Artisan:   [0,  0], //    0    0    0    0    0    0    0    0    0    0
+    Smith:     [0,  0], //    0    0    0    0    0    0    0    0    0    0
     Farmer:    [0,  1], //    0    1    2    3    4    5    6    7    8    9
     Mercenary: [0,  2], //    0    2    4    6    8   10   12   14   16   18
     Hunter:    [0,  3]  //    0    3    6    9   12   15   18   21   24   27
@@ -97,10 +97,10 @@ const combatByOccupation : ByOccupation<[number,number]> = {
     // Initial, and per-level bonus (ignored when negative)
     //                      Lv.0 Lv.1 Lv.2 Lv.3 Lv.4 Lv.5 Lv.6 Lv.7 Lv.8 Lv.9
     Noble:     [0,   2], //    0    2    4    6    8   10   12   14   16   18
-    Arcanist:  [-12, 5], //    0    0    0    3    8   13   18   23   28   33
+    Mage:      [-12, 5], //    0    0    0    3    8   13   18   23   28   33
     Merchant:  [1,   0], //    0    1    1    1    1    1    1    1    1    1
     Criminal:  [3,   1], //    0    4    5    6    7    8    9   10   11   12
-    Artisan:   [0,   0], //    0    0    0    0    0    0    0    0    0    0
+    Smith:     [0,   0], //    0    0    0    0    0    0    0    0    0    0
     Farmer:    [-6,  1], //    0    0    0    0    0    0    0    1    2    3
     Mercenary: [3,   3], //    0    6    9   12   15   18   21   24   27   30
     Hunter:    [-1,  3], //    0    2    5    8   11   14   17   20   23   26
@@ -111,11 +111,11 @@ const conduitByOccupation : ByOccupation<number> = {
     Noble: 0.2,
     Merchant: 0.2,
     Criminal: 0.2,
-    Artisan: 0.2,
+    Smith: 0.2,
     Farmer: 0.2,
     Mercenary: 0.2,
     Hunter: 0.2,
-    Arcanist: 0.6
+    Mage: 0.6
 }
 
 // The rules to compute all the stats based on an agent.
