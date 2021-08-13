@@ -1,5 +1,5 @@
 import type { Agent } from "./agents"
-import { ByOccupation, occupations } from './occupation';
+import type { ByOccupation } from './occupation';
 
 export type StatReason = {
     // Human-readable explanation of why this bonus is here.

@@ -1,5 +1,5 @@
 // Each agent has a current (outward) occupation, but can have skills
-// (and levels) in more than once occupation.
+// (and levels) in more than one occupation.
 export type Occupation = keyof(ByOccupation<number>)
 export type ByOccupation<T> = {
     Merchant: T
