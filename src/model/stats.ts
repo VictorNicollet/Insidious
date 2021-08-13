@@ -44,8 +44,8 @@ export type StatKey = keyof(Stats)
 const weeklyIdleIncomeByOccupation : ByOccupation<[number,number]> = {
     // Initial, and per-level increase
     //                        Lv.0 Lv.1 Lv.2 Lv.3 Lv.4 Lv.5 Lv.6 Lv.7 Lv.8 Lv.9
-    Noble:     [-20, 8  ], //  -20  -12   -4    4   12   20   28   36   44   52
-    Arcanist:  [-13, 6  ], //  -13   -7   -1    5   11   17   23   29   35   41
+    Noble:     [-10, 5  ], //  -10   -5    0    5   10   15   20   25   30   35
+    Arcanist:  [-16, 7  ], //  -16   -9   -2    5   12   19   26   33   40   47
     Merchant:  [ -5, 5  ], //   -5    0    5   10   15   20   25   30   35   40
     Mercenary: [  0, 1  ], //    0    1    2    3    4    5    6    7    8    9
     Criminal:  [  0, 1  ], //    0    1    2    3    4    5    6    7    8    9
