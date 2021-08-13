@@ -4,7 +4,7 @@ import { map, MapView } from "./map"
 import { World } from '../model/world'
 import { Cell } from 'model/grid'
 import { ResourcesOf } from 'model/resources'
-import { Stat, toStat, StatReason } from 'model/stats'
+import { Stat } from 'model/stats'
 
 export type WorldView = {
     readonly locations: readonly LocationView[]
@@ -14,43 +14,17 @@ export type WorldView = {
     readonly resources: ResourcesOf<{ current: number, daily: Stat }>
 }
 
-function dailyGold(w: World): Stat {
-    
-    let undercover = 0;
-    for (let a of w.agents())
-        undercover += a.stats.idleIncome.value;
-
-    const reasons: StatReason[] = [
-        { why: "Undercover agents", contrib: undercover },
-    ];
-
-    return toStat(reasons);
-}
-
-function dailyTouch(w: World): Stat {
-    
-    let agents = 0;
-    for (let a of w.agents())
-        agents += a.stats.conduit.value;
-
-    const reasons: StatReason[] = [
-        { why: "Agents", contrib: agents },
-    ];
-
-    return toStat(reasons);
-
-}
-
 export function world(w: World): WorldView {
     const locations = w.seenLocations
+    const daily = w.dailyResources();
     const resources = {
         gold: {
             current: w.resources.gold,
-            daily: dailyGold(w)
+            daily: daily.gold
         },
         touch: {
             current: w.resources.touch,
-            daily: dailyTouch(w)
+            daily: daily.touch
         }
     }
     return {

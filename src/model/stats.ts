@@ -19,6 +19,17 @@ export function toStat(reasons: readonly StatReason[]): Stat {
     return {value, reasons}
 }
 
+// De-duplicate the 'why' in a list of stats.
+export function dedup(reasons: readonly StatReason[]): readonly StatReason[] {
+    const byWhy : { [key: string]: number } = {};
+    for (let reason of reasons) {
+        byWhy[reason.why] = (byWhy[reason.why] || 0) + reason.contrib;
+    }
+    const returned : StatReason[] = [];
+    for (let why in byWhy) returned.push({ why, contrib: byWhy[why] })
+    return returned;
+}
+
 // Numerical statistics of an agent, computed from the 
 // agent's situation. This is DENSE.
 export type StatsOf<T> = {

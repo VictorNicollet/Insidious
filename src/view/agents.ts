@@ -1,7 +1,7 @@
-import { PersonName } from '../model/names';
-import { Agent } from "../model/agents"
-import { Occupation, ByOccupation } from 'model/occupation';
-import { Stats } from 'model/stats';
+import type { PersonName } from '../model/names';
+import type { Agent } from "../model/agents"
+import type { Occupation, ByOccupation } from 'model/occupation';
+import type { Stats } from 'model/stats';
 
 export type AgentView = {
     readonly id: number

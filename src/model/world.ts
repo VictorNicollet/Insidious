@@ -4,7 +4,9 @@ import { PersonName, LocationName } from './names';
 import { WorldMap } from './map';
 import { Cell, Grid } from './grid';
 import { ByOccupation, Occupation } from './occupation';
-import { Resources } from './resources';
+import { Resources, ResourcesOf } from './resources';
+import { Stat, StatReason, toStat, dedup } from './stats';
+import { countDailyResources } from './execute';
 
 export class World {
     private readonly _locations : Location[]
@@ -67,6 +69,17 @@ export class World {
             if (this.map.vision[loc.cell] == 0) continue;
             if (this.seenLocations.indexOf(loc) >= 0) continue;
             this.seenLocations.push(loc);
+        }
+    }
+
+    // Compute the current daily resource production (does not include
+    // one-off consumption). 
+    public dailyResources(): ResourcesOf<Stat> {
+        const total : ResourcesOf<StatReason[]> = { gold: [], touch: [] };
+        for (let agent of this._agents) countDailyResources(agent, total);
+        return {
+            gold: toStat(dedup(total.gold)),
+            touch: toStat(dedup(total.touch))
         }
     }
 }
