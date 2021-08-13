@@ -21,38 +21,41 @@ function toHTML(
 ): JSX.Element[] {
     
     // Replace all inserts. 
-    const withInserts = tip.replace(/#[a-z]+#/g, match => {
+    return tip.replace(/#[a-z]+#/g, match => {
         const call = match.substr(1, match.length - 2);
-        return ctx[call]();
+        return "*" + ctx[call]() + "*";
     })
 
     // Don't leak any unescaped HTML, including from inserts 
-    const escaped = withInserts.replace(/[<>&"]/g, s => 
+    .replace(/[<>&"]/g, s => 
         s == "<" ? "&lt;" : 
         s == ">" ? "&gt;" : 
-        s == "&" ? "&amp;" : "&quot;");
+        s == "&" ? "&amp;" : "&quot;")
 
     // Standard replacements of icons (done after escaping, since
     // output contains HTML)
     //
     // For example :gold: becomes <span class=gold/><b>gold</b>
-    const withIcons = escaped.replace(/:[a-z]+:/g, match => {
+    .replace(/:[a-z]+:/g, match => {
         const icon = match.substr(1, match.length - 2);
         return "<span class=\"" + icon + "\"></span><b>" + icon + "</b>";
     })
 
-    // Cut the content into paragraphs based on empty lines. 
-    const paragraphs = withIcons.split(/\n\s*\n/g).filter(s => s);
+    // Change *foo* to <b>foo</b>
+    .replace(/\*.*?\*/g, match => {
+        return "<b>" + match.substr(1, match.length - 2) + "</b>";
+    })
 
-    return paragraphs.map(html => 
+    // Cut the content into paragraphs based on empty lines. 
+    .split(/\n\s*\n/g).filter(s => s).map(html => 
         /^%\d+\s*$/.test(html) 
             ? inserts[Number(html.substring(1))]
             : <p dangerouslySetInnerHTML={{__html:html}}/>);
 }
 
-export function Tooltip(props: {
+export function Tooltip<T extends TooltipContext>(props: {
     tip: TooltipContent
-    ctx: TooltipContext
+    ctx: T
     inserts: readonly JSX.Element[]
 }): JSX.Element {
     return <div className="tooltip">

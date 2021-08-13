@@ -466,6 +466,11 @@ button.go.right:disabled {
     margin-top: 8px;
 }
 
+.tooltip b {
+    font-weight: normal;
+    color: #9CC;
+}
+
 .gui-navbar .tooltip > div {
     bottom: 22px;
     top: auto;

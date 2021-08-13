@@ -6,17 +6,13 @@ import { signedDecimal } from './numbers';
 import { useState } from 'preact/hooks';
 import { Tooltip } from './Tooltip';
 
-function an(t: string) {
-    return /^aeiou/i.test(t) ? "an" : "a";
-}
-
 function DescribeOrder(props: {order: Order}): JSX.Element {
     const order = props.order;
     switch (order.kind) {
         case "undercover":
             return <td>Staying undercover</td>
         case "recruit-agent":
-            return <td>Recruiting {an(order.occupation)} <b>{order.occupation}</b> agent</td>
+            return <td>Recruiting a {order.occupation} <b>{order.occupation}</b> agent</td>
         default: return never<JSX.Element>(order);
     }
 }
@@ -24,6 +20,7 @@ function DescribeOrder(props: {order: Order}): JSX.Element {
 type Effect = "gold"|"touch"
 
 function Order(props: {
+    agent: AgentView
     label: string
     disabled: boolean
     tooltip: string
@@ -37,7 +34,7 @@ function Order(props: {
                    onMouseEnter={() => setTip(true)}
                    onMouseLeave={() => setTip(false)}>
         {!tip ? undefined : 
-            <Tooltip tip={props.tooltip} ctx={{}} inserts={[]}/>}
+            <Tooltip tip={props.tooltip} ctx={props.agent.ctx} inserts={[]}/>}
         {props.label}
         {props.effects.length == 0 ? undefined : <span className="effects">
                 {props.effects.map((e, i) => 
@@ -54,15 +51,30 @@ export function AgentOrders(props: {
             <tr><th>Current orders</th><DescribeOrder order={props.agent.order}/></tr>
         </table>
         <hr/>
-        <Order label="Stay undercover..."
+        <Order agent={props.agent}
+               label="Stay undercover..."
                disabled={false}
-               tooltip={"Tooltip"}
+               tooltip={`
+#name# will spend the day on their occupation as #occupation#,
+earning their usual :gold: income and gaining experience. 
+
+They will pray to you every night, providing 
+:touch: and letting you give new orders for the next day.
+
+Undercover agents attract less attention, slowly reducing their :exposure:.
+`}
                onClick={() => {}}
                effects={[["gold", signedDecimal(props.agent.stats.idleIncome.value) + "/day"]]}
             />
-        <Order label="Recruit agent..."
+        <Order agent={props.agent}
+               label="Recruit agent..."
                disabled={false}
-               tooltip={"Tooltip"}
+               tooltip={`
+#name# will attempt to find and convert another agent in #location#, 
+so that they may both serve you. This will likely take several days.
+
+#name# will pray to you every night, providing :touch: and letting you 
+give them different orders before they are done.`}
                onClick={() => {}}
                effects={[]} 
             />
