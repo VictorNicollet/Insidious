@@ -1,8 +1,9 @@
 import { h, JSX } from "preact"
-import { StatsOf, Stats, Stat, maxStats } from "model/stats";
+import { StatsOf, Stats, Stat, maxStats, allStats } from "model/stats";
 import { decimal } from './numbers';
 import { useState } from 'preact/hooks';
 import { Tooltip } from './Tooltip';
+import type { AgentView } from 'view/agents';
 
 const statName : StatsOf<string> = {
     agentRecruitPower: "Recruitment",
@@ -21,7 +22,7 @@ const statTip : StatsOf<string> = {
 // A single stat/ability in the agent's detail page, formatted as
 //  {statName} [============== {statValue} ==]
 // (the value is in a fillable progress-bar).
-export function Stat(props: {
+function Stat(props: {
     stat: keyof(Stats),
     value: Stat
 }): JSX.Element {
@@ -47,5 +48,14 @@ export function Stat(props: {
             {props.stat === "weeklyIdleIncome" && <span className="gold"/>}
             {decimal(props.value.value)}
         </div>
+    </div>
+}
+
+// A block containing all stats of an agent, for display in the 
+// agent's detail page.
+export function AgentStats(props: { agent: AgentView }) {
+    return <div class="stats">
+        {allStats.map(stat => 
+            <Stat key={stat} stat={stat} value={props.agent.stats[stat]}/>)}
     </div>
 }

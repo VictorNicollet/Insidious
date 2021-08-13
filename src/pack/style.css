@@ -134,6 +134,32 @@
     background: url("../../BigAssets/Citadel RPG GUI/Sliced/Standalone Close Button/close_h.png");
 }
 
+.gui-box-tabs {
+    margin-top: -3px;
+    margin-left: 27px;
+}
+
+.gui-box-tabs > button {
+    width: 104px;
+    height: 33px;
+    border: none;
+    color: #EED;
+    font-size: 15px;
+    padding: 0 2px 4px 2px;
+    cursor: pointer;
+    background: url("../../BigAssets/Citadel RPG GUI/Sliced/Box - Character Sheet/big_tab_n.png");
+}
+
+.gui-box-tabs > button:hover {
+    background: url("../../BigAssets/Citadel RPG GUI/Sliced/Box - Character Sheet/big_tab_h.png");
+}
+
+.gui-box-tabs > button:disabled,
+.gui-box-tabs > button:disabled:hover {
+    background: url("../../BigAssets/Citadel RPG GUI/Sliced/Box - Character Sheet/big_tab_s.png");
+    cursor: auto;
+}
+
 /* .gui-agents */
 
 ul.gui-agents {

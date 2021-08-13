@@ -1,9 +1,13 @@
 import { h, JSX } from "preact"
 import * as B from "./Box"
-import { AgentView } from 'view/agents'
+import type { AgentView } from 'view/agents'
 import { useWorld, useSelectors } from './Context';
-import { allStats } from 'model/stats';
-import { Stat } from './AgentStat';
+import { AgentStats } from './AgentStat';
+import { useState } from 'preact/hooks';
+import { AgentOrders } from './AgentOrders';
+
+type Tabs = "Orders" | "Stats"
+const tabs: Tabs[] = ["Orders", "Stats"]
 
 export function AgentDetails(props: {
     // The agent to display
@@ -18,6 +22,7 @@ export function AgentDetails(props: {
 
     const world = useWorld();
     const selectors = useSelectors();
+    const [tab, setTab] = useState<Tabs>("Orders")
 
     const where = world.map.locations[agent.cell] === undefined
         ? <span>Outdoors</span>
@@ -26,7 +31,11 @@ export function AgentDetails(props: {
             {world.locations[world.map.locations[agent.cell]].name.short}
         </span>;
 
-    return <B.Box title={agent.name.full} close={props.close}>
+    return <B.Box<Tabs> title={agent.name.full} 
+                        close={props.close}
+                        tabs={tabs}
+                        tab={tab}
+                        onTab={setTab}>
         <div className="gui-agent-details"
              style={{height:B.innerHeight(height)}}>
             <div className="portrait"/>
@@ -40,10 +49,9 @@ export function AgentDetails(props: {
                 </table>
             </div>
             <hr/>
-            <div class="stats">
-                {allStats.map(stat => 
-                    <Stat key={stat} stat={stat} value={agent.stats[stat]}/>)}
-            </div>
+            {tab === "Orders" ? 
+                <AgentOrders agent={agent}/> : 
+                <AgentStats agent={agent}/>}
         </div>
     </B.Box>
 }
