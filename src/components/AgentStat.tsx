@@ -9,14 +9,26 @@ const statName : StatsOf<string> = {
     agentRecruitPower: "Recruitment",
     idleIncome:        "Income",
     outdoors:          "Outdoors",
-    combat:            "Combat"
+    combat:            "Combat",
+    conduit:           "Conduit"
 }
 
-const statTip : StatsOf<string> = {
-    agentRecruitPower: "How quickly this agent can recruit other agents. Effectiveness is doubled when recruiting an agent of the same occupation.",
-    idleIncome: "Amount of gold produced (or consumed) by this agent, for every day spent under cover.",
-    outdoors: "How fast this agent can travel outdoors. Also reduces the risk of encountering bandits or wild beasts. Does not apply to sailing.",
-    combat: "How well this agent can fight."
+const statTip : StatsOf<JSX.Element> = {
+    agentRecruitPower: <p>
+        How quickly this agent can recruit other agents. Effectiveness is doubled when recruiting an agent of the same occupation.
+    </p>,
+    idleIncome: <p>
+        Amount of <span class="gold"/><b>gold</b> produced (or consumed) by this agent, for every day spent under cover.
+    </p>,
+    outdoors: <p>
+        How fast this agent can travel outdoors. Also reduces the risk of encountering bandits or wild beasts. Does not apply to sailing.
+    </p>,
+    combat: <p>How well this agent can fight.</p>,
+    conduit: <p>
+        How well this agent can act as a conduit for your <span class="touch"/><b>touch</b>. 
+        Rituals performed by a good conduit are more effective. 
+        Also increases your <span class="touch"/><b>touch</b> by this amount every day. 
+    </p>
 }
 
 // A single stat/ability in the agent's detail page, formatted as
@@ -33,7 +45,7 @@ function Stat(props: {
                 onMouseEnter={() => setTip(true)} 
                 onMouseLeave={() => setTip(false)}>
         {tip && <Tooltip>
-            <p>{statTip[props.stat]}</p>
+            {statTip[props.stat]}
             <p style={{textAlign:"center"}}>
                 {decimal(props.value.value)}&nbsp;={props.value.reasons.map((reason, i) => 
                     <span key={i}>{i > 0 ? " +" : ""}&nbsp;{decimal(reason.contrib)}&nbsp;<span style={{opacity:0.5}}>({reason.why})</span>
@@ -46,6 +58,7 @@ function Stat(props: {
         </div>
         <div className="value">
             {props.stat === "idleIncome" && <span className="gold"/>}
+            {props.stat === "conduit" && <span className="touch"/>}
             {decimal(props.value.value)}
         </div>
     </div>

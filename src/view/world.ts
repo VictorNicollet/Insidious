@@ -25,6 +25,19 @@ function dailyGold(w: World): Stat {
     ];
 
     return toStat(reasons);
+}
+
+function dailyTouch(w: World): Stat {
+    
+    let agents = 0;
+    for (let a of w.agents())
+        agents += a.stats.conduit.value;
+
+    const reasons: StatReason[] = [
+        { why: "Agents", contrib: agents },
+    ];
+
+    return toStat(reasons);
 
 }
 
@@ -37,7 +50,7 @@ export function world(w: World): WorldView {
         },
         touch: {
             current: w.resources.touch,
-            daily: { value: 0.1, reasons: [{ why: "Base", contrib: 0.1 }]}
+            daily: dailyTouch(w)
         }
     }
     return {

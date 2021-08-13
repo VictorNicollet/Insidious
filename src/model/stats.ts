@@ -36,6 +36,8 @@ export type StatsOf<T> = {
     outdoors: T
     // General ability to fight
     combat: T
+    // Daily touch increase, and ability to perform rituals
+    conduit: T
 }
 
 export type Stats = StatsOf<Stat>
@@ -93,6 +95,18 @@ const combatByOccupation : ByOccupation<[number,number]> = {
     Hunter:    [-1,  3], //    0    2    5    8   11   14   17   20   23   26
 }
 
+const conduitByOccupation : ByOccupation<number> = {
+    // Per-level bonus (regardless of main occupation)
+    Noble: 0.2,
+    Merchant: 0.2,
+    Criminal: 0.2,
+    Artisan: 0.2,
+    Farmer: 0.2,
+    Mercenary: 0.2,
+    Hunter: 0.2,
+    Arcanist: 0.6
+}
+
 // The rules to compute all the stats based on an agent.
 const rules: StatsOf<(reasons: StatReason[], agent: Agent) => void> = {
     idleIncome: function(reasons: StatReason[], agent: Agent) {
@@ -104,6 +118,15 @@ const rules: StatsOf<(reasons: StatReason[], agent: Agent) => void> = {
                 reasons.push({ why: occupation + " Lv." + level, contrib: value })
             else if (value > 0) 
                 reasons.push({ why: occupation + " Lv." + level, contrib: value/2});       
+        }
+    },
+    conduit: function(reasons: StatReason[], agent: Agent) {
+        reasons.push({ why: "Base", contrib: 0.4 })
+        for (let occupation in conduitByOccupation) {
+            const byLevel = conduitByOccupation[occupation];
+            const level = agent.levels[occupation];
+            if (level > 0) 
+                reasons.push({ why: occupation + " Lv." + level, contrib: byLevel * level })
         }
     }, 
     agentRecruitPower: function(reasons: StatReason[], agent: Agent) {
@@ -133,7 +156,7 @@ const rules: StatsOf<(reasons: StatReason[], agent: Agent) => void> = {
             if (level > 0 && (value > 0 || occupation == agent.occupation)) 
                 reasons.push({ why: occupation + " Lv." + level, contrib: value })
         }
-    }
+    },
 }
 
 export const allStats = Object.keys(rules) as StatKey[]
@@ -144,7 +167,8 @@ export const maxStats : StatsOf<number> = {
     idleIncome:        50,
     agentRecruitPower: 10,
     outdoors:          5,
-    combat:            30
+    combat:            30,
+    conduit:           5,
 }
 
 // Compute the current stats for an agent
