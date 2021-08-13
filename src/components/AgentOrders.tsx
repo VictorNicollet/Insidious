@@ -43,40 +43,55 @@ function Order(props: {
     </button>
 }
 
-export function AgentOrders(props: {
-    agent: AgentView
-}): JSX.Element {
-    return <div className="gui-give-orders">
-        <table className="gui-info-table">
-            <tr><th>Current orders</th><DescribeOrder order={props.agent.order}/></tr>
-        </table>
-        <hr/>
-        <Order agent={props.agent}
-               label="Stay undercover..."
-               disabled={false}
-               tooltip={`
+type OrderNode = {
+    readonly label: string
+    readonly tooltip: string
+    readonly effects: (agent: AgentView) => [Effect, string][]
+}
+
+const orderNodes: OrderNode[] = [
+    {
+        label: "Stay undercover...",
+        tooltip: `
 #name# will spend the day on their occupation as #occupation#,
 earning their usual :gold: income and gaining experience. 
 
 They will pray to you every night, providing 
 :touch: and letting you give new orders for the next day.
 
-Undercover agents attract less attention, slowly reducing their :exposure:.
-`}
-               onClick={() => {}}
-               effects={[["gold", signedDecimal(props.agent.stats.idleIncome.value) + "/day"]]}
-            />
-        <Order agent={props.agent}
-               label="Recruit agent..."
-               disabled={false}
-               tooltip={`
+Undercover agents attract less attention, slowly reducing 
+their :exposure:.`,
+        effects: (agent) => 
+            [["gold", signedDecimal(agent.stats.idleIncome.value) + "/day"]]
+    },
+    {
+        label: "Recruit agent...",
+        tooltip: `
 #name# will attempt to find and convert another agent in #location#, 
 so that they may both serve you. This will likely take several days.
 
 #name# will pray to you every night, providing :touch: and letting you 
-give them different orders before they are done.`}
-               onClick={() => {}}
-               effects={[]} 
-            />
+give them different orders before they are done.`,
+        effects: () => []
+    }
+]
+
+export function AgentOrders(props: {
+    agent: AgentView
+}): JSX.Element {
+    const nodes: OrderNode[] = orderNodes;
+    return <div className="gui-give-orders">
+        <table className="gui-info-table">
+            <tr><th>Current orders</th><DescribeOrder order={props.agent.order}/></tr>
+        </table>
+        <hr/>
+        {nodes.map((node, i) => 
+            <Order key={i}
+                agent={props.agent}
+                label={node.label}
+                disabled={false}
+                tooltip={node.tooltip}
+                onClick={() => {}}
+                effects={node.effects(props.agent)}/>)}
     </div>
 }
