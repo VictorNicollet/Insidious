@@ -13,7 +13,7 @@ export type Stat = {
     readonly reasons: readonly StatReason[]
 }
 
-function stat(reasons: readonly StatReason[]): Stat {
+export function toStat(reasons: readonly StatReason[]): Stat {
     let value = 0;
     for (let reason of reasons) value += reason.contrib;
     return {value, reasons}
@@ -22,10 +22,10 @@ function stat(reasons: readonly StatReason[]): Stat {
 // Numerical statistics of an agent, computed from the 
 // agent's situation. This is DENSE.
 export type StatsOf<T> = {
-    // Gold income produced every week by the 'idle' 
+    // Gold income produced every day by the 'idle' 
     // action. Fractional values are interpreted as a 
     // probability of producing one unit. 
-    weeklyIdleIncome: T
+    idleIncome: T
     // Number of "standard agent recruitment units" produced 
     // by the "recruit agent" action every day. Recruitment 
     // succeeds when the number of units (based on the 
@@ -95,7 +95,7 @@ const combatByOccupation : ByOccupation<[number,number]> = {
 
 // The rules to compute all the stats based on an agent.
 const rules: StatsOf<(reasons: StatReason[], agent: Agent) => void> = {
-    weeklyIdleIncome: function(reasons: StatReason[], agent: Agent) {
+    idleIncome: function(reasons: StatReason[], agent: Agent) {
         for (let occupation in weeklyIdleIncomeByOccupation) {
             const [initial, byLevel] = weeklyIdleIncomeByOccupation[occupation];
             const level = agent.levels[occupation];
@@ -141,7 +141,7 @@ export const allStats = Object.keys(rules) as StatKey[]
 // Not actually the maximum, we just advertise this as a reasonable 
 // maximum that can be used for comparison.
 export const maxStats : StatsOf<number> = {
-    weeklyIdleIncome:  50,
+    idleIncome:        50,
     agentRecruitPower: 10,
     outdoors:          5,
     combat:            30
@@ -153,7 +153,7 @@ export function computeStats(agent: Agent): Stats {
     for (let key in rules) {
         const reasons : StatReason[] = []
         rules[key](reasons, agent);
-        result[key] = stat(reasons);
+        result[key] = toStat(reasons);
     }
     return result as Stats;
 }

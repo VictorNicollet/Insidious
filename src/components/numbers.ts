@@ -15,3 +15,9 @@ export function decimal(n: number): string {
     }
     return n.toFixed(i);
 }
+
+// Like 'decimal', but always with a '+' or '-' in front of
+// the number (to represent a variation)
+export function signedDecimal(n: number): string {
+    return (n >= 0 ? "+" : "") + decimal(n);
+}

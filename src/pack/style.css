@@ -58,6 +58,15 @@
     background-image: url(/* 0 0 101 32 90 */ "../../BigAssets/Citadel RPG GUI/Sliced/Standalone Content Buttons/small_button_h.png");
 }
 
+.gui-navbar .resource {
+    float: right;
+    padding: 0 12px;
+    color: #EED;
+    font-size: 14px;
+    line-height: 21px;
+    position: relative;
+}
+
 /* .gui-agent-count  */
 
 .gui-agent-count {
@@ -417,6 +426,21 @@ button.go.right:disabled {
     margin-top: 8px;
 }
 
+.gui-navbar .tooltip > div {
+    bottom: 22px;
+    top: auto;
+    right: -50px;
+}
+
+.gui-navbar .tooltip > div::after {
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 10px solid rgba(0,0,0,0.7);
+    right: 10px;
+    bottom: -20px;
+    top: auto;
+}
+
 /* .map */
 
 .map {
@@ -758,4 +782,22 @@ span.gold {
     height: 18px;
     display: inline-block;
     vertical-align: middle;
+}
+
+span.gold + b {
+    font-weight: normal;
+    color: #DD3;
+}
+
+span.touch {
+    width: 19px;
+    height: 18px;
+    background: url(/* 0 0 29 27 67 */ "../../BigAssets/Citadel RPG GUI/Sliced/Small Icons Links/abilities_h.png");
+    display: inline-block;
+    vertical-align: middle;
+}
+
+span.touch + b {
+    font-weight: normal;
+    color: #A96;
 }

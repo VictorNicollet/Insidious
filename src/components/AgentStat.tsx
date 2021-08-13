@@ -7,14 +7,14 @@ import type { AgentView } from 'view/agents';
 
 const statName : StatsOf<string> = {
     agentRecruitPower: "Recruitment",
-    weeklyIdleIncome:  "Weekly Income",
+    idleIncome:        "Income",
     outdoors:          "Outdoors",
     combat:            "Combat"
 }
 
 const statTip : StatsOf<string> = {
     agentRecruitPower: "How quickly this agent can recruit other agents. Effectiveness is doubled when recruiting an agent of the same occupation.",
-    weeklyIdleIncome: "Amount of gold produced (or consumed) by this agent, for every week spent under cover.",
+    idleIncome: "Amount of gold produced (or consumed) by this agent, for every day spent under cover.",
     outdoors: "How fast this agent can travel outdoors. Also reduces the risk of encountering bandits or wild beasts. Does not apply to sailing.",
     combat: "How well this agent can fight."
 }
@@ -45,7 +45,7 @@ function Stat(props: {
             <div style={{width: (Math.max(0, value/max) * 100) + "%"}} />
         </div>
         <div className="value">
-            {props.stat === "weeklyIdleIncome" && <span className="gold"/>}
+            {props.stat === "idleIncome" && <span className="gold"/>}
             {decimal(props.value.value)}
         </div>
     </div>

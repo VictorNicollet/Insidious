@@ -4,18 +4,21 @@ import { PersonName, LocationName } from './names';
 import { WorldMap } from './map';
 import { Cell, Grid } from './grid';
 import { ByOccupation, Occupation } from './occupation';
+import { Resources } from './resources';
 
 export class World {
     private readonly _locations : Location[]
     private readonly _agents : Agent[]
     public readonly map : WorldMap
     public readonly seenLocations : Location[]
+    public readonly resources: Resources
 
     constructor(grid: Grid) {
         this._locations = [];
         this._agents = [];
         this.seenLocations = [];
-        this.map = new WorldMap(grid, this)
+        this.map = new WorldMap(grid, this);
+        this.resources = { gold: 0, touch: 0 }
     }
 
     public newLocation(

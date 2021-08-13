@@ -317,7 +317,10 @@ export function generate() : World {
     world.seenLocations.push(last)
     const [occupation, levels] = 
         initialOccupationAndLevels(last, map.cells[last.cell]);
-    world.newAgent(randomPerson(), last, occupation, levels);
+    const agent = world.newAgent(randomPerson(), last, occupation, levels);
     
+    // Initial gold equals a week's worth of income
+    world.resources.gold = Math.floor(7 * agent.stats.idleIncome.value);
+
     return world;
 }
