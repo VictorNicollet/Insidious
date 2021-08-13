@@ -36,7 +36,8 @@ function Order(props: {
                    onClick={props.onClick}
                    onMouseEnter={() => setTip(true)}
                    onMouseLeave={() => setTip(false)}>
-        {!tip ? undefined : <Tooltip>{props.tooltip}</Tooltip>}
+        {!tip ? undefined : 
+            <Tooltip tip={props.tooltip} ctx={{}} inserts={[]}/>}
         {props.label}
         {props.effects.length == 0 ? undefined : <span className="effects">
                 {props.effects.map((e, i) => 

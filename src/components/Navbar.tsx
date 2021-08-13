@@ -23,37 +23,38 @@ function Resource(props: {
 function GoldTooltip(props: {
     daily: Stat
 }) {
-    return <Tooltip>
-        <p>
-            Your agents spend <span className="gold"/><b>gold</b> to purchase
-            equipment and perform certain actions.
-        </p>
-        <p>
-            You earn <span className="gold"/><b>gold</b> from your undercover 
-            agents' day-to-day work, and from the tithes of your cult.
-        </p>
+    return <Tooltip tip={`
+Your agents spend :gold: to purchase equipment and perform
+certain actions.
+
+You earn :gold: from your undercover agents' day-to-day work, 
+and from the tithes of your cult.
+
+%0
+`} ctx={{}} inserts={[
         <p style={{textAlign:"center"}}>
             {signedDecimal(props.daily.value)}/day&nbsp;={props.daily.reasons.map((reason, i) => 
                 <span key={i}>{i > 0 ? " +" : ""}&nbsp;{decimal(reason.contrib)}&nbsp;<span style={{opacity:0.5}}>({reason.why})</span>
                 </span>)}
         </p>
-    </Tooltip>
+            ]}/>
 }
 
 function TouchTooltip(props: {
     daily: Stat
 }) {
-    return <Tooltip>
-        <p>
-            As your <span className="touch"/><b>touch</b> upon this world strengthens, 
-            your agents can perform rituals to channel your power.
-        </p>
+    return <Tooltip tip={`
+As your :touch: upon this world strengthens, 
+your agents can perform rituals to channel your power.
+
+%0
+`} ctx={{}} inserts={[
         <p style={{textAlign:"center"}}>
             {signedDecimal(props.daily.value)}/day&nbsp;={props.daily.reasons.map((reason, i) => 
                 <span key={i}>{i > 0 ? " +" : ""}&nbsp;{decimal(reason.contrib)}&nbsp;<span style={{opacity:0.5}}>({reason.why})</span>
                 </span>)}
         </p>
-    </Tooltip>
+            ]}/>
 }
 
 export function Navbar(props: {

@@ -2,7 +2,7 @@ import { h, JSX } from "preact"
 import { StatsOf, Stats, Stat, maxStats, allStats } from "model/stats";
 import { decimal } from './numbers';
 import { useState } from 'preact/hooks';
-import { Tooltip } from './Tooltip';
+import { Tooltip, TooltipContent } from './Tooltip';
 import type { AgentView } from 'view/agents';
 
 const statName : StatsOf<string> = {
@@ -13,22 +13,22 @@ const statName : StatsOf<string> = {
     conduit:           "Conduit"
 }
 
-const statTip : StatsOf<JSX.Element> = {
-    agentRecruitPower: <p>
-        How quickly this agent can recruit other agents. Effectiveness is doubled when recruiting an agent of the same occupation.
-    </p>,
-    idleIncome: <p>
-        Amount of <span class="gold"/><b>gold</b> produced (or consumed) by this agent, for every day spent under cover.
-    </p>,
-    outdoors: <p>
-        How fast this agent can travel outdoors. Also reduces the risk of encountering bandits or wild beasts. Does not apply to sailing.
-    </p>,
-    combat: <p>How well this agent can fight.</p>,
-    conduit: <p>
-        How well this agent can act as a conduit for your <span class="touch"/><b>touch</b>. 
-        Rituals performed by a good conduit are more effective. 
-        Also increases your <span class="touch"/><b>touch</b> by this amount every day. 
-    </p>
+const statTip : StatsOf<TooltipContent> = {
+    agentRecruitPower: `
+How quickly this agent can recruit other agents. Effectiveness is
+doubled when recruiting an agent of the same occupation.`,
+    idleIncome: `
+Amount of :gold: produced (or consumed) by this agent, for every 
+day spent under cover.`,
+    outdoors: `
+How fast this agent can travel outdoors. Also reduces the risk of 
+encountering bandits or wild beasts. Does not apply to sailing.`,
+    combat: `
+How well this agent can fight.`,
+    conduit: `
+How well this agent can act as a conduit for your :touch:.
+Rituals performed by a good conduit are more effective. 
+Also increases your :touch: by this amount every day.`
 }
 
 // A single stat/ability in the agent's detail page, formatted as
@@ -44,14 +44,15 @@ function Stat(props: {
     return <div className="stat" 
                 onMouseEnter={() => setTip(true)} 
                 onMouseLeave={() => setTip(false)}>
-        {tip && <Tooltip>
-            {statTip[props.stat]}
-            <p style={{textAlign:"center"}}>
-                {decimal(props.value.value)}&nbsp;={props.value.reasons.map((reason, i) => 
-                    <span key={i}>{i > 0 ? " +" : ""}&nbsp;{decimal(reason.contrib)}&nbsp;<span style={{opacity:0.5}}>({reason.why})</span>
-                    </span>)}
-            </p>
-        </Tooltip>}
+        {tip && <Tooltip 
+            tip={statTip[props.stat] + "\n\n%0"}
+            ctx={{}}
+            inserts={[
+<p style={{textAlign:"center"}}>
+    {decimal(props.value.value)}&nbsp;={props.value.reasons.map((reason, i) => 
+        <span key={i}>{i > 0 ? " +" : ""}&nbsp;{decimal(reason.contrib)}&nbsp;<span style={{opacity:0.5}}>({reason.why})</span>
+        </span>)}
+</p>]}/>}
         <span className="stat-name">{statName[props.stat]}</span>
         <div className="progress">
             <div style={{width: (Math.max(0, value/max) * 100) + "%"}} />
