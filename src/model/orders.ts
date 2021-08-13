@@ -14,5 +14,8 @@ export type RecruitAgentOrder = {
     readonly difficulty: number
 }
 
-export type Order = UndercoverOrder
+export type Order = 
+      UndercoverOrder 
+    | RecruitAgentOrder 
+
 

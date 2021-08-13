@@ -45,7 +45,7 @@ export function AgentDetails(props: {
                     <tr><th>Occupation</th><td>
                         {agent.occupation} Lv.{agent.levels[agent.occupation]}
                     </td></tr>
-                    <tr><th>Orders</th><td>Stay undercover</td></tr>
+                    <tr><th>Exposure</th><td>0</td></tr>
                 </table>
             </div>
             <hr/>

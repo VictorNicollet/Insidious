@@ -362,6 +362,46 @@ button.go.right:disabled {
     font-size: 13px;
 }
 
+/* .gui-order */
+
+.gui-order {
+    border: 1px solid;
+    border-color: #AAA #555 #555 #666;
+    padding: 6px;
+    margin: 3px 0 9px;
+    border-radius: 4px;
+    background: none;
+    display: block;
+    width: 100%;
+    color: #DCC;
+    text-align: left;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.gui-order:hover {
+    background: #222;
+    box-shadow: white 0 0 2px;
+}
+
+.gui-order:disabled, .gui-order:disabled:hover {
+    opacity: 0.5;
+    background: none;
+    box-shadow: none;
+}
+
+.gui-order .effects {
+    float: right;
+    font-size: 13px;
+    color: #988;
+}
+
+.gui-order .tooltip > div {
+    right: 15px;
+}
+
+/* .progress */
+
 .progress {
     border-image: url("../../BigAssets//Citadel RPG GUI/Sliced/Player Cast Bar/cb_frame_empty.png") 15 10 fill / 15px 10px;
     border-image-repeat: repeat;

@@ -2,6 +2,7 @@ import type { PersonName } from '../model/names';
 import type { Agent } from "../model/agents"
 import type { Occupation, ByOccupation } from 'model/occupation';
 import type { Stats } from 'model/stats';
+import { Order } from 'model/orders';
 
 export type AgentView = {
     readonly id: number
@@ -10,6 +11,8 @@ export type AgentView = {
     readonly occupation: Occupation
     readonly levels: Readonly<ByOccupation<number>>
     readonly stats: Readonly<Stats>
+    readonly order: Readonly<Order>
+    readonly progress: number
 }
 
 export function agent(a: Agent, id: number): AgentView {
@@ -19,6 +22,8 @@ export function agent(a: Agent, id: number): AgentView {
         cell: a.cell,
         occupation: a.occupation,
         levels: {...a.levels},
-        stats: a.stats
+        stats: a.stats,
+        order: a.order,
+        progress: a.progress
     }
 }
