@@ -4,7 +4,7 @@ import type { Location } from "./locations"
 import type { Cell } from './grid'
 import type { Occupation, ByOccupation } from './occupation'
 import { Stats, computeStats } from './stats'
-import type { Order } from "./orders"
+import { Order, undercover } from "./orders"
 
 export class Agent {
     public stats : Stats
@@ -19,7 +19,7 @@ export class Agent {
         public levels: ByOccupation<number>
     ) {
         this.stats = computeStats(this);
-        this.order = { kind: "undercover" };
+        this.order = undercover;
         this.progress = 0;
     }
 }

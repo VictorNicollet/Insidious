@@ -1,11 +1,11 @@
 import type { Agent } from './agents';
 import type { ResourcesOf } from './resources';
-import type { StatReason } from './stats';
+import type { Reason } from './explainable';
 import { never } from 'never';
 
 // Counts daily contributions of an agent to global resources, appending them to 
 // the arrays passed as argument.
-export function countDailyResources(agent: Agent, resources: ResourcesOf<StatReason[]>) {
+export function countDailyResources(agent: Agent, resources: ResourcesOf<Reason[]>) {
     const {order, stats} = agent;
     resources.touch.push({ why: "Agents", contrib: stats.conduit.value });
     switch (order.kind) {
