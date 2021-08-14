@@ -149,25 +149,23 @@ const plainsBag = new RandomBag<Map.CellKind>(
 
 // Generate terrain tiles, using the locations to provide believable
 // surroundings to each of them.
-function generateTiles(map: Map.WorldMap) {
+function generateTiles(map: Map.WorldMap, locations: {population: number, cell: Cell}[]) {
     const {grid, cells} = map;
-    const locations = map.world.locations();
 
     // Start by mapping cells to locations.
-    const locByCell : (Location|undefined)[] = [];
-    while (locByCell.length < grid.count) locByCell.push(undefined);
-    for (let loc of map.world.locations()) locByCell[loc.cell] = loc;
+    const popByCell = new Uint32Array(grid.count);
+    for (let loc of locations) popByCell[loc.cell] = loc.population;
 
     // First traversal: convert locations and their surroundings
     let usedByKindId : number[] = [];
     for (let cell = 0; cell < grid.count; ++cell)
     {
-        const loc = locByCell[cell];
-        if (typeof loc == "undefined") continue;
+        const population = popByCell[cell];
+        if (!population) continue;
         
-        const locBag = loc.population < 900 ? tinyBag : 
-                        loc.population < 1200 ? smallBag : 
-                        loc.population < 8000 ? mediumBag : 
+        const locBag = population < 900 ? tinyBag : 
+                        population < 1200 ? smallBag : 
+                        population < 8000 ? mediumBag : 
                         largeBag;
                         
         let kind = locBag.pick()
@@ -262,19 +260,24 @@ export function generate() : World {
     const world = new World(grid32);
     const map = world.map;
 
-    // Generate all locations on the map
+    // Generate all future locations on the map
+    const futureLocations : { population: number, cell: Cell }[] = [];
     let popBaseline = 12;
-    for (let coords of randomCoords(map, 80))
+    for (let cell of randomCoords(map, 80))
     {
-        world.newLocation(
-            randomLocation(), 
-            coords, 
-            popFromBaseline(popBaseline));
+        futureLocations.push({
+            population: popFromBaseline(popBaseline),
+            cell
+        });
         popBaseline *= 0.8;
     }
 
     // Generate tiles compatible with locations
-    generateTiles(map);
+    generateTiles(map, futureLocations);
+
+    // Create the locations themselves, naming them.
+    for (let {population,cell} of futureLocations)
+        world.newLocation(randomLocation(), cell, population);
 
     // Generate an agent in the last location
     const locs = world.locations();
