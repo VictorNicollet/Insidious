@@ -15,11 +15,15 @@ export type AgentView = {
     readonly order: Readonly<Order>
     readonly progress: number
     readonly ctx: TooltipContext
+    // The original model object. Mutable, so don't use it, or its properties,
+    // for anything around memoization !
+    readonly agent: Agent
 }
 
 export function agent(a: Agent, id: number): AgentView {
     return {
         id,
+        agent: a,
         name: a.name,
         cell: a.cell,
         occupation: a.occupation,
