@@ -1,8 +1,8 @@
 import { h, JSX } from "preact"
 import { AgentView, } from 'view/agents'
-import { Order, undercover } from 'model/orders'
+import { Order, undercover, daysRemaining } from 'model/orders'
 import { never } from 'never';
-import { signedDecimal } from './numbers';
+import { signedDecimal, days } from './numbers';
 import { useState, useMemo } from 'preact/hooks';
 import { Tooltip } from './Tooltip';
 import { occupations, Occupation, presenceByLocationKind } from 'model/occupation';
@@ -29,6 +29,7 @@ function Order(props: {
     label: string
     disabled: string|undefined
     tooltip: string
+    order: Order|undefined
     effects: readonly [Effect, string][]
     onClick: () => void
 }): JSX.Element {
@@ -42,9 +43,12 @@ function Order(props: {
         {!tip ? undefined : 
             <Tooltip tip={tooltip} ctx={props.agent.ctx} inserts={[]}/>}
         {props.label}
-        {props.effects.length == 0 ? undefined : <span className="effects">
+        {props.order && <span className="effects">
                 {props.effects.map((e, i) => 
                     <span key={i}>&nbsp;<span class={e[0]}/>{e[1]}</span>)}
+                <span>
+                    &nbsp;<span class="turns"/><b>{daysRemaining(props.order)}</b>
+                </span>
             </span>}
     </button>
 }
@@ -182,6 +186,7 @@ export function AgentOrders(props: {
                 label={node.label}
                 disabled={node.disabled}
                 tooltip={node.tooltip}
+                order={node.order}
                 onClick={() => {setDescent(a => [...a, i])}}
                 effects={node.effects}/>)}
     </div>

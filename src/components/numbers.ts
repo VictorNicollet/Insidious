@@ -3,6 +3,10 @@ export function integer(n: number) {
     return n.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, " ");
 }
 
+export function days(n: number) {
+    return integer(n) + (n == 1 ? " day" : " days");
+}
+
 export function population(pop: number) {
     return integer(Math.floor(pop));
 }

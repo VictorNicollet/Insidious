@@ -393,8 +393,12 @@ button.go.right:disabled {
 
 .gui-order .effects {
     float: right;
-    font-size: 13px;
+    font-size: 14px;
     color: #988;
+}
+
+.gui-order .effects span {
+    margin-left: 4px;
 }
 
 .gui-order .tooltip > div {
@@ -846,4 +850,21 @@ span.touch {
 span.touch + b {
     font-weight: normal;
     color: #A96;
+}
+
+span.turns {
+    width: 16px;
+    height: 16px;
+    overflow: hidden;
+    border-radius: 9px;
+    background: url(/* 64 64 384 384 5 */ "../../BigAssets/Citadel RPG GUI/Sliced/Created Resources/category_general.png") center center no-repeat;
+    display: inline-block;
+    vertical-align: top;
+    transform: rotate(270deg);
+    margin-right: 2px;
+}
+
+span.turns + b {
+    font-weight: normal;
+    color: #0BE;
 }
