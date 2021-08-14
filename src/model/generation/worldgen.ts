@@ -130,8 +130,8 @@ const forestBag = new RandomBag<Map.CellKind>(
     [        10,         1,            1,          1,         1])
 
 const cityBag = new RandomBag<Map.CellKind>(
-    [Map.farm, Map.village],
-    [       2,           1])
+    [Map.farm, Map.plains],
+    [       5,          1])
 
 const villageBag = new RandomBag<Map.CellKind>(
     [Map.farm, Map.forest, Map.plains],
@@ -178,23 +178,15 @@ function generateTiles(map: Map.WorldMap, locations: {population: number, cell: 
         cells[cell] = kind;
 
         // Surround the city with the appropriate terrain
-        const bag = kind === Map.mountainMine || 
-                    kind === Map.castleD ||
-                    kind === Map.fortA ||
-                    kind === Map.fortB 
+        const bag = kind.is(Map.mountainMine, Map.castleD, Map.fortA, Map.fortB)
                     ? mountainsBag : 
-                    kind === Map.hillsMine ||
-                    kind === Map.villageUnder
+                    kind.is(Map.hillsMine, Map.villageUnder)
                     ? hillsBag : 
-                    kind === Map.castleA ||
-                    kind === Map.castleB || 
-                    kind === Map.castleC ||
-                    kind === Map.castleE 
+                    kind.is(Map.castleA, Map.castleB, Map.castleC, Map.castleE)
                     ? cityBag : 
-                    kind === Map.village ||
-                    kind === Map.villageSmall
+                    kind.is(Map.village, Map.villageSmall)
                     ? villageBag :
-                    kind === Map.graveyard 
+                    kind.is(Map.graveyard)
                     ? marshBag : 
                       forestBag;
 
@@ -215,7 +207,7 @@ function generateTiles(map: Map.WorldMap, locations: {population: number, cell: 
                     adj === Map.forest ? forestBag : 
                     adj === Map.marsh ? marshBag : 
                     adj === Map.hills ? hillsBag :
-                    adj === Map.farm || adj === Map.villageUnder ? villageBag :
+                    adj === Map.farm ? villageBag :
                     plainsBag; 
         cells[cell] = bag.pick();
     }
