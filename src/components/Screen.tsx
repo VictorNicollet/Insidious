@@ -1,21 +1,26 @@
 import { h, JSX } from "preact"
 import { useMapScroller } from './MapScroller';
-import { cellPos, pick } from "./Map"
 import { useLeftPanel } from './LeftPanel';
-import { WorldView } from 'view/world';
+import * as WorldView from 'view/world';
 import { Navbar } from './Navbar';
 import { useState, useEffect, useCallback } from 'preact/hooks';
 import { useRightPanel } from './RightPanel';
-import { Cell } from 'model/grid';
 import { LocationView } from 'view/locations';
 import { AgentView } from 'view/agents';
 import { Context } from './Context';
+import { World } from 'model/world';
 
-
-
-
-export function Screen(props: { world: WorldView }): JSX.Element {
+export function Screen(props: { world: World }): JSX.Element {
     
+    // View management =======================================================
+
+    const [world, setWorld] = useState(WorldView.world(props.world));
+
+    useEffect(() => 
+        props.world.addListener(() => 
+            setWorld(WorldView.world(props.world))), 
+        [props.world])
+
     // Screen size management ================================================
 
     const [[screenW, screenH], setScreenSize] = 
@@ -33,20 +38,20 @@ export function Screen(props: { world: WorldView }): JSX.Element {
 
     const LeftPanel = useLeftPanel();
     const RightPanel = useRightPanel();
-    const MapScroller = useMapScroller(props.world.map.grid);
+    const MapScroller = useMapScroller(world.map.grid);
 
     const selectLocation = useCallback((location: LocationView) => {
         MapScroller.select(location.cell);
-        RightPanel.show({what: "location", location});
+        RightPanel.show({what: "location", location: location.id});
     }, [MapScroller, RightPanel])
 
     const selectAgent = useCallback((agent: AgentView) => {
         MapScroller.select(agent.cell);
-        RightPanel.show({what: "agent", agent})
+        RightPanel.show({what: "agent", agent: agent.id})
     }, [MapScroller, RightPanel])
 
     return <div>
-        <Context world={props.world} agent={selectAgent} location={selectLocation}>
+        <Context world={world} agent={selectAgent} location={selectLocation}>
             <MapScroller 
                 screenH={screenH}
                 screenW={screenW}

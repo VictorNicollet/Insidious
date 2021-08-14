@@ -11,16 +11,16 @@ const tabs: Tabs[] = ["Orders", "Stats"]
 
 export function AgentDetails(props: {
     // The agent to display
-    agent: AgentView
+    agent: number
     // The pixel height available for the component to display in
     height: number
     // Close this panel
     close: () => void
 }): JSX.Element {
     
-    const {agent, height} = props;
-
     const world = useWorld();
+    const agent = world.agents[props.agent];
+
     const selectors = useSelectors();
     const [tab, setTab] = useState<Tabs>("Orders")
 
@@ -37,7 +37,7 @@ export function AgentDetails(props: {
                         tab={tab}
                         onTab={setTab}>
         <div className="gui-agent-details"
-             style={{height:B.innerHeight(height)}}>
+             style={{height:B.innerHeight(props.height)}}>
             <div className="portrait"/>
             <div className="top">
                 <table class="gui-info-table">

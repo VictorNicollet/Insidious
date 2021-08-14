@@ -4,14 +4,14 @@ import { map, MapView } from "./map"
 import { World } from '../model/world'
 import { Cell } from 'model/grid'
 import { ResourcesOf } from 'model/resources'
-import { Stat } from 'model/stats'
+import { Explained } from 'model/explainable'
 
 export type WorldView = {
     readonly locations: readonly LocationView[]
     readonly agents: readonly AgentView[]
     readonly map: MapView
     readonly initial: Cell
-    readonly resources: ResourcesOf<{ current: number, daily: Stat }>
+    readonly resources: ResourcesOf<{ current: number, daily: Explained }>
 }
 
 export function world(w: World): WorldView {

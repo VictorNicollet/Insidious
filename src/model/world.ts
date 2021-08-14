@@ -11,6 +11,7 @@ import { Explained, Reason, explain, dedup } from './explainable';
 export class World {
     private readonly _locations : Location[]
     private readonly _agents : Agent[]
+    private readonly _listeners : (() => void)[]
     public readonly map : WorldMap
     public readonly seenLocations : Location[]
     public readonly resources: Resources
@@ -18,6 +19,7 @@ export class World {
     constructor(grid: Grid) {
         this._locations = [];
         this._agents = [];
+        this._listeners = [];
         this.seenLocations = [];
         this.map = new WorldMap(grid, this);
         this.resources = { gold: 0, touch: 0 }
@@ -81,5 +83,20 @@ export class World {
             gold: explain(dedup(total.gold)),
             touch: explain(dedup(total.touch))
         }
+    }
+
+    // Adds a new listener that listens to 'refresh()' calls.
+    public addListener(callback: () => void): () => void {
+        this._listeners.push(callback);
+        return () => { 
+            const index = this._listeners.findIndex(callback);
+            this._listeners[index] = this._listeners[this._listeners.length - 1];
+            this._listeners.pop();
+        }
+    }
+
+    // Notifies the listeners that something has changed.
+    public refresh() {
+        for (let cb of this._listeners) cb();
     }
 }

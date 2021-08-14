@@ -31,7 +31,6 @@ export function InnerAgentList(props: {
     const end   = Math.min(start + pagesize, agents.length);
 
     const shown = agents.slice(start, end);
-    const orders = "Undercover";
 
     return <div>
         <ul className="gui-agents" style={{height: 50*pagesize}}>
@@ -42,6 +41,10 @@ export function InnerAgentList(props: {
                     : <span className="named-entity">
                         {world.locations[world.map.locations[agent.cell]].name.short}
                     </span>;
+                const orders = 
+                    agent.order.kind == "recruit-agent" ? "Recruiting" :
+                    agent.order.kind == "undercover" ? "Undercover" : 
+                    "No orders"
                 return <li key={agent.id} 
                     onClick={() => selectors.agent(agent)}>
                     <div className="name">

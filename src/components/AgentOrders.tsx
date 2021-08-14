@@ -3,7 +3,7 @@ import { AgentView, } from 'view/agents'
 import { Order, undercover, daysRemaining } from 'model/orders'
 import { never } from 'never';
 import { signedDecimal, days, decimal } from './numbers';
-import { useState, useMemo } from 'preact/hooks';
+import { useState, useMemo, useCallback } from 'preact/hooks';
 import { Tooltip } from './Tooltip';
 import { occupations, Occupation, presenceByLocationKind } from 'model/occupation';
 import { occupationTooltip } from './help';
@@ -17,7 +17,7 @@ function DescribeOrder(props: {order: Order}): JSX.Element {
         case "undercover":
             return <td>Staying undercover</td>
         case "recruit-agent":
-            return <td>Recruiting a {order.occupation} <b>{order.occupation}</b> agent</td>
+            return <td>Recruiting a {order.occupation} agent</td>
         default: return never<JSX.Element>(order);
     }
 }
@@ -207,6 +207,13 @@ export function AgentOrders(props: {
 
     for (let d of descent) nodes = nodes[d].children;
 
+    const setOrder = useCallback((order: Order) => {
+        const agent = props.agent.agent;
+        agent.order = order;
+        agent.world.refresh();
+        setDescent([])
+    }, [props.agent, setDescent]);
+
     return <div className="gui-give-orders">
         <table className="gui-info-table">
             <tr><th>Current orders</th><DescribeOrder order={props.agent.order}/></tr>
@@ -219,7 +226,12 @@ export function AgentOrders(props: {
                 disabled={node.disabled}
                 tooltip={node.tooltip}
                 order={node.order}
-                onClick={() => {setDescent(a => [...a, i])}}
+                onClick={() => {
+                    if (node.children) 
+                        setDescent(a => [...a, i])
+                    else if (node.order)
+                        setOrder(node.order)
+                }}
                 effects={node.effects}/>)}
     </div>
 }

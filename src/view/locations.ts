@@ -4,6 +4,7 @@ import { Location } from '../model/locations';
 import { CellKind } from 'model/map';
 
 export type LocationView = {
+    readonly id : number
     readonly name : LocationName
     readonly cell : Cell
     readonly cellKind : CellKind
@@ -11,7 +12,7 @@ export type LocationView = {
     readonly agents : readonly number[]
 }
 
-export function location(l: Location): LocationView {
+export function location(l: Location, id: number): LocationView {
     
     const agents : number[] = []
     const worldAgents = l.world.agents()
@@ -19,6 +20,7 @@ export function location(l: Location): LocationView {
         if (worldAgents[i].cell == l.cell) agents.push(i)
     
     return {
+        id,
         name: l.name,
         cell: l.cell,
         cellKind: l.world.map.cells[l.cell],

@@ -11,7 +11,7 @@ export class Agent {
     public order : Order
     public progress : number
     constructor(
-        private readonly world : World,
+        public readonly world : World,
         public name: PersonName,
         public location: Location|undefined,
         public cell: Cell,

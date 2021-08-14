@@ -1,17 +1,15 @@
 import { h, JSX } from "preact"
-import { WorldView } from 'view/world';
 import { useState, useMemo, useRef, useEffect, StateUpdater, useCallback } from 'preact/hooks';
 import { LocationView } from 'view/locations';
-import { AgentView } from 'view/agents';
 import { LocationDetails } from './LocationDetails';
 import { AgentDetails } from './AgentDetails';
 
 export type RightPanelShown = { 
     what: "location"
-    location: LocationView
+    location: number
 } | {
     what: "agent" 
-    agent: AgentView
+    agent: number
 } | undefined
 
 export type RightPanelProps = {
@@ -76,7 +74,7 @@ export function useRightPanel(): RightPanel {
                 // If want to show no location, hide the current location
                 (location === undefined && old && old.what === "location") ? undefined :
                 // If want to show a location, show it
-                location ? { what: "location", location } : 
+                location ? { what: "location", location: location.id } : 
                 // Do nothing
                 old);
         }

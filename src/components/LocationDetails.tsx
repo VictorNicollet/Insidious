@@ -1,6 +1,5 @@
 import { h, JSX } from "preact"
 import * as B from "./Box"
-import { LocationView } from 'view/locations'
 import { population } from './numbers'
 import { InnerAgentList } from './AgentList'
 import { useMemo } from 'preact/hooks'
@@ -11,17 +10,16 @@ const INFOHEIGHT = 48 /* table */ + 17 /* h4 */;
 
 export function LocationDetails(props: {
     // The location to display
-    location: LocationView
+    location: number
     // The pixel height available for the component to display in
     height: number
     // Close this panel
     close: () => void
 }): JSX.Element {
     
-    const {location, height} = props;
     const world = useWorld();
-
-    const innerHeight = B.innerHeight(height);
+    const location = world.locations[props.location]; 
+    const innerHeight = B.innerHeight(props.height);
 
     const agents = useMemo(
         () => location.agents.map(i => world.agents[i]),
