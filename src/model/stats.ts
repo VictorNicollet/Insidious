@@ -41,14 +41,17 @@ export type StatsOf<T> = {
     // by the "recruit agent" action every day. Recruitment 
     // succeeds when the number of units (based on the 
     // difficulty) is reached.
-    agentRecruitPower: T
+    recruit: T
     // Related to travel time outdoors, also decreases dangers
     // of moving or being outdoors.
     outdoors: T
     // General ability to fight
     combat: T
     // Daily touch increase, and ability to perform rituals
-    conduit: T
+    conduit: T, 
+    // Ability to lie and manipulate others, used to reduce 
+    // exposure gain and to spread lies and rumors
+    deceit: T,
 }
 
 export type Stats = StatsOf<Stat>
@@ -118,6 +121,18 @@ const conduitByOccupation : ByOccupation<number> = {
     Mage: 0.6
 }
 
+const deceitByOccupation : ByOccupation<[number,number]> = {
+    // Per-level bonus if main, and if secondary
+    Criminal: [1.5, 1],
+    Noble: [1, 0.5],
+    Merchant: [1, 0.5],
+    Mercenary: [0.5, 0.1],
+    Mage: [1, 0.1],
+    Farmer: [0.1, 0],
+    Hunter: [0.1, 0],
+    Smith: [0.1, 0]
+}
+
 // The rules to compute all the stats based on an agent.
 const rules: StatsOf<(reasons: StatReason[], agent: Agent) => void> = {
     idleIncome: function(reasons: StatReason[], agent: Agent) {
@@ -140,7 +155,7 @@ const rules: StatsOf<(reasons: StatReason[], agent: Agent) => void> = {
                 reasons.push({ why: occupation + " Lv." + level, contrib: byLevel * level })
         }
     }, 
-    agentRecruitPower: function(reasons: StatReason[], agent: Agent) {
+    recruit: function(reasons: StatReason[], agent: Agent) {
         for (let occupation in agentRecruitPowerByOccupation) {
             const [ifMain, ifSecondary] = agentRecruitPowerByOccupation[occupation];
             const level = agent.levels[occupation];
@@ -168,6 +183,15 @@ const rules: StatsOf<(reasons: StatReason[], agent: Agent) => void> = {
                 reasons.push({ why: occupation + " Lv." + level, contrib: value })
         }
     },
+    deceit: function(reasons: StatReason[], agent: Agent) {
+        for (let occupation in deceitByOccupation) {
+            const [ifMain, ifSecondary] = deceitByOccupation[occupation];
+            const level = agent.levels[occupation];
+            const value = (agent.occupation == occupation ? ifMain : ifSecondary) * level;
+            if (value > 0) 
+                reasons.push({ why: occupation + " Lv." + level, contrib: value })
+        }
+    },
 }
 
 export const allStats = Object.keys(rules) as StatKey[]
@@ -175,11 +199,12 @@ export const allStats = Object.keys(rules) as StatKey[]
 // Not actually the maximum, we just advertise this as a reasonable 
 // maximum that can be used for comparison.
 export const maxStats : StatsOf<number> = {
-    idleIncome:        50,
-    agentRecruitPower: 10,
-    outdoors:          5,
-    combat:            30,
-    conduit:           5,
+    idleIncome: 50,
+    recruit:    10,
+    outdoors:   5,
+    combat:     30,
+    conduit:    5,
+    deceit:     15
 }
 
 // Compute the current stats for an agent
