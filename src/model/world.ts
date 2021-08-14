@@ -5,8 +5,8 @@ import { WorldMap } from './map';
 import { Cell, Grid } from './grid';
 import { ByOccupation, Occupation } from './occupation';
 import { Resources, ResourcesOf } from './resources';
-import { Stat, StatReason, toStat, dedup } from './stats';
 import { countDailyResources } from './execute';
+import { Explained, Reason, explain, dedup } from './explainable';
 
 export class World {
     private readonly _locations : Location[]
@@ -74,12 +74,12 @@ export class World {
 
     // Compute the current daily resource production (does not include
     // one-off consumption). 
-    public dailyResources(): ResourcesOf<Stat> {
-        const total : ResourcesOf<StatReason[]> = { gold: [], touch: [] };
+    public dailyResources(): ResourcesOf<Explained> {
+        const total : ResourcesOf<Reason[]> = { gold: [], touch: [] };
         for (let agent of this._agents) countDailyResources(agent, total);
         return {
-            gold: toStat(dedup(total.gold)),
-            touch: toStat(dedup(total.touch))
+            gold: explain(dedup(total.gold)),
+            touch: explain(dedup(total.touch))
         }
     }
 }

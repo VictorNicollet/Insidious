@@ -1,9 +1,10 @@
 import { h, JSX } from "preact"
-import { StatsOf, Stats, Stat, maxStats, allStats } from "model/stats";
+import { StatsOf, Stats, maxStats, allStats } from "model/stats";
 import { decimal } from './numbers';
 import { useState } from 'preact/hooks';
 import { Tooltip, TooltipContent } from './Tooltip';
 import type { AgentView } from 'view/agents';
+import { Explained } from 'model/explainable';
 
 const statName : StatsOf<string> = {
     recruit:    "Recruitment",
@@ -41,7 +42,7 @@ suspicious, gaining less exposure from their actions.`
 // (the value is in a fillable progress-bar).
 function Stat(props: {
     stat: keyof(Stats),
-    value: Stat
+    value: Explained
 }): JSX.Element {
     const [tip, setTip] = useState(false);
     const value = props.value.value;

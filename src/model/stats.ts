@@ -1,34 +1,6 @@
 import type { Agent } from "./agents"
 import type { ByOccupation } from './occupation';
-
-export type StatReason = {
-    // Human-readable explanation of why this bonus is here.
-    why: string
-    // Amount contributed to the value
-    contrib: number
-}
-
-export type Stat = {
-    readonly value: number
-    readonly reasons: readonly StatReason[]
-}
-
-export function toStat(reasons: readonly StatReason[]): Stat {
-    let value = 0;
-    for (let reason of reasons) value += reason.contrib;
-    return {value, reasons}
-}
-
-// De-duplicate the 'why' in a list of stats.
-export function dedup(reasons: readonly StatReason[]): readonly StatReason[] {
-    const byWhy : { [key: string]: number } = {};
-    for (let reason of reasons) {
-        byWhy[reason.why] = (byWhy[reason.why] || 0) + reason.contrib;
-    }
-    const returned : StatReason[] = [];
-    for (let why in byWhy) returned.push({ why, contrib: byWhy[why] })
-    return returned;
-}
+import { Explained, Reason, explain } from './explainable';
 
 // Numerical statistics of an agent, computed from the 
 // agent's situation. This is DENSE.
@@ -54,7 +26,7 @@ export type StatsOf<T> = {
     deceit: T,
 }
 
-export type Stats = StatsOf<Stat>
+export type Stats = StatsOf<Explained>
 export type StatKey = keyof(Stats)
 
 const weeklyIdleIncomeByOccupation : ByOccupation<[number,number]> = {
@@ -134,8 +106,8 @@ const deceitByOccupation : ByOccupation<[number,number]> = {
 }
 
 // The rules to compute all the stats based on an agent.
-const rules: StatsOf<(reasons: StatReason[], agent: Agent) => void> = {
-    idleIncome: function(reasons: StatReason[], agent: Agent) {
+const rules: StatsOf<(reasons: Reason[], agent: Agent) => void> = {
+    idleIncome: function(reasons: Reason[], agent: Agent) {
         for (let occupation in weeklyIdleIncomeByOccupation) {
             const [initial, byLevel] = weeklyIdleIncomeByOccupation[occupation];
             const level = agent.levels[occupation];
@@ -146,7 +118,7 @@ const rules: StatsOf<(reasons: StatReason[], agent: Agent) => void> = {
                 reasons.push({ why: occupation + " Lv." + level, contrib: value/2});       
         }
     },
-    conduit: function(reasons: StatReason[], agent: Agent) {
+    conduit: function(reasons: Reason[], agent: Agent) {
         reasons.push({ why: "Base", contrib: 0.4 })
         for (let occupation in conduitByOccupation) {
             const byLevel = conduitByOccupation[occupation];
@@ -155,7 +127,7 @@ const rules: StatsOf<(reasons: StatReason[], agent: Agent) => void> = {
                 reasons.push({ why: occupation + " Lv." + level, contrib: byLevel * level })
         }
     }, 
-    recruit: function(reasons: StatReason[], agent: Agent) {
+    recruit: function(reasons: Reason[], agent: Agent) {
         for (let occupation in agentRecruitPowerByOccupation) {
             const [ifMain, ifSecondary] = agentRecruitPowerByOccupation[occupation];
             const level = agent.levels[occupation];
@@ -164,7 +136,7 @@ const rules: StatsOf<(reasons: StatReason[], agent: Agent) => void> = {
                 reasons.push({ why: occupation + " Lv." + level, contrib: value })
         }
     },
-    outdoors: function(reasons: StatReason[], agent: Agent) {
+    outdoors: function(reasons: Reason[], agent: Agent) {
         reasons.push({ why: "Base", contrib: 1})
         for (let occupation in outdoorsByOccupation) {
             const [base, byLevel] = outdoorsByOccupation[occupation];
@@ -174,7 +146,7 @@ const rules: StatsOf<(reasons: StatReason[], agent: Agent) => void> = {
                 reasons.push({ why: occupation + " Lv." + level, contrib: value/5 })
         }
     },
-    combat: function(reasons: StatReason[], agent: Agent) {
+    combat: function(reasons: Reason[], agent: Agent) {
         for (let occupation in combatByOccupation) {
             const [base, byLevel] = combatByOccupation[occupation];
             const level = agent.levels[occupation];
@@ -183,7 +155,7 @@ const rules: StatsOf<(reasons: StatReason[], agent: Agent) => void> = {
                 reasons.push({ why: occupation + " Lv." + level, contrib: value })
         }
     },
-    deceit: function(reasons: StatReason[], agent: Agent) {
+    deceit: function(reasons: Reason[], agent: Agent) {
         for (let occupation in deceitByOccupation) {
             const [ifMain, ifSecondary] = deceitByOccupation[occupation];
             const level = agent.levels[occupation];
@@ -209,11 +181,11 @@ export const maxStats : StatsOf<number> = {
 
 // Compute the current stats for an agent
 export function computeStats(agent: Agent): Stats {
-    const result : {[key: string]: Stat} = {};
+    const result : {[key: string]: Explained} = {};
     for (let key in rules) {
-        const reasons : StatReason[] = []
+        const reasons : Reason[] = []
         rules[key](reasons, agent);
-        result[key] = toStat(reasons);
+        result[key] = explain(reasons);
     }
     return result as Stats;
 }
