@@ -22,7 +22,7 @@ sorcery to a rich clientele, at higher levels earning the best
 *income* of all occupations.
 
 Their magic makes them good conduits for your :touch:. 
-Mages can only be recruited in a *City*, *Temple* or *Fortress*.`,
+Mages can only be recruited in a *City*, *Academy* or *Fortress*.`,
     Criminal: `
 *Criminals* work outside the law, skulking in dark alleys and old 
 ruins. The nature of their work frequently places them in mortal danger.

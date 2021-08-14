@@ -1,10 +1,11 @@
 import { World } from "../world"
-import { Location } from "../locations"
+import { Location, ByLocationKind } from "../locations"
 import { randomLocation, randomPerson } from './namegen';
 import { Cell, grid32 } from 'model/grid';
 import * as Map from 'model/map';
 import { RandomBag } from './randombag';
-import { Occupation, occupations, byOccupation, ByOccupation } from 'model/occupation';
+import { Occupation, occupations, byOccupation, ByOccupation, presenceByLocationKind } from 'model/occupation';
+import { objmap } from 'objmap';
 
 // Produces a set of random location coordinates such that
 //  1. locations form a connected graph with edges of distance=3
@@ -234,59 +235,23 @@ function popFromBaseline(popBaseline: number) {
     return Math.pow(10, exponent);
 }
 
-const townOccupationsBag = new RandomBag<Occupation>(occupations,
-    // Merchant Farmer Artisan Hunter Mercenary Criminal Arcanist Noble
-    [        1,     4,      2,     3,        0,       0,       0,     0])
-
-const ruinsOccupationsBag = new RandomBag<Occupation>(occupations,
-    // Merchant Farmer Artisan Hunter Mercenary Criminal Arcanist Noble
-    [        0,     0,      2,     4,        2,       4,       1,     0])
-
-const templeOccupationsBag = new RandomBag<Occupation>(occupations,
-    // Merchant Farmer Artisan Hunter Mercenary Criminal Arcanist Noble
-    [        1,     0,      1,     0,        1,       0,       1,     1])
-
-const workOccupationsBag = new RandomBag<Occupation>(occupations,
-    // Merchant Farmer Artisan Hunter Mercenary Criminal Arcanist Noble
-    [        1,     0,      5,     1,        1,       0,       0,     1])
-    
-const cityOccupationsBag = new RandomBag<Occupation>(occupations,
-    // Merchant Farmer Artisan Hunter Mercenary Criminal Arcanist Noble
-    [        4,     1,      4,     0,        2,       3,       1,     1])
-    
-const fortOccupationsBag = new RandomBag<Occupation>(occupations,
-    // Merchant Farmer Artisan Hunter Mercenary Criminal Arcanist Noble
-    [        0,     0,      1,     1,        3,       1,       1,     1])
+const occupationBagsByLocation : ByLocationKind<RandomBag<Occupation>> = 
+    objmap(presenceByLocationKind, presence => 
+        new RandomBag<Occupation>(
+            occupations, 
+            // Bend probabilities a bit, to concentrate on the really
+            // likely ones. 
+            occupations.map(o => Math.pow(presence[o], 2))));
     
 function initialOccupationAndLevels(
-    location: Location,
-    kind: Map.CellKind
+    location: Location
 ): [Occupation, ByOccupation<number>] {
-    const bag = kind === Map.mountainMine || 
-                kind === Map.hillsMine ||
-                kind === Map.foresterA ||
-                kind === Map.foresterB
-                ? workOccupationsBag : 
-                kind === Map.fortA ||
-                kind === Map.fortB 
-                ? fortOccupationsBag : 
-                kind === Map.villageUnder ||
-                kind === Map.village ||
-                kind === Map.villageSmall
-                ? townOccupationsBag : 
-                kind === Map.temple
-                ? templeOccupationsBag :
-                kind === Map.castleA ||
-                kind === Map.castleB || 
-                kind === Map.castleC ||
-                kind === Map.castleD ||
-                kind === Map.castleE 
-                ? cityOccupationsBag :
-                  ruinsOccupationsBag;
+    
+    const bag = occupationBagsByLocation[location.kind];
+    const occupation = bag.pick();
 
     // Level of initial agent is always 3 in main occupation
     const levels = byOccupation(0);
-    const occupation = bag.pick();
     levels[occupation] = 3;
 
     return [occupation, levels];
@@ -315,8 +280,7 @@ export function generate() : World {
     const locs = world.locations();
     const last = locs[locs.length - 1];
     world.seenLocations.push(last)
-    const [occupation, levels] = 
-        initialOccupationAndLevels(last, map.cells[last.cell]);
+    const [occupation, levels] = initialOccupationAndLevels(last);
     const agent = world.newAgent(randomPerson(), last, occupation, levels);
     
     // Initial gold equals a week's worth of income
