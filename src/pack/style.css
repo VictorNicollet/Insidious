@@ -385,7 +385,8 @@ button.go.right:disabled {
 }
 
 .gui-order:disabled, .gui-order:disabled:hover {
-    opacity: 0.5;
+    border-color: #333;
+    color: #888;
     background: none;
     box-shadow: none;
 }
