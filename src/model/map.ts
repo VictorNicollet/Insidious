@@ -31,6 +31,13 @@ export class CellKind {
     public inThis() {
         return this.an === "" ? "in " + this.name : "in " + this.an + " " + this.name;
     }
+
+    // True if this cell kind is one of the specified cell kinds
+    public is(...others: CellKind[]) {
+        for (let other of others)
+            if (other.id === this.id) return true;
+        return false;
+    }
 }
 
 

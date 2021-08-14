@@ -26,28 +26,12 @@ export class Location {
         // slow growth over several turns (only display the floor)
         public population : number
     ) {
-        const cellKind = world.map.cells[cell];
-        this.kind = cellKind === M.castleA ||
-                    cellKind === M.castleB ||
-                    cellKind === M.castleC ||
-                    cellKind === M.castleD ||
-                    cellKind === M.castleE
-                    ? "city" : 
-                    cellKind === M.mountainMine ||
-                    cellKind === M.hillsMine ||
-                    cellKind === M.foresterA ||
-                    cellKind === M.foresterB ||
-                    cellKind === M.smithy
-                    ? "workcamp" : 
-                    cellKind === M.fortA ||
-                    cellKind === M.fortB 
-                    ? "fortress" :
-                    cellKind === M.academy
-                    ? "academy" : 
-                    cellKind === M.village ||
-                    cellKind === M.villageUnder ||
-                    cellKind === M.villageSmall ||
-                    cellKind === M.inn
-                    ? "town" : "ruins";
+        const ck = world.map.cells[cell];
+        this.kind = 
+            ck.is(M.castleA, M.castleB, M.castleC, M.castleD, M.castleE) ? "city" : 
+            ck.is(M.mountainMine, M.hillsMine, M.foresterA, M.foresterB, M.smithy) ? "workcamp" : 
+            ck.is(M.fortA, M.fortB) ? "fortress" :
+            ck.is(M.academy) ? "academy" : 
+            ck.is(M.village, M.villageUnder, M.villageSmall, M.inn) ? "town" : "ruins";
     }
 }
