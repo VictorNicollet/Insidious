@@ -2,12 +2,12 @@ import { h, JSX } from "preact"
 import { AgentView, } from 'view/agents'
 import { Order, undercover, daysRemaining } from 'model/orders'
 import { never } from 'never';
-import { signedDecimal, days } from './numbers';
+import { signedDecimal, days, decimal } from './numbers';
 import { useState, useMemo } from 'preact/hooks';
 import { Tooltip } from './Tooltip';
 import { occupations, Occupation, presenceByLocationKind } from 'model/occupation';
 import { occupationTooltip } from './help';
-import { explain, Reason } from 'model/explainable';
+import { explain, Reason, Explained } from 'model/explainable';
 import { Location } from 'model/locations';
 import { Agent } from 'model/agents';
 
@@ -24,6 +24,20 @@ function DescribeOrder(props: {order: Order}): JSX.Element {
 
 type Effect = "gold"|"touch"
 
+function Explain(props: {value: Explained}): JSX.Element {
+    const e = props.value;
+    if (e.multiplier) {
+        return <span>
+            {decimal(e.value)} = {decimal(e.multiplier)} &times; (1{e.reasons.map(r => 
+                <span>{" +"}&nbsp;{decimal(r.contrib)}&nbsp;<span style={{opacity:0.5}}>({r.why})</span></span>)})
+        </span>
+    }
+    return <span>
+        {decimal(e.value)}{e.reasons.map((r,i) => 
+            <span>{i == 0 ? " =" : " +"}&nbsp;{decimal(r.contrib)}&nbsp;<span style={{opacity:0.5}}>({r.why})</span></span>)}
+    </span>
+}
+
 function Order(props: {
     agent: AgentView
     label: string
@@ -34,14 +48,32 @@ function Order(props: {
     onClick: () => void
 }): JSX.Element {
     const [tip, setTip] = useState(false);
-    const tooltip = props.tooltip + (props.disabled ? "\n\n" + props.disabled : "");
+    const tooltip = props.tooltip + 
+        (props.disabled ? "\n\n" + props.disabled : "") + 
+        (props.order && props.order.kind != "undercover" ? "\n\n%0" : "");
+    const inserts = !props.order ? [] : [
+        <div>
+            <hr/>
+            <p>
+                Duration <span class="turns"/><b>{daysRemaining(props.order)}</b> = {decimal(props.order.difficulty.value)} / {decimal(props.order.speed.value)}
+            </p>
+            <p style={{paddingLeft: 20}}>
+                <span style={{opacity:0.5}}>Difficulty&nbsp;</span> 
+                <Explain value={props.order.difficulty}/>
+            </p>
+            <p style={{paddingLeft: 20}}>
+                <span style={{opacity:0.5}}>Ability&nbsp;</span> 
+                <Explain value={props.order.speed}/>
+            </p>
+        </div>
+    ]
     return <button className="gui-order" 
                    disabled={!!props.disabled} 
                    onClick={props.onClick}
                    onMouseEnter={() => setTip(true)}
                    onMouseLeave={() => setTip(false)}>
         {!tip ? undefined : 
-            <Tooltip tip={tooltip} ctx={props.agent.ctx} inserts={[]}/>}
+            <Tooltip tip={tooltip} ctx={props.agent.ctx} inserts={inserts}/>}
         {props.label}
         {props.order && <span className="effects">
                 {props.effects.map((e, i) => 
@@ -90,7 +122,7 @@ function recruitOrder(occupation: Occupation, agent: Agent, location: Location):
     }
 
     const difficulty = explain([
-        {why: "Base", contrib: 8}, 
+        {why: "Base", contrib: 2}, 
         {why: `${occupation} ${cellKind.inThis()}`, contrib: 60 / ease}]);
 
     const multipliers: Reason[] = [
@@ -100,7 +132,7 @@ function recruitOrder(occupation: Occupation, agent: Agent, location: Location):
     if (agent.occupation == occupation)
         multipliers.push({why: "Same occupation", contrib: agent.stats.recruit.value});
 
-    const speed = explain(multipliers, 5)
+    const speed = explain(multipliers, 2)
 
     return {
         kind: "recruit-agent",
