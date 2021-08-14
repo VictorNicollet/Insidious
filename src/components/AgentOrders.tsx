@@ -5,6 +5,8 @@ import { never } from 'never';
 import { signedDecimal } from './numbers';
 import { useState } from 'preact/hooks';
 import { Tooltip } from './Tooltip';
+import { occupations } from 'model/occupation';
+import { occupationTooltip } from './help';
 
 function DescribeOrder(props: {order: Order}): JSX.Element {
     const order = props.order;
@@ -69,14 +71,14 @@ their :exposure:.`,
         effects: undercoverEffects,
         children: [
             {
-                label: "...for a day.",
+                label: "Stay undercover for a day.",
                 tooltip: `
 #name# will expect new orders on the next turn.`,
                 effects: undercoverEffects,
                 children: []
             },
             {
-                label: "...for a week.",
+                label: "Stay undercover for a week.",
                 tooltip: `
 #name# will not expect new orders for the next seven turns. You may
 still give them new orders before that.`,
@@ -94,7 +96,11 @@ so that they may both serve you. This will likely take several days.
 #name# will pray to you every night, providing :touch: and letting you 
 give them different orders before they are done.`,
         effects: () => [],
-        children: []
+        children: occupations.map(occupation => ({
+            label: "Recruit a " + occupation,
+            tooltip: occupationTooltip[occupation],
+            effects: () => [],
+            children: []}))
     }
 ]
 

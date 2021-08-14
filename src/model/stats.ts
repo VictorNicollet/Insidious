@@ -65,7 +65,7 @@ const weeklyIdleIncomeByOccupation : ByOccupation<[number,number]> = {
     Merchant:  [ -5, 5  ], //   -5    0    5   10   15   20   25   30   35   40
     Mercenary: [  0, 1  ], //    0    1    2    3    4    5    6    7    8    9
     Criminal:  [  0, 1  ], //    0    1    2    3    4    5    6    7    8    9
-    Smith:     [ -1, 1  ], //   -1    0    1    2    3    4    5    6    7    8
+    Smith:     [ -4, 3  ], //   -1    1    4    7   10   13   16   19   21   24
     Farmer:    [  0, 0.4], //    0  0.4  0.8  1.2  1.6    2  2.4  2.8  3.2  3.6  
     Hunter:    [  0, 0.4], //    0  0.4  0.8  1.2  1.6    2  2.4  2.8  3.2  3.6  
 }
