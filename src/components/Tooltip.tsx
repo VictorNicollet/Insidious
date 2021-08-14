@@ -46,6 +46,11 @@ function toHTML(
         return "<b>" + match.substr(1, match.length - 2) + "</b>";
     })
 
+    // Change !!foo!! to a red font
+    .replace(/!!.*!!/g, match => {
+        return "<span style='color:#E77'>" + match.substr(2, match.length - 4) + '</span>';
+    })
+
     // Cut the content into paragraphs based on empty lines. 
     .split(/\n\s*\n/g).filter(s => s).map(html => 
         /^%\d+\s*$/.test(html) 
