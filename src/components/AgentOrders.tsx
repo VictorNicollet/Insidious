@@ -43,10 +43,15 @@ function Order(props: {
     </button>
 }
 
+function undercoverEffects(agent: AgentView): [Effect, string][] {
+    return [["gold", signedDecimal(agent.stats.idleIncome.value) + "/day"]]
+}
+
 type OrderNode = {
     readonly label: string
     readonly tooltip: string
     readonly effects: (agent: AgentView) => [Effect, string][]
+    readonly children: OrderNode[]
 }
 
 const orderNodes: OrderNode[] = [
@@ -61,8 +66,24 @@ They will pray to you every night, providing
 
 Undercover agents attract less attention, slowly reducing 
 their :exposure:.`,
-        effects: (agent) => 
-            [["gold", signedDecimal(agent.stats.idleIncome.value) + "/day"]]
+        effects: undercoverEffects,
+        children: [
+            {
+                label: "...for a day.",
+                tooltip: `
+#name# will expect new orders on the next turn.`,
+                effects: undercoverEffects,
+                children: []
+            },
+            {
+                label: "...for a week.",
+                tooltip: `
+#name# will not expect new orders for the next seven turns. You may
+still give them new orders before that.`,
+                effects: undercoverEffects,
+                children: []
+            }
+        ]
     },
     {
         label: "Recruit agent...",
@@ -72,14 +93,19 @@ so that they may both serve you. This will likely take several days.
 
 #name# will pray to you every night, providing :touch: and letting you 
 give them different orders before they are done.`,
-        effects: () => []
+        effects: () => [],
+        children: []
     }
 ]
 
 export function AgentOrders(props: {
     agent: AgentView
 }): JSX.Element {
-    const nodes: OrderNode[] = orderNodes;
+    
+    const [descent, setDescent] = useState<number[]>([])
+    let nodes: OrderNode[] = orderNodes;
+    for (let d of descent) nodes = nodes[d].children;
+
     return <div className="gui-give-orders">
         <table className="gui-info-table">
             <tr><th>Current orders</th><DescribeOrder order={props.agent.order}/></tr>
@@ -91,7 +117,7 @@ export function AgentOrders(props: {
                 label={node.label}
                 disabled={false}
                 tooltip={node.tooltip}
-                onClick={() => {}}
+                onClick={() => {setDescent(a => [...a, i])}}
                 effects={node.effects(props.agent)}/>)}
     </div>
 }
