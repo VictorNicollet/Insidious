@@ -3,6 +3,8 @@ import type { ResourcesOf } from './resources';
 import type { Reason } from './explainable';
 import { never } from 'never';
 import { Order } from './orders';
+import { randomPerson } from './generation/namegen';
+import { byOccupation } from './occupation';
 
 function countDailyResourcesForOrder(
     agent: Agent, 
@@ -49,7 +51,20 @@ export function executeOrder(agent: Agent): Order {
 
     switch (order.kind) {
         case "undercover": break;
-        case "recruit-agent": break;
+        case "recruit-agent": 
+            if (isDone) {
+                // The recruited agent's level is one less than the recruiting
+                // agent (this is to incentivize using higher-level agents
+                // to recruit). Cannot go lower than 1.
+                const levels = byOccupation(0);
+                levels[order.occupation] = Math.max(1, agent.levels[agent.occupation]-1);
+                agent.world.newAgent(
+                    randomPerson(),
+                    agent.location,
+                    order.occupation,
+                    levels);
+            }
+            break;
         default: never(order);
     }
 
