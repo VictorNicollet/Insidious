@@ -41,6 +41,9 @@ function toHTML(
         return "<span class=\"" + icon + "\"></span><b>" + icon + "</b>";
     })
 
+    // Change *** to <hr/>
+    .replace(/\*{3}/g, '<hr/>')
+    
     // Change *foo* to <b>foo</b>
     .replace(/\*.*?\*/g, match => {
         return "<b>" + match.substr(1, match.length - 2) + "</b>";

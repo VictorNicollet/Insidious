@@ -49,11 +49,12 @@ function Order(props: {
 }): JSX.Element {
     const [tip, setTip] = useState(false);
     const tooltip = props.tooltip + 
-        (props.disabled ? "\n\n" + props.disabled : "") + 
-        (props.order && props.order.kind != "undercover" ? "\n\n%0" : "");
+        (props.disabled 
+            ? "\n\n***\n\n" + props.disabled : "") + 
+        (props.order && props.order.kind != "undercover" 
+            ? "\n\n***\n\n%0" : "");
     const inserts = !props.order ? [] : [
         <div>
-            <hr/>
             <p>
                 Duration <span class="turns"/><b>{daysRemaining(props.order)}</b> = {decimal(props.order.difficulty.value)} / {decimal(props.order.speed.value)}
             </p>

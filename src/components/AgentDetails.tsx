@@ -1,6 +1,5 @@
 import { h, JSX } from "preact"
 import * as B from "./Box"
-import type { AgentView } from 'view/agents'
 import { useWorld, useSelectors } from './Context';
 import { AgentStats } from './AgentStat';
 import { useState } from 'preact/hooks';
