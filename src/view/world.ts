@@ -12,6 +12,9 @@ export type WorldView = {
     readonly map: MapView
     readonly initial: Cell
     readonly resources: ResourcesOf<{ current: number, daily: Explained }>
+    // Reference to the model. This is a mutable class, so don't use it
+    // or its fields for anything involving memoization.
+    readonly world: World
 }
 
 export function world(w: World): WorldView {
@@ -28,6 +31,7 @@ export function world(w: World): WorldView {
         }
     }
     return {
+        world: w,
         locations: locations.map(location),
         agents: w.agents().map(agent),
         map: map(w.map),

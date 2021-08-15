@@ -202,7 +202,7 @@ function OrderProgress(props: {
     const fractionDone = props.order.accumulated / props.order.difficulty.value;
     return <div className="gui-order-progress">
         <div className="progress-time">
-            <div style={{width:fractionDone + "%"}}></div>
+            <div style={{width:(100*fractionDone) + "%"}}></div>
         </div>
         <span>
             <span className="turns"/><b>{daysRemaining(props.order)}</b> 

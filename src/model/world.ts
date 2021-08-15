@@ -5,7 +5,7 @@ import { WorldMap } from './map';
 import { Cell, Grid } from './grid';
 import { ByOccupation, Occupation } from './occupation';
 import { Resources, ResourcesOf } from './resources';
-import { countDailyResources } from './execute';
+import { countDailyResources, executeOrder } from './execute';
 import { Explained, Reason, explain, dedup } from './explainable';
 
 export class World {
@@ -98,5 +98,31 @@ export class World {
     // Notifies the listeners that something has changed.
     public refresh() {
         for (let cb of this._listeners) cb();
+    }
+
+    // End the current turn, applying a simulation step
+    public endTurn() {
+
+        // First, apply resource changes. This is done for two reasons: 
+        //  1. to reuse the dailyResources() function, and thus be 
+        //     certain that the shown daily resource usage is the one 
+        //     used for actual computations.
+        //  2. so that the order of execution does not cause orders to 
+        //     run out of resources by mistake (e.g. with zero gold, 
+        //     executing (-5, +10) fails but (+10, -5) works). 
+        // This may cause resources to go negative. We'll fix this in 
+        // a later stage !
+        const res = this.dailyResources();
+        this.resources.gold += res.gold.value;
+        this.resources.touch += res.touch.value;
+        
+        // Now, execute orders, applying their effects.
+        for (let agent of this._agents) {
+            agent.order = executeOrder(agent)
+        }
+
+        // All done, notify the view that it should be re-rendered because
+        // the world changed.
+        this.refresh()
     }
 }

@@ -3,14 +3,14 @@ import type { LeftPanelShown } from './LeftPanel';
 import { useWorld } from './Context';
 import { Tooltip } from './Tooltip';
 import { useState } from 'preact/hooks';
-import { Stat } from 'model/stats';
 import { decimal, signedDecimal, integer } from './numbers';
+import { Explained } from 'model/explainable';
 
 function Resource(props: {
     kind: string
     current: number
-    daily: Stat
-    Tooltip: (props: {daily: Stat}) => JSX.Element
+    daily: Explained
+    Tooltip: (props: {daily: Explained}) => JSX.Element
 }): JSX.Element {
     const [tip, setTip] = useState(false);
     return <div class="resource" onMouseEnter={() => setTip(true)} onMouseLeave={() => setTip(false)}>
@@ -21,7 +21,7 @@ function Resource(props: {
 }
 
 function GoldTooltip(props: {
-    daily: Stat
+    daily: Explained
 }) {
     return <Tooltip tip={`
 Your agents spend :gold: to purchase equipment and perform
@@ -41,7 +41,7 @@ and from the tithes of your cult.
 }
 
 function TouchTooltip(props: {
-    daily: Stat
+    daily: Explained
 }) {
     return <Tooltip tip={`
 As your :touch: upon this world strengthens, 
@@ -70,7 +70,7 @@ export function Navbar(props: {
         <button onClick={() => left("rituals")}>Rituals</button>
         <button onClick={() => left("artifacts")}>Artifacts</button>
         {/* float:right appear in reverse order */}
-        <button className="turn">End Turn</button>
+        <button className="turn" onClick={() => world.world.endTurn()}>End Turn</button>
         <Resource kind="gold" current={gold.current} daily={gold.daily} Tooltip={GoldTooltip}/>
         <Resource kind="touch" current={touch.current} daily={touch.daily} Tooltip={TouchTooltip}/>
     </div>
