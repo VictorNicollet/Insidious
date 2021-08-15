@@ -34,7 +34,7 @@ export function agent(a: Agent, id: number): AgentView {
         ctx: {
             name() { return a.name.short },
             occupation() { return a.occupation },
-            location() { return a.location.name.short },
+            location() { return a.location ? a.location.name.short : "Outdoors"},
         }
     }
 }
