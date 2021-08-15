@@ -184,7 +184,9 @@ give them different orders before they are done.`, [],
                     ``, 
                     [],
                     travelOrder(agent.agent, route));
-            }))
+            }).sort((o1, o2) => 
+                (o1.order.difficulty.value / o1.order.speed.value) - 
+                (o2.order.difficulty.value / o2.order.speed.value)))
     ];
 }
 
