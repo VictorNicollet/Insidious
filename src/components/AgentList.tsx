@@ -42,6 +42,7 @@ export function InnerAgentList(props: {
                         {world.locations[world.map.locations[agent.cell]].name.short}
                     </span>;
                 const orders = 
+                    agent.order.accumulated >= agent.order.difficulty.value ? <span className="no-orders">Needs orders</span> :
                     agent.order.kind == "recruit-agent" ? "Recruiting" :
                     agent.order.kind == "undercover" ? "Undercover" : 
                     "No orders"

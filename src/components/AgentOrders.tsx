@@ -13,6 +13,8 @@ import { Agent } from 'model/agents';
 
 function DescribeOrder(props: {order: Order}): JSX.Element {
     const order = props.order;
+    if (order.accumulated >= order.difficulty.value)
+        return <td className="no-orders">None</td>
     switch (order.kind) {
         case "undercover":
             return <td>Stay undercover</td>

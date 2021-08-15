@@ -862,6 +862,12 @@ button.go.right:disabled {
     vertical-align: middle;
 }
 
+/* typography */
+
+.no-orders {
+    color: #D66;
+}
+
 /* icons */
 
 span.gold {
