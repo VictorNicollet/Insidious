@@ -2,17 +2,15 @@ import { h, JSX } from "preact"
 import { AgentView, } from 'view/agents'
 import { Order, undercover, daysRemaining } from 'model/orders'
 import { never } from 'never';
-import { signedDecimal, days, decimal } from './numbers';
+import { signedDecimal, decimal } from './numbers';
 import { useState, useMemo, useCallback } from 'preact/hooks';
 import { Tooltip } from './Tooltip';
-import { occupations, Occupation, presenceByLocationKind } from 'model/occupation';
+import { occupations } from 'model/occupation';
 import { occupationTooltip } from './help';
-import { explain, Reason, Explained } from 'model/explainable';
-import { Location } from 'model/locations';
-import { Agent } from 'model/agents';
+import { Explained } from 'model/explainable';
 import { useWorld } from './Context';
-import { world, WorldView } from 'view/world';
-import { Route } from 'model/routes';
+import { WorldView } from 'view/world';
+import { recruitOrder, travelOrder } from 'model/neworder';
 
 function DescribeOrder(props: {order: Order}): JSX.Element {
     const world = useWorld();
@@ -122,51 +120,6 @@ class OrderNode {
             this.order = childrenOrOrder;
             this.disabled = undefined;
         }
-    }
-}
-
-// Produces a "recruit-agent" order, or an impossibility message
-function recruitOrder(occupation: Occupation, agent: Agent, location: Location): Order|string {
-    const ease = presenceByLocationKind[location.kind][occupation];
-    const cellKind = location.world.map.cells[location.cell];
-
-    if (ease === 0) {
-        return `!!Cannot recruit a ${occupation} ${cellKind.inThis()}.!!`
-    }
-
-    const difficulty = explain([
-        {why: "Base", contrib: 2}, 
-        {why: `${occupation} ${cellKind.inThis()}`, contrib: 60 / ease}]);
-
-    const multipliers: Reason[] = [
-        {why: "Skill", contrib: agent.stats.recruit.value}
-    ]
-
-    if (agent.occupation == occupation)
-        multipliers.push({why: "Same occupation", contrib: agent.stats.recruit.value});
-
-    const speed = explain(multipliers, 2)
-
-    return {
-        kind: "recruit-agent",
-        occupation,
-        difficulty,
-        speed,
-        accumulated: 0
-    }
-}
-
-function travelOrder(agent: Agent, route: Route): Order|string {
-    return {
-        kind: "travel",
-        sail: route.sail,
-        difficulty: explain([{why: "Travel", contrib: route.distance}]),
-        speed: explain([
-            route.sail ? {why: "Sail", contrib: 1} : 
-            {why: "Skill", contrib: agent.stats.outdoors.value}
-        ]),
-        accumulated: 0,
-        path: []
     }
 }
 
