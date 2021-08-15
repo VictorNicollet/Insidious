@@ -1,93 +1,87 @@
 import { h, JSX } from "preact"
 import { Map, pick, cellPos } from 'components/Map'
-import { Cell, Grid } from 'model/grid';
-import { StateUpdater, useRef, useMemo, useState, useCallback, useEffect } from 'preact/hooks';
-import { LocationView } from 'view/locations';
+import type { Cell } from 'model/grid';
+import { useState, useCallback, useEffect } from 'preact/hooks';
 import { useWorld } from './Context';
+import type { Selection } from './Screen';
 
 export type MapScrollerProps = {
     // Dimensions of the screen
     screenH: number
     screenW: number
-    // When a location is selected OR unselected by clicking
-    onLocation: (location: (LocationView|undefined)) => void
+    // What is currently selected, and how to change it. 
+    selected: Selection
+    setSelected: (sel: Selection) => void
 }
 
-type MapScrollerState = [number, number, Cell|undefined]
+type MapScrollerState = [number, number]
 
 type MapScroller = {
     (props: MapScrollerProps): JSX.Element
     select: (cell: Cell) => void
 }
 
-export function useMapScroller(grid: Grid): MapScroller {
-    const ctrl = useRef<StateUpdater<MapScrollerState>>()
-    return useMemo(() => 
-    {
-        const Component = ((props: MapScrollerProps): JSX.Element => {
+export function MapScroller(props: MapScrollerProps): JSX.Element {
 
-            const {screenW, screenH, onLocation} = props;
-            const world = useWorld();
-            const {map, locations} = world;
-            const locByCell = map.locations;
+    const {screenW, screenH, selected, setSelected} = props;
+    const world = useWorld();
+    const {map, locations} = world;
+    const {locations:locByCell, grid} = map;
 
-            // Initially center on the first location
-            const [ix, iy] = cellPos(world.initial, grid)
+    // Initially center on the first location
+    const [ix, iy] = cellPos(world.initial, grid)
 
-            const [[x,y,selected], setState] = 
-                useState<MapScrollerState>([ix, iy, undefined]);
+    const [[selfx,selfy], setState] = 
+        useState<MapScrollerState>([ix, iy]);
 
-            useEffect(() => {ctrl.current = setState});
+    // Determine if we need to override the position based on an 
+    // active selection ?
+    const cell = 
+        selected.selected === "agent"    ? world.agents[selected.id].cell :
+        selected.selected === "location" ? world.locations[selected.id].cell :
+        undefined;
 
-            const left = screenW/2 - x;
-            const top  = screenH/2 - y;
+    const [x,y] = 
+        typeof cell === "undefined" ? [selfx, selfy] :
+        cellPos(cell, grid);
 
-            const onClick = useCallback(function(e: h.JSX.TargetedEvent<HTMLDivElement, MouseEvent>) {
-                setState(state => {
-                    const [ox, oy, osel] = state;
-                    // If something was selected, just unselect it.
-                    if (typeof osel !== "undefined") {
-                        onLocation(undefined);
-                        return [ox,oy,undefined]
-                    }
-                    // Undo the transformation by subtracting [left,top]
-                    // from the client location of the click.
-                    const x = e.clientX - (screenW/2 - state[0]);
-                    const y = e.clientY - (screenH/2 - state[1]);
-                    const cell = pick(x, y, grid);
-                    if (typeof cell === "undefined") return state;
-                    // Check that the clicked cell is visible
-                    if (!map.vision[cell]) return state;
-                    const [cx,cy] = cellPos(cell, grid);
-                    const sel = locByCell[cell];
-                    if (sel === undefined) return [cx,cy,undefined];
-                    onLocation(locations[sel]);
-                    return [cx,cy,cell];
-                });
-            }, [screenW, screenH, setState, grid, locByCell, map.vision, onLocation, locations])
-            
-            return <div className="gui-map" onClick={onClick}>
-                <div style={{
-                    position: "relative", 
-                    left, 
-                    top,
-                    transition: "left top",
-                    transitionDuration: "0.2s",
-                    transitionTimingFunction: "ease-out"
-                }}>
-                    <Map world={world} selected={selected} />
-                </div>
-            </div>
-        }) as MapScroller;
+    if (x != selfx || y != selfy)
+        setState([x,y])
 
-        Component.select = function(cell: Cell) {
-            const [x,y] = cellPos(cell, grid);
-            ctrl.current &&
-            ctrl.current([x,y,cell])
-        }
+    const left = screenW/2 - x;
+    const top  = screenH/2 - y;
 
-        return Component
-
-    }, [ctrl, grid]);
+    const onClick = useCallback(function(e: h.JSX.TargetedEvent<HTMLDivElement, MouseEvent>) {
+        setState(state => {
+            // Undo the transformation by subtracting [left,top]
+            // from the client location of the click.
+            const x = e.clientX - (screenW/2 - state[0]);
+            const y = e.clientY - (screenH/2 - state[1]);
+            const cell = pick(x, y, grid);
+            if (typeof cell === "undefined") return state;
+            // Check that the clicked cell is visible
+            if (!map.vision[cell]) return state;
+            const [cx,cy] = cellPos(cell, grid);
+            const sel = locByCell[cell];
+            if (sel === undefined) {
+                setSelected({selected:"none"});
+                return [cx,cy];
+            }
+            setSelected({selected:"location",id:sel});
+            return [cx,cy];
+        });
+    }, [screenW, screenH, setState, grid, locByCell, map.vision, selected, setSelected, locations])
+    
+    return <div className="gui-map" onClick={onClick}>
+        <div style={{
+            position: "relative", 
+            left, 
+            top,
+            transition: "left top",
+            transitionDuration: "0.2s",
+            transitionTimingFunction: "ease-out"
+        }}>
+            <Map world={world} selected={cell} />
+        </div>
+    </div>
 }
-

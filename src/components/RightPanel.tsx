@@ -1,20 +1,16 @@
 import { h, JSX } from "preact"
-import { useState, useMemo, useRef, useEffect, StateUpdater, useCallback } from 'preact/hooks';
-import { LocationView } from 'view/locations';
+import { useCallback } from 'preact/hooks';
 import { LocationDetails } from './LocationDetails';
 import { AgentDetails } from './AgentDetails';
-
-export type RightPanelShown = { 
-    what: "location"
-    location: number
-} | {
-    what: "agent" 
-    agent: number
-} | undefined
+import type { Selection } from './Screen'
+import { never } from 'never';
 
 export type RightPanelProps = {
     screenH: number
     screenW: number
+    // What is currently selected, and how to change it. 
+    selected: Selection
+    setSelected: (sel: Selection) => void    
 }
 
 const MARGINTOP = 10;
@@ -23,63 +19,32 @@ const MARGINBOT = 57;
 // The right panel provides information and actions about an individual
 // element (a location, an agent)
 
-type RightPanel = {
-    (props: RightPanelProps): JSX.Element
-    show: (shown: RightPanelShown) => void
-    showLocation: (location: LocationView|undefined) => void
-}
+export function RightPanel(props: RightPanelProps): JSX.Element {            
+    
+    const {selected, setSelected} = props;
 
-export function useRightPanel(): RightPanel {
-    const ctrl = useRef<StateUpdater<RightPanelShown>>();
-    return useMemo(() => 
-    {
-        const Component = ((props: RightPanelProps): JSX.Element => {
-            
-            const [shown, setShown] = useState<RightPanelShown>();
-            
-            useEffect(() => {ctrl.current = setShown});
+    const close = useCallback(() => setSelected({selected:"none"}), [setSelected]);
 
-            const close = useCallback(() => setShown(undefined), [setShown]);
+    if (selected.selected == "none") return <div></div>;
 
-            if (!shown) return <div></div>;
+    const height = props.screenH - MARGINTOP - MARGINBOT;
 
-            const height = props.screenH - MARGINTOP - MARGINBOT;
-
-            function contents() {
-                if (shown.what === "location") 
-                    return <LocationDetails location={shown.location} 
-                                            height={height}
-                                            close={close} />;
-                return <AgentDetails agent={shown.agent}
-                                     height={height}
-                                     close={close} />;
-            }
-
-            return <div style={{
-                position: "fixed",
-                right: 10,
-                top: MARGINTOP,
-                bottom: MARGINBOT,
-                width: 480,
-                zIndex: 100
-            }}>{contents()}</div>
-        }) as RightPanel;
-
-        Component.show = function(shown?: RightPanelShown) {
-            ctrl.current && ctrl.current(shown);
-        }
-
-        Component.showLocation = function(location: LocationView|undefined) {
-            ctrl.current && ctrl.current(old => 
-                // If want to show no location, hide the current location
-                (location === undefined && old && old.what === "location") ? undefined :
-                // If want to show a location, show it
-                location ? { what: "location", location: location.id } : 
-                // Do nothing
-                old);
-        }
-
-        return Component;
-
-    }, [ctrl]);
+    return <div style={{
+        position: "fixed",
+        right: 10,
+        top: MARGINTOP,
+        bottom: MARGINBOT,
+        width: 480,
+        zIndex: 100
+    }}>
+        {selected.selected == "agent" ? 
+            <AgentDetails agent={selected.id}
+                height={height}
+                close={close}/> :
+         selected.selected === "location" ? 
+            <LocationDetails location={selected.id} 
+                height={height}
+                close={close} /> :
+        never(selected)}
+    </div>;
 }

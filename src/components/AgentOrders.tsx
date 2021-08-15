@@ -177,7 +177,6 @@ give them different orders before they are done.`, [],
         new OrderNode("Travel to...", ``, [], 
             world.routes.allFrom(agent.cell).map(route => 
             {
-                console.log("Route: %o", route)
                 const location = world.locations[route.to];
                 return new OrderNode(
                     (route.sail ? "Sail to " : "Travel to ") + location.name.short,

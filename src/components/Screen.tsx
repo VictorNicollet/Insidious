@@ -1,14 +1,24 @@
 import { h, JSX } from "preact"
-import { useMapScroller } from './MapScroller';
+import { MapScroller } from './MapScroller';
 import { useLeftPanel } from './LeftPanel';
 import * as WorldView from 'view/world';
 import { Navbar } from './Navbar';
 import { useState, useEffect, useCallback } from 'preact/hooks';
-import { useRightPanel } from './RightPanel';
+import { RightPanel } from './RightPanel';
 import { LocationView } from 'view/locations';
 import { AgentView } from 'view/agents';
 import { Context } from './Context';
 import { World } from 'model/world';
+
+export type Selection = {
+    selected: "agent"
+    id: number
+} | {
+    selected: "location"
+    id: number
+} | {
+    selected: "none"
+}
 
 export function Screen(props: { world: World }): JSX.Element {
     
@@ -34,30 +44,35 @@ export function Screen(props: { world: World }): JSX.Element {
         return () => window.removeEventListener("resize", onResize);
     })
 
+    // Selected element management ===========================================
+
+    const [selected, setSelected] = useState<Selection>({selected: "none"});
+
     // Sub-components ========================================================
 
     const LeftPanel = useLeftPanel();
-    const RightPanel = useRightPanel();
-    const MapScroller = useMapScroller(world.map.grid);
 
     const selectLocation = useCallback((location: LocationView) => {
-        MapScroller.select(location.cell);
-        RightPanel.show({what: "location", location: location.id});
-    }, [MapScroller, RightPanel])
+        setSelected({selected: "location", id: location.id})
+    }, [setSelected])
 
     const selectAgent = useCallback((agent: AgentView) => {
-        MapScroller.select(agent.cell);
-        RightPanel.show({what: "agent", agent: agent.id})
-    }, [MapScroller, RightPanel])
+        setSelected({selected: "agent", id: agent.id})
+    }, [setSelected])
 
     return <div>
         <Context world={world} agent={selectAgent} location={selectLocation}>
             <MapScroller 
                 screenH={screenH}
                 screenW={screenW}
-                onLocation={RightPanel.showLocation} />
+                selected={selected}
+                setSelected={setSelected}/>
             <LeftPanel screenH={screenH} screenW={screenW} />
-            <RightPanel screenH={screenH} screenW={screenW} />
+            <RightPanel 
+                selected={selected} 
+                setSelected={setSelected}
+                screenH={screenH} 
+                screenW={screenW} />
             <Navbar 
                 left={LeftPanel.toggle} />
         </Context>
