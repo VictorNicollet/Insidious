@@ -835,7 +835,9 @@ button.go.right:disabled {
     width: 128px;
     content: "";
     display: block;
-    background: linear-gradient(0, rgba(255,255,244,0.5), rgba(255,255,244,0))
+    background: linear-gradient(0, rgba(255,255,244,0.5), rgba(255,255,244,0));
+    position: absolute;
+    top: 0;
 }
 
 .hex .name {
@@ -853,8 +855,6 @@ button.go.right:disabled {
     margin-left: -20px;
     margin-right: -20px;
 }
-
-.unselected .hex .name { display: none }
 
 .hex .name .gui-agent-count {
     display: inline-block;
