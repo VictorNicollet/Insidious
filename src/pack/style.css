@@ -362,6 +362,21 @@ button.go.right:disabled {
     font-size: 13px;
 }
 
+/* .gui-order-progress */
+
+.gui-order-progress {
+    position: relative;
+    padding-right: 35px;
+}
+
+.gui-order-progress > span {
+    position: absolute;
+    right: 0px;
+    top: 2px;
+    font-size: 13px;
+    line-height: 16px;
+}
+
 /* .gui-order */
 
 .gui-order {
@@ -428,6 +443,29 @@ button.go.right:disabled {
     border-image: url("../../BigAssets/Citadel RPG GUI/Sliced/Player Cast Bar/cb_fill.png") 7 1 fill / 7px 1px;
     border-image-repeat: repeat;
     height: 15px;
+}
+
+.progress-time {
+    border-image: url("../../BigAssets/Citadel RPG GUI/Sliced/Box - Crafting/skill_xp_empty_frame.png") 11 20 fill / 11px 20px;
+    border-image-repeat: repeat;
+    height: 21px;
+    padding: 6px 20px;
+    position: relative;
+}
+
+.progress-time::after {
+    display: block;
+    position: absolute;
+    content: "";
+    inset: 6px 20px;
+    border-image: url("../../BigAssets/Citadel RPG GUI/Sliced/Box - Crafting/skill_xp_gloss.png") 7 1 fill / 7px 1px;
+    border-image-repeat: repeat;
+}
+
+.progress-time > div {
+    border-image: url("../../BigAssets/Citadel RPG GUI/Sliced/Box - Crafting/skill_xp_fill.png") 3 4 fill / 6px 4px;
+    border-image-repeat: repeat;
+    height: 9px;
 }
 
 /* .tooltip */

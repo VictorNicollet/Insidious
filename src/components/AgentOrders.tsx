@@ -196,10 +196,25 @@ give them different orders before they are done.`, [],
     ];
 }
 
+function OrderProgress(props: {
+    order: Order
+}): JSX.Element {
+    const fractionDone = props.order.accumulated / props.order.difficulty.value;
+    return <div className="gui-order-progress">
+        <div className="progress-time">
+            <div style={{width:fractionDone + "%"}}></div>
+        </div>
+        <span>
+            <span className="turns"/><b>{daysRemaining(props.order)}</b> 
+        </span>
+    </div>
+}
+
 export function AgentOrders(props: {
     agent: AgentView
 }): JSX.Element {
     
+    const order = props.agent.order;
     const [descent, setDescent] = useState<number[]>([])
     
     let nodes: OrderNode[] = useMemo(() => 
@@ -217,8 +232,10 @@ export function AgentOrders(props: {
 
     return <div className="gui-give-orders">
         <table className="gui-info-table">
-            <tr><th>Current orders</th><DescribeOrder order={props.agent.order}/></tr>
+            <tr><th>Current orders</th><DescribeOrder order={order}/></tr>
         </table>
+        {order.accumulated >= order.difficulty.value ? undefined : 
+            <OrderProgress order={order}/>}
         <hr/>
         {nodes.map((node, i) => 
             <Order key={i}
