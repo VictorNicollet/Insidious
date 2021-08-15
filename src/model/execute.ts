@@ -20,6 +20,8 @@ function countDailyResourcesForOrder(
             return;
         case "recruit-agent":
             return;
+        case "travel":
+            return;
         default: 
             never(order);
     }
@@ -51,6 +53,7 @@ export function executeOrder(agent: Agent): Order {
 
     switch (order.kind) {
         case "undercover": break;
+        case "travel": break;
         case "recruit-agent": 
             if (isDone) {
                 // The recruited agent's level is one less than the recruiting

@@ -4,6 +4,9 @@ import type { CellKind, WorldMap } from '../model/map'
 export type MapView = {
     readonly grid : Grid
     readonly cells : readonly CellKind[]
+    
+    // If this cell is occupied by a location, the index of that location
+    // in the world's 'seenLocations' array
     readonly locations : readonly (number|undefined)[]
     
     // 0 if not visible, 1 if in fog, > 1 if visible.

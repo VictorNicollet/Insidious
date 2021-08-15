@@ -1,12 +1,13 @@
 import { Location } from "./locations"
 import { Agent } from "./agents"
-import { PersonName, LocationName } from './names';
+import type { PersonName, LocationName } from './names';
 import { WorldMap } from './map';
-import { Cell, Grid } from './grid';
-import { ByOccupation, Occupation } from './occupation';
-import { Resources, ResourcesOf } from './resources';
+import type { Cell, Grid } from './grid';
+import type { ByOccupation, Occupation } from './occupation';
+import type { Resources, ResourcesOf } from './resources';
 import { countDailyResources, executeOrder } from './execute';
 import { Explained, Reason, explain, dedup } from './explainable';
+import { Routes } from './routes';
 
 export class World {
     private readonly _locations : Location[]
@@ -16,12 +17,16 @@ export class World {
     public readonly seenLocations : Location[]
     public readonly resources: Resources
 
+    // Pathfinding cache, cleared every time map visibility changes.
+    private _routes : Routes|undefined
+
     constructor(grid: Grid) {
         this._locations = [];
         this._agents = [];
         this._listeners = [];
         this.seenLocations = [];
         this.map = new WorldMap(grid, this);
+        this._routes = undefined
         this.resources = { gold: 0, touch: 0 }
     }
 
@@ -60,8 +65,10 @@ export class World {
                 seen += this.map.makeSeen(other.cell, 1)
         }
 
-        if (seen > 0)
+        if (seen > 0) {
             this.refreshSeenLocations();
+            this._routes = undefined;
+        }
     }
 
     // Add any visible locations to 'seenLocations' if they were
@@ -72,6 +79,13 @@ export class World {
             if (this.seenLocations.indexOf(loc) >= 0) continue;
             this.seenLocations.push(loc);
         }
+    }
+
+    // Return all available routes, re-computing them if necessary.
+    public routes(): Routes  {
+        if (this._routes === undefined)
+            this._routes = new Routes(this.map);
+        return this._routes;
     }
 
     // Compute the current daily resource production (does not include

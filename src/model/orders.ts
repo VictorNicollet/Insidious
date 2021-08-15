@@ -1,5 +1,6 @@
 import type { Occupation } from './occupation'
 import type { Explained } from './explainable'
+import { Cell } from './grid'
 
 // An order to stay undercover and act as one's outward occupation
 export type UndercoverOrder = {
@@ -13,8 +14,18 @@ export type RecruitAgentOrder = {
     readonly occupation: Occupation
 }
 
+// An order to travel along a path
+export type TravelOrder = {
+    readonly kind : "travel"
+    readonly sail : boolean
+    // The cells in the path, and for each cell, the 
+    // difficulty of moving to the next cell.
+    readonly path : readonly [number, Cell][]
+}
+
 export type Order = 
     ( UndercoverOrder 
+    | TravelOrder
     | RecruitAgentOrder ) & {
     // The difficulty.
     readonly difficulty: Explained

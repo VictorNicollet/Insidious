@@ -10,8 +10,12 @@ import { occupationTooltip } from './help';
 import { explain, Reason, Explained } from 'model/explainable';
 import { Location } from 'model/locations';
 import { Agent } from 'model/agents';
+import { useWorld } from './Context';
+import { world, WorldView } from 'view/world';
+import { Route } from 'model/routes';
 
 function DescribeOrder(props: {order: Order}): JSX.Element {
+    const world = useWorld();
     const order = props.order;
     if (order.accumulated >= order.difficulty.value)
         return <td className="no-orders">None</td>
@@ -20,6 +24,12 @@ function DescribeOrder(props: {order: Order}): JSX.Element {
             return <td>Stay undercover</td>
         case "recruit-agent":
             return <td>Recruit a {order.occupation}</td>
+        case "travel":
+            const [,dest] = order.path[order.path.length - 1];
+            const location = world.map.locations[dest];
+            if (typeof location === "undefined")
+                return <td>{order.sail ? "Sail" : "Travel"}</td>
+            return <td>{order.sail ? "Sail" : "Travel"} to {world.locations[location].name.short}</td>
         default: return never<JSX.Element>(order);
     }
 }
@@ -146,7 +156,21 @@ function recruitOrder(occupation: Occupation, agent: Agent, location: Location):
     }
 }
 
-function makeOrderTree(agent: AgentView): OrderNode[] {
+function travelOrder(agent: Agent, route: Route): Order|string {
+    return {
+        kind: "travel",
+        sail: route.sail,
+        difficulty: explain([{why: "Travel", contrib: route.distance}]),
+        speed: explain([
+            route.sail ? {why: "Sail", contrib: 1} : 
+            {why: "Skill", contrib: agent.stats.outdoors.value}
+        ]),
+        accumulated: 0,
+        path: []
+    }
+}
+
+function makeOrderTree(agent: AgentView, world: WorldView): OrderNode[] {
     
     const undercoverEffects : [Effect, string][] = 
         [["gold", signedDecimal(agent.stats.idleIncome.value) + "/day"]]
@@ -195,6 +219,19 @@ give them different orders before they are done.`, [],
                 [],
                 recruitOrder(occupation, agent.agent, location)))
         ),
+
+        // TRAVELING =========================================================
+        new OrderNode("Travel to...", ``, [], 
+            world.routes.allFrom(agent.cell).map(route => 
+            {
+                console.log("Route: %o", route)
+                const location = world.locations[route.to];
+                return new OrderNode(
+                    (route.sail ? "Sail to " : "Travel to ") + location.name.short,
+                    ``, 
+                    [],
+                    travelOrder(agent.agent, route));
+            }))
     ];
 }
 
@@ -218,10 +255,11 @@ export function AgentOrders(props: {
     
     const order = props.agent.order;
     const [descent, setDescent] = useState<number[]>([])
-    
+    const world = useWorld();
+
     let nodes: OrderNode[] = useMemo(() => 
-        makeOrderTree(props.agent),
-        [props.agent]);
+        makeOrderTree(props.agent, world),
+        [props.agent, world]);
 
     for (let d of descent) nodes = nodes[d].children;
 

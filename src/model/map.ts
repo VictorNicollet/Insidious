@@ -12,6 +12,7 @@ export class CellKind {
     public readonly maxCount : number
     constructor(
         public readonly aspect: string,
+        public readonly difficulty: number,
         public readonly an: string,
         public readonly name: string,
         public readonly hasVariants: boolean,
@@ -40,38 +41,37 @@ export class CellKind {
     }
 }
 
-
-export const none         = new CellKind("",                "",    "[bug]",            false)
-export const ocean        = new CellKind("ocean",           "the", "ocean",            true)
-export const plains       = new CellKind("plains",          "the", "plains",           true)
-export const forest       = new CellKind("forest",          "a",   "forest",           true)
-export const marsh        = new CellKind("marsh",           "the", "wetlands",         true)
-export const moor         = new CellKind("moor",            "a",   "moorland",         true)
-export const hills        = new CellKind("hills",           "the", "hills",            true)
-export const mountain     = new CellKind("mountain",        "the", "mountains",        true)
-export const farm         = new CellKind("farm",            "a",   "farmland",         true)
-export const graveyard    = new CellKind("graveyard",       "",    "Flooded Ruins",    false, 2, "xs")
-export const henge        = new CellKind("henge",           "",    "Ancient Ruins",    false, 2, "xs")
-export const foresterA    = new CellKind("forester0",       "a",   "Lumber Camp",      false, 0, "xs")
-export const foresterB    = new CellKind("forester1",       "a",   "Lumber Camp",      false, 0, "xs")
-export const templeRuins  = new CellKind("temple-ruins",    "",    "Temple Ruins",     false, 1, "xs")
-export const villageUnder = new CellKind("village-under",   "a",   "Village",          false, 2, "xs")
-export const smithy       = new CellKind("smithy",          "",    "Iron Works",       false, 4, "s")
-export const mountainMine = new CellKind("mountain-mine",   "a",   "Mining Town",      true,  0, "s")
-export const hillsMine    = new CellKind("hills-mine",      "a",   "Mining Town",      true,  0, "s")
-export const forestRuins  = new CellKind("forest-ruins",    "",    "Overgrown Ruins",  false, 2, "s")
-export const inn          = new CellKind("inn",             "an",  "Inn",              false, 4, "s")
-export const academy      = new CellKind("temple",          "the", "Magic Academy",    false, 1, "s")
-export const villageSmall = new CellKind("village-small",   "a",   "Town",             true,  0, "sm")
-export const village      = new CellKind("village",         "a",   "Town",             true,  0, "m")
-export const elvenLodge   = new CellKind("elven-lodge",     "a",   "Lodge",            false, 1, "l")
-export const castleA      = new CellKind("castle-red",      "a",   "City",             false, 0, "l")
-export const castleB      = new CellKind("castle-green",    "a",   "City",             false, 0, "l")
-export const castleC      = new CellKind("castle-blue",     "a",   "City",             false, 0, "l")
-export const castleD      = new CellKind("mountain-castle", "a",   "Fortress",         false, 1, "l")
-export const castleE      = new CellKind("walled-city",     "a",   "City",             false, 0, "l")
-export const fortA        = new CellKind("fortress",        "a",   "Fortress",         false, 0, "l")
-export const fortB        = new CellKind("dwarven-fort",    "a",   "Fortress",         false, 1, "l")
+export const none         = new CellKind("",                1, "",    "[bug]",            false)
+export const ocean        = new CellKind("ocean",           1, "the", "ocean",            true)
+export const plains       = new CellKind("plains",          1, "the", "plains",           true)
+export const forest       = new CellKind("forest",          3, "a",   "forest",           true)
+export const marsh        = new CellKind("marsh",           3, "the", "wetlands",         true)
+export const moor         = new CellKind("moor",            2, "a",   "moorland",         true)
+export const hills        = new CellKind("hills",           2, "the", "hills",            true)
+export const mountain     = new CellKind("mountain",        5, "the", "mountains",        true)
+export const farm         = new CellKind("farm",            1, "a",   "farmland",         true)
+export const graveyard    = new CellKind("graveyard",       1, "",    "Flooded Ruins",    false, 2, "xs")
+export const henge        = new CellKind("henge",           1, "",    "Ancient Ruins",    false, 2, "xs")
+export const foresterA    = new CellKind("forester0",       1, "a",   "Lumber Camp",      false, 0, "xs")
+export const foresterB    = new CellKind("forester1",       1, "a",   "Lumber Camp",      false, 0, "xs")
+export const templeRuins  = new CellKind("temple-ruins",    1, "",    "Temple Ruins",     false, 1, "xs")
+export const villageUnder = new CellKind("village-under",   1, "a",   "Village",          false, 2, "xs")
+export const smithy       = new CellKind("smithy",          1, "",    "Iron Works",       false, 4, "s")
+export const mountainMine = new CellKind("mountain-mine",   1, "a",   "Mining Town",      true,  0, "s")
+export const hillsMine    = new CellKind("hills-mine",      1, "a",   "Mining Town",      true,  0, "s")
+export const forestRuins  = new CellKind("forest-ruins",    1, "",    "Overgrown Ruins",  false, 2, "s")
+export const inn          = new CellKind("inn",             1, "an",  "Inn",              false, 4, "s")
+export const academy      = new CellKind("temple",          1, "the", "Magic Academy",    false, 1, "s")
+export const villageSmall = new CellKind("village-small",   1, "a",   "Town",             true,  0, "sm")
+export const village      = new CellKind("village",         1, "a",   "Town",             true,  0, "m")
+export const elvenLodge   = new CellKind("elven-lodge",     1, "a",   "Lodge",            false, 1, "l")
+export const castleA      = new CellKind("castle-red",      1, "a",   "City",             false, 0, "l")
+export const castleB      = new CellKind("castle-green",    1, "a",   "City",             false, 0, "l")
+export const castleC      = new CellKind("castle-blue",     1, "a",   "City",             false, 0, "l")
+export const castleD      = new CellKind("mountain-castle", 1, "a",   "Fortress",         false, 1, "l")
+export const castleE      = new CellKind("walled-city",     1, "a",   "City",             false, 0, "l")
+export const fortA        = new CellKind("fortress",        1, "a",   "Fortress",         false, 0, "l")
+export const fortB        = new CellKind("dwarven-fort",    1, "a",   "Fortress",         false, 1, "l")
 
 export class WorldMap { 
     public readonly cells: CellKind[]
