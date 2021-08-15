@@ -458,7 +458,7 @@ button.go.right:disabled {
     position: absolute;
     content: "";
     inset: 6px 20px;
-    border-image: url("../../BigAssets/Citadel RPG GUI/Sliced/Box - Crafting/skill_xp_gloss.png") 7 1 fill / 7px 1px;
+    border-image: url("../../BigAssets/Citadel RPG GUI/Sliced/Box - Crafting/skill_xp_gloss.png") 7 2 fill / 7px 2px;
     border-image-repeat: repeat;
 }
 
