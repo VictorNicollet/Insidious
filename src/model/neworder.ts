@@ -4,6 +4,7 @@ import type { Agent } from './agents';
 import type { Order } from './orders';
 import { explain, Reason } from './explainable';
 import { Route } from './routes';
+import { Cell } from './grid';
 
 // Produces a "recruit-agent" order, or an impossibility message
 export function recruitOrder(occupation: Occupation, agent: Agent, location: Location): Order|string {
@@ -38,6 +39,16 @@ export function recruitOrder(occupation: Occupation, agent: Agent, location: Loc
 
 // Produces a "travel" order along the specified route
 export function travelOrder(agent: Agent, route: Route): Order|string {
+    
+    const cells = agent.world.map.cells;
+
+    let offset = 0
+    let path : [number,Cell][] = []
+    for (let cell of route.steps) {
+        path.push([offset, cell]);
+        offset += cells[cell].difficulty;
+    }   
+
     return {
         kind: "travel",
         sail: route.sail,
@@ -47,6 +58,6 @@ export function travelOrder(agent: Agent, route: Route): Order|string {
             {why: "Skill", contrib: agent.stats.outdoors.value}
         ]),
         accumulated: 0,
-        path: []
+        path
     }
 }

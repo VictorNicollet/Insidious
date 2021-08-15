@@ -22,4 +22,26 @@ export class Agent {
         this.order = undercover;
         this.progress = 0;
     }
+
+    // Move the agent to a new cell.
+    public moveTo(cell: Cell) {
+        const map = this.world.map;
+        // Stop seeing the old cell
+        map.removeViewer(this.cell);
+
+        // Start seeing the new cell
+        this.cell = cell;
+        const seen = map.addViewer(cell);
+        if (seen > 0)
+            this.world.refreshSeenLocations();
+
+        // Is the new cell a location ? 
+        if (map.cells[cell].isLocation) {
+            const location = this.world.seenLocations.find(l => l.cell == cell);
+            this.location = location;
+            this.world.visitLocation(location);
+        } else {
+            this.location = undefined;
+        }
+    }
 }

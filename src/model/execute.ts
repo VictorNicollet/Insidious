@@ -41,19 +41,27 @@ export function executeOrder(agent: Agent): Order {
     const order = agent.order;
 
     // Nothing to do if order is already done.
-    if (order.accumulated >= order.difficulty.value) return order;
+    const {accumulated,difficulty,speed} = order;
+    if (accumulated >= difficulty.value) return order;
 
     // Increase the accumulated progress.
-    const accumulated = Math.min(
-        order.accumulated + order.speed.value,
-        order.difficulty.value);
+    const newAccumulated = Math.min(accumulated + speed.value, difficulty.value);
 
     // Flag: the order has completed during this turn.
-    const isDone = accumulated == order.difficulty.value;
+    const isDone = newAccumulated == difficulty.value;
 
     switch (order.kind) {
         case "undercover": break;
-        case "travel": break;
+        case "travel": 
+            for (let i = 0; i < order.path.length; ++i) {
+                const [difficulty, cell] = order.path[i];
+                // Already passed through this cell ?
+                if (difficulty <= accumulated) continue;
+                // Moved as far as possible ? 
+                if (difficulty > newAccumulated) break;
+                agent.moveTo(cell);
+            }
+            break;
         case "recruit-agent": 
             if (isDone) {
                 // The recruited agent's level is one less than the recruiting
@@ -73,5 +81,5 @@ export function executeOrder(agent: Agent): Order {
 
     // Orders are immutable (since they are used as both model and view)
     // so return a copy with the new accumulated progress.
-    return { ...agent.order, accumulated }
+    return { ...agent.order, accumulated: newAccumulated }
 }

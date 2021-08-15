@@ -73,11 +73,12 @@ export class World {
 
     // Add any visible locations to 'seenLocations' if they were
     // not already visible.
-    private refreshSeenLocations() {
+    public refreshSeenLocations() {
         for (let loc of this._locations) {
             if (this.map.vision[loc.cell] == 0) continue;
             if (this.seenLocations.indexOf(loc) >= 0) continue;
             this.seenLocations.push(loc);
+            this._routes = undefined;
         }
     }
 

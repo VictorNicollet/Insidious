@@ -10,6 +10,7 @@ export const largeLocationCells : CellKind[] = []
 export class CellKind {
     public readonly id : number
     public readonly maxCount : number
+    public readonly isLocation : boolean
     constructor(
         public readonly aspect: string,
         public readonly difficulty: number,
@@ -26,6 +27,7 @@ export class CellKind {
         if (size == "m" || size == "sm") mediumLocationCells.push(this);
         if (size == "l") largeLocationCells.push(this);
         this.maxCount = maxCount || 100000
+        this.isLocation = !!size;
     }
 
     // A human-readable 'in this location' sentence, e.g. 'in the ocean'
@@ -115,11 +117,29 @@ export class WorldMap {
     }
 
     // Add a viewer to a cell and the adjecent cells.
-    public addViewer(cell: Cell) {
-        const seen = this.vision;
-        const grid = this.grid;
-        seen[cell] = 1 + (seen[cell] || 1);
+    // Return number of newly discovered cells.
+    public addViewer(cell: Cell): number {
+        
+        let discovered = 0;
+        
+        const {vision, grid} = this;
+        
+        if (vision[cell] == 0) { ++discovered; vision[cell] = 1; }
+        vision[cell]++;
+
+        for (let adj of grid.adjacent(cell)) {
+            if (vision[adj] == 0) { ++discovered; vision[adj] = 1; }
+            vision[adj]++;
+        }
+
+        return discovered;
+    }
+
+    // Remove a viewer from a cell and the adjacent cells.
+    public removeViewer(cell: Cell) {
+        const {vision, grid} = this;
+        vision[cell]--;
         for (let adj of grid.adjacent(cell))
-            seen[adj] = 1 + (seen[adj] || 1);
+            vision[adj]--;
     }
 }
