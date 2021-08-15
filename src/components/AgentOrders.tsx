@@ -237,6 +237,12 @@ export function AgentOrders(props: {
         {order.accumulated >= order.difficulty.value ? undefined : 
             <OrderProgress order={order}/>}
         <hr/>
+        {descent.length == 0 ? 
+            <div style={{color:"#877",padding:"4px 2px"}}>Give new orders</div> : 
+            <button className="gui-order" 
+                onClick={() => setDescent(a => a.slice(0, a.length-1))}>
+            &larr; Back
+        </button>}
         {nodes.map((node, i) => 
             <Order key={i}
                 agent={props.agent}
