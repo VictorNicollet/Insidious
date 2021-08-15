@@ -862,6 +862,19 @@ button.go.right:disabled {
     vertical-align: middle;
 }
 
+.hex svg.path {
+    position: absolute;
+    z-index: 5;
+}
+
+.hex svg.path path {
+    stroke-width: 5px;
+    stroke: #C33;
+    stroke-dasharray: 8;
+    fill: none;
+    filter: drop-shadow(black 2px 2px 2px);
+}
+
 /* typography */
 
 .no-orders {

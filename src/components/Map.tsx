@@ -24,6 +24,39 @@ function variant(cell: Cell) {
     return (((cell >> 6) ^ (cell >> 4) ^ (cell >> 2) ^ cell) & 3).toString()
 }
 
+function PathSvg(props: {
+    originX: number,
+    originY: number,
+    myX: number,
+    myY: number,
+    destX: number,
+    destY: number
+}) {
+    const {originX, originY, myX, myY, destX, destY} = props;
+    const dx = CENTERX - myX;
+    const dy = CENTERY - myY;
+    const __html = [
+        "<path d=\"M",
+        ((originX + myX) / 2 + dx).toFixed(),
+        " ",
+        ((originY + myY) / 2 + dy).toFixed(),
+        "C",
+        CENTERX.toFixed(),
+        " ",
+        CENTERY.toFixed(),
+        ",",
+        CENTERX.toFixed(),
+        " ",
+        CENTERY.toFixed(),
+        ",",
+        ((destX + myX) / 2 + dx).toFixed(),
+        " ",
+        ((destY + myY) / 2 + dy).toFixed(),
+        "\"></path>"
+    ].join("");
+    return <svg className="path" width="128" height="192" dangerouslySetInnerHTML={{__html}}/>
+}
+
 // A cell in the grid.
 export function Cell(props: {
     cell: Cell
@@ -42,11 +75,20 @@ export function Cell(props: {
     const location = props.naked || typeof locations[props.cell] == "undefined"
         ? undefined : world.locations[locations[props.cell]];
     
+    const adjacents = world.map.grid.adjacent(props.cell);
+    const [fromx,fromy] = world.map.grid.uncell(adjacents[Math.floor(Math.random() * adjacents.length)]);
+    const [tox,toy] = world.map.grid.uncell(adjacents[Math.floor(Math.random() * adjacents.length)]);
+
     return <div className={"hex " + aspect + 
                            (hasVariants ? variant(props.cell) : "") +
                            (props.fog ? " fog" : "") + 
                            (props.selected ? " selected" : "") }  
              style={{left:props.left, top:props.top}}>
+        {/* <PathSvg myX={props.left} myY={props.top}
+                 originX={(fromx + yshift(fromy)) * TILEWIDTH - CENTERX}
+                 originY={fromy * TILEYOFFSET - CENTERY}
+                 destX={(tox + yshift(toy)) * TILEWIDTH - CENTERX}
+                 destY={toy * TILEYOFFSET - CENTERY}/> */}
         {location && <span className="name">
                         <AgentCount count={location.agents.length}/>
                         {location.name.short}
