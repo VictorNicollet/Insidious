@@ -15,9 +15,9 @@ function DescribeOrder(props: {order: Order}): JSX.Element {
     const order = props.order;
     switch (order.kind) {
         case "undercover":
-            return <td>Staying undercover</td>
+            return <td>Stay undercover</td>
         case "recruit-agent":
-            return <td>Recruiting a {order.occupation} agent</td>
+            return <td>Recruit a {order.occupation}</td>
         default: return never<JSX.Element>(order);
     }
 }
