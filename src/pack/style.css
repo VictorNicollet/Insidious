@@ -882,6 +882,19 @@ button.go.right:disabled {
     position: absolute;
     left: 25px;
     top: 53px;
+    box-shadow: black 2px 2px 3px;
+}
+
+.hex .portrait + .portrait + .portrait + .portrait {
+    display: none;
+}
+
+.hex .portrait + .portrait + .portrait {
+    top: 41px;
+}
+
+.hex .portrait + .portrait {
+    top: 47px;
 }
 
 /* typography */
