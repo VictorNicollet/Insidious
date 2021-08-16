@@ -204,6 +204,12 @@ ul.gui-agents .info {
     color: #877;
 }
 
+ul.gui-agents .portrait {
+    position: absolute;
+    top: 6px;
+    left: 4px;
+}
+
 /* .gui-locations */
 
 ul.gui-locations {
@@ -336,10 +342,7 @@ button.go.right:disabled {
 }
 
 .gui-agent-details .portrait {
-    width: 79px;
-    height: 77px;
     float: left;
-    background: url("../../BigAssets/Citadel RPG GUI/Sliced/Party Frames/party_portrait_frame.png")
 }
 
 .gui-agent-details .stat {
@@ -875,6 +878,12 @@ button.go.right:disabled {
     filter: drop-shadow(black 2px 2px 2px);
 }
 
+.hex .portrait {
+    position: absolute;
+    left: 25px;
+    top: 53px;
+}
+
 /* typography */
 
 .no-orders {
@@ -924,4 +933,23 @@ span.turns {
 span.turns + b {
     font-weight: normal;
     color: #0BE;
+}
+
+/* .portrait */
+
+.portrait {
+    border-radius: 38px;
+    width: 77px;
+    height: 77px;
+    border: 2px solid;
+    border-color: #666 #555 #555 #666;
+    background: url("../../BigAssets/Citadel RPG GUI/Sliced/Created Resources/character_rogue.png") center center no-repeat;
+}
+
+.portrait.small {
+    width: 38px;
+    height: 38px;
+    border-width: 1px;
+    border-radius: 19px;
+    background-size: 38px 38px;
 }

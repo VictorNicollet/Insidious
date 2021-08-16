@@ -48,6 +48,7 @@ export function InnerAgentList(props: {
                     "No orders"
                 return <li key={agent.id} 
                     onClick={() => selectors.agent(agent)}>
+                    <div className="portrait small"/>
                     <div className="name">
                         {agent.name.full}
                         <span className="job">{agent.occupation}</span>

@@ -63,6 +63,8 @@ export function MapCell(props: {
     selected?: boolean
     top: number
     left: number
+    // Display an agent's portrait on the cell ?
+    portraits: string[]
     // If in a path, the cell before and cell after
     pathBefore?: Cell
     pathAfter?: Cell 
@@ -92,6 +94,8 @@ export function MapCell(props: {
                            (props.selected ? " selected" : "") }  
              style={{left:props.left, top:props.top}}>
         {path}
+        {props.portraits.map((p,i) => 
+            <div key={p} className={"portrait " + p}/>)}
         {location && <span className="name">
                         <AgentCount count={location.agents.length}/>
                         {location.name.short}
@@ -105,7 +109,7 @@ export function Map(props: {
     path: readonly Cell[]|undefined
 }) {
 
-    const {map: {grid, vision}} = useWorld();
+    const {map: {grid, vision}, agents} = useWorld();
     const tiles : JSX.Element[] = []
 
     const [pathBefore, pathAfter] = useMemo<[(n: number) => Cell|undefined, 
@@ -125,6 +129,14 @@ export function Map(props: {
                 (n) => after[n] ? after[n] - 1 : undefined]
     }, [grid, props.path])
 
+    const portraits = useMemo<string[][]>(() => {
+        const portraits : string[][] = [];
+        for (let cell = 0; cell < grid.count; ++cell) portraits.push([]);
+        for (let agent of agents) 
+            portraits[agent.cell].push("x");
+        return portraits;
+    }, [agents, grid]);
+
     for (let y = 0; y < grid.side; ++y) {
         for (let x = 0; x < grid.side; ++x) {
             const cell = grid.cell(x,y);
@@ -135,6 +147,7 @@ export function Map(props: {
                 cell={cell} 
                 pathAfter={pathAfter(cell)}
                 pathBefore={pathBefore(cell)}
+                portraits={portraits[cell]}
                 selected={props.selected === cell}
                 top={y * TILEYOFFSET - CENTERY} 
                 left={(x + yshift(y)) * TILEWIDTH - CENTERX}/>)

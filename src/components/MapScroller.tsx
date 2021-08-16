@@ -22,7 +22,9 @@ type MapScroller = {
     select: (cell: Cell) => void
 }
 
-function agentCellAndPath(agent: AgentView): [Cell, readonly Cell[]|undefined] {
+function agentCellAndPath(
+    agent: AgentView
+): [Cell, readonly Cell[]|undefined] {
     if (agent.order.kind !== "travel") 
         return [agent.cell, undefined];
 
@@ -53,7 +55,7 @@ export function MapScroller(props: MapScrollerProps): JSX.Element {
         selected.selected === "agent"    
         ? agentCellAndPath(world.agents[selected.id]) :
         selected.selected === "location" 
-        ? [world.locations[selected.id].cell, undefined] :
+        ? [world.locations[selected.id].cell,undefined] :
             [undefined,undefined], 
         [selected, world]);
         

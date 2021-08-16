@@ -40,8 +40,9 @@ export function LocationList(props: {
                 return <li key={location.name.short} 
                     onClick={() => selectors.location(location)}>
                     <div className="location-mini">
-                        <M.Cell cell={location.cell}
+                        <M.MapCell cell={location.cell}
                                 top={-77} left={-39}
+                                portraits={[]}
                                 naked={true}/>
                     </div>
                     <AgentCount count={location.agents.length}/>
