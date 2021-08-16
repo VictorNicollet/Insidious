@@ -8,6 +8,7 @@ import type { Resources, ResourcesOf } from './resources';
 import { countDailyResources, executeOrder } from './execute';
 import { Explained, Reason, explain, dedup } from './explainable';
 import { Routes } from './routes';
+import { Message } from './message';
 
 export class World {
     private readonly _locations : Location[]
@@ -20,14 +21,37 @@ export class World {
     // Pathfinding cache, cleared every time map visibility changes.
     private _routes : Routes|undefined
 
+    // A *stack* of mssages to be displayed on the next render.
+    private readonly messages : Message[]
+
     constructor(grid: Grid) {
         this._locations = [];
         this._agents = [];
         this._listeners = [];
         this.seenLocations = [];
+        this.messages = [];
         this.map = new WorldMap(grid, this);
         this._routes = undefined
         this.resources = { gold: 0, touch: 0 }
+    }
+
+    // Add a new message, to be displayed on the next render.
+    // Multiple messages will be queued, and displayed one at a time,
+    // in reverse order (the last pushed message is displayed first)
+    public newMessage(message: Message) {
+        this.messages.push(message);
+    }
+
+    // Remove the first message (the one that would be 
+    // returned by 'firstMessage()'). 
+    // TODO: pass action arguments if needed.
+    public removeMessage() {
+        this.messages.shift();
+    }
+
+    // The first message, undefined if none.
+    public firstMessage() : Message|undefined {
+        return this.messages[0];
     }
 
     public newLocation(

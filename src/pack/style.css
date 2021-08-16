@@ -106,11 +106,18 @@
 }
 
 .gui-box-body p {
-    margin: 0 0 1em;
+    margin: 0;
+    color: #BAA;
+    line-height: 1.4em;
 }
 
-.gui-box-body p .name {
-    color: #DD3;
+.gui-box-body p + p {
+    margin-top: 1em;
+}
+
+.gui-box-body p b {
+    font-weight: normal;
+    color: #9CC;
 }
 
 .gui-box-body hr {
@@ -167,6 +174,21 @@
 .gui-box-tabs > button:disabled:hover {
     background: url("../../BigAssets/Citadel RPG GUI/Sliced/Box - Character Sheet/big_tab_s.png");
     cursor: auto;
+}
+
+/* .gui-box-modal */
+
+.gui-box-modal {
+    position: fixed;
+    inset:0;
+    background: rgba(0,0,0,0.2);
+    z-index:1000
+}
+
+.gui-box-modal .gui-box-body {
+    width: 530px;
+    margin: 50vh auto 0;
+    transform: translateY(-50%);
 }
 
 /* .gui-agents */

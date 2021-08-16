@@ -6,6 +6,7 @@ import * as Map from 'model/map';
 import { RandomBag } from './randombag';
 import { Occupation, occupations, byOccupation, ByOccupation, presenceByLocationKind } from 'model/occupation';
 import { objmap } from 'objmap';
+import * as Intro from "text/intro"
 
 // Produces a set of random location coordinates such that
 //  1. locations form a connected graph with edges of distance=3
@@ -278,6 +279,17 @@ export function generate() : World {
     const [occupation, levels] = initialOccupationAndLevels(last);
     const agent = world.newAgent(randomPerson(), last, occupation, levels);
     
+    // Initial message !
+    world.newMessage({
+        contents: Intro.intro.toHTML({
+            god: "PLAYERNAME",
+            agent: agent.name.short,
+            location: last.name.short,
+            occupation: agent.occupation.toLocaleLowerCase(),
+            aspect: "blood"
+        })
+    })
+
     // Initial gold equals a week's worth of income
     world.resources.gold = Math.floor(7 * agent.stats.idleIncome.value);
 

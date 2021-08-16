@@ -17,6 +17,15 @@ export function Tabs(props: {
     </div>
 }
 
+export function ModalBox(props: {
+    children: ComponentChildren,
+    close?: () => void
+}): JSX.Element {
+    return <div className="gui-box-modal" onClick={props.close}>
+        <div className="gui-box-body">{props.children}</div>
+    </div>;
+}
+
 export function Box<Tab extends string>(props: {
     title: string
     decorate?: boolean

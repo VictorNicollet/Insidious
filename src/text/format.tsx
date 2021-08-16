@@ -1,7 +1,21 @@
 import { h, JSX } from "preact"
 
 export type TxtFormat = string
-export type TxtContext = { [key: string]: () => string }
+export type TxtContext = { [key: string]: string|(() => string) }
+
+export type TxtFormatEx<T extends TxtContext> = { 
+    format: TxtFormat
+    toHTML: (t: T) => JSX.Element[] 
+}
+
+function style(html: string) {
+    const match = /^\/([^\/]*)\//.exec(html);
+    return match ? match[1] : "";
+}
+
+function unstyle(html: string) {
+    return html.replace(/^\/[^\/]*\//, "");
+}
 
 // Convert a 'tooltip content' string into HTML. 
 // 
@@ -23,7 +37,8 @@ export function toHTML(
     // Replace all inserts. 
     return tip.replace(/#[a-z]+#/g, match => {
         const call = match.substr(1, match.length - 2);
-        return "*" + ctx[call]() + "*";
+        const prop = ctx[call];
+        return "*" + (typeof prop == "string" ? prop : prop()) + "*";
     })
 
     // Don't leak any unescaped HTML, including from inserts 
@@ -58,5 +73,10 @@ export function toHTML(
     .split(/\n\s*\n/g).filter(s => s).map(html => 
         /^%\d+\s*$/.test(html) 
             ? inserts[Number(html.substring(1))]
-            : <p dangerouslySetInnerHTML={{__html:html}}/>);
+            : <p style={style(html)} dangerouslySetInnerHTML={{__html:unstyle(html)}}/>);
+}
+
+// Create a type-tagged format.
+export function format<T extends TxtContext>(format: string) : TxtFormatEx<T> {
+    return {format, toHTML: (ctx: T) => toHTML(format, ctx, [])}
 }
