@@ -1,7 +1,8 @@
-import { ByOccupation } from 'model/occupation';
-import { TooltipContent } from './Tooltip';
+import type { ByOccupation } from 'model/occupation';
+import type { TxtFormat } from './format';
+import type { StatsOf } from 'model/stats';
 
-export const occupationTooltip : ByOccupation<TooltipContent> = {
+export const occupationTooltip : ByOccupation<TxtFormat> = {
     Noble: `
 *Nobles* wield political power, though many are merely cousins or younger
 siblings of the actual dukes and earls. They have access to the closed
@@ -57,4 +58,26 @@ danger.
 
 They are the best at traveling *outdoors*, and decent in 
 *combat*.`,
+}
+
+export const statTip : StatsOf<TxtFormat> = {
+    recruit: `
+How quickly this agent can recruit other agents. Effectiveness is
+doubled when recruiting an agent of the same occupation.`,
+    idleIncome: `
+Amount of :gold: produced (or consumed) by this agent, for every 
+day spent under cover.`,
+    outdoors: `
+How fast this agent can travel outdoors. Also reduces the risk of 
+encountering bandits or wild beasts. Does not apply to sailing.`,
+    combat: `
+How well this agent can fight.`,
+    conduit: `
+How well this agent can act as a conduit for your :touch:.
+Rituals performed by a good conduit are more effective. 
+Also increases your :touch: by this amount every day.`,
+    deceit: `
+How well this agent can deceive and manipulate others, 
+and spread lies and rumors. Also makes the agent less 
+suspicious, gaining less exposure from their actions.`
 }

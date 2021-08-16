@@ -2,9 +2,10 @@ import { h, JSX } from "preact"
 import { StatsOf, Stats, maxStats, allStats } from "model/stats";
 import { decimal } from './numbers';
 import { useState } from 'preact/hooks';
-import { Tooltip, TooltipContent } from './Tooltip';
+import { Tooltip } from './Tooltip';
 import type { AgentView } from 'view/agents';
-import { Explained } from 'model/explainable';
+import type { Explained } from 'model/explainable';
+import { statTip } from 'text/help';
 
 const statName : StatsOf<string> = {
     recruit:    "Recruitment",
@@ -13,28 +14,6 @@ const statName : StatsOf<string> = {
     combat:     "Combat",
     conduit:    "Conduit",
     deceit:     "Deceit"
-}
-
-const statTip : StatsOf<TooltipContent> = {
-    recruit: `
-How quickly this agent can recruit other agents. Effectiveness is
-doubled when recruiting an agent of the same occupation.`,
-    idleIncome: `
-Amount of :gold: produced (or consumed) by this agent, for every 
-day spent under cover.`,
-    outdoors: `
-How fast this agent can travel outdoors. Also reduces the risk of 
-encountering bandits or wild beasts. Does not apply to sailing.`,
-    combat: `
-How well this agent can fight.`,
-    conduit: `
-How well this agent can act as a conduit for your :touch:.
-Rituals performed by a good conduit are more effective. 
-Also increases your :touch: by this amount every day.`,
-    deceit: `
-How well this agent can deceive and manipulate others, 
-and spread lies and rumors. Also makes the agent less 
-suspicious, gaining less exposure from their actions.`
 }
 
 // A single stat/ability in the agent's detail page, formatted as

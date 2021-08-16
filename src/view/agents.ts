@@ -3,7 +3,7 @@ import type { Agent } from "../model/agents"
 import type { Occupation, ByOccupation } from 'model/occupation';
 import type { Stats } from 'model/stats';
 import { Order } from 'model/orders';
-import type { TooltipContext } from 'components/Tooltip';
+import type { TxtContext } from 'text/format';
 
 export type AgentView = {
     readonly id: number
@@ -14,7 +14,7 @@ export type AgentView = {
     readonly stats: Readonly<Stats>
     readonly order: Readonly<Order>
     readonly progress: number
-    readonly ctx: TooltipContext
+    readonly ctx: TxtContext
     // The original model object. Mutable, so don't use it, or its properties,
     // for anything around memoization !
     readonly agent: Agent

@@ -6,7 +6,7 @@ import { signedDecimal, decimal } from './numbers';
 import { useState, useMemo, useCallback } from 'preact/hooks';
 import { Tooltip } from './Tooltip';
 import { occupations } from 'model/occupation';
-import { occupationTooltip } from './help';
+import { occupationTooltip } from 'text/help';
 import { Explained } from 'model/explainable';
 import { useWorld } from './Context';
 import { WorldView } from 'view/world';
