@@ -1,8 +1,9 @@
 import { h, JSX } from "preact"
-import { Cell, Grid } from 'model/grid';
-import { WorldView } from 'view/world';
+import type { Cell, Grid } from 'model/grid';
+import type { WorldView } from 'view/world';
 import { AgentCount } from './AgentCount';
 import { useWorld } from './Context';
+import { useMemo } from 'preact/hooks';
 
 const ABOVE = 128/2;
 const TILEWIDTH = 256/2;
@@ -24,22 +25,20 @@ function variant(cell: Cell) {
     return (((cell >> 6) ^ (cell >> 4) ^ (cell >> 2) ^ cell) & 3).toString()
 }
 
+// Display a path segment inside the cell, given the grid-level 
+// offsets to the origin and destination cells. 
 function PathSvg(props: {
     originX: number,
     originY: number,
-    myX: number,
-    myY: number,
     destX: number,
     destY: number
 }) {
-    const {originX, originY, myX, myY, destX, destY} = props;
-    const dx = CENTERX - myX;
-    const dy = CENTERY - myY;
+    const {originX, originY, destX, destY} = props;
     const __html = [
         "<path d=\"M",
-        ((originX + myX) / 2 + dx).toFixed(),
+        (CENTERX + CENTERX * originX).toFixed(),
         " ",
-        ((originY + myY) / 2 + dy).toFixed(),
+        (CENTERY + (0.5 * TILEYOFFSET * originY)).toFixed(),
         "C",
         CENTERX.toFixed(),
         " ",
@@ -49,46 +48,50 @@ function PathSvg(props: {
         " ",
         CENTERY.toFixed(),
         ",",
-        ((destX + myX) / 2 + dx).toFixed(),
+        (CENTERX + CENTERX * destX).toFixed(),
         " ",
-        ((destY + myY) / 2 + dy).toFixed(),
+        (CENTERY + (0.5 * TILEYOFFSET * destY)).toFixed(),
         "\"></path>"
     ].join("");
     return <svg className="path" width="128" height="192" dangerouslySetInnerHTML={{__html}}/>
 }
 
 // A cell in the grid.
-export function Cell(props: {
+export function MapCell(props: {
     cell: Cell
     fog?: boolean
     selected?: boolean
     top: number
-    left: number 
+    left: number
+    // If in a path, the cell before and cell after
+    pathBefore?: Cell
+    pathAfter?: Cell 
     // Naked: draw only the hex, no other decoration.
     naked?: boolean
 }): JSX.Element {
 
     const world = useWorld();
-    const {cells, locations} = world.map;
+    const {cells, locations, grid} = world.map;
 
     const {aspect, hasVariants} = cells[props.cell];
     const location = props.naked || typeof locations[props.cell] == "undefined"
         ? undefined : world.locations[locations[props.cell]];
     
-    const adjacents = world.map.grid.adjacent(props.cell);
-    const [fromx,fromy] = world.map.grid.uncell(adjacents[Math.floor(Math.random() * adjacents.length)]);
-    const [tox,toy] = world.map.grid.uncell(adjacents[Math.floor(Math.random() * adjacents.length)]);
+    const path = useMemo<JSX.Element|undefined>(() => {
+        const [bX, bY] = grid.uncell(props.pathBefore ? props.pathBefore : props.cell);
+        const [myX, myY] = grid.uncell(props.cell);
+        const [aX, aY] = grid.uncell(props.pathAfter ? props.pathAfter : props.cell);
+        
+        return <PathSvg originX={bX+yshift(bY)-myX-yshift(myY)} originY={bY-myY}
+                        destX={aX+yshift(aY)-myX-yshift(myY)} destY={aY-myY} />
+    }, [grid, props.pathBefore, props.pathAfter])
 
     return <div className={"hex " + aspect + 
                            (hasVariants ? variant(props.cell) : "") +
                            (props.fog ? " fog" : "") + 
                            (props.selected ? " selected" : "") }  
              style={{left:props.left, top:props.top}}>
-        {/* <PathSvg myX={props.left} myY={props.top}
-                 originX={(fromx + yshift(fromy)) * TILEWIDTH - CENTERX}
-                 originY={fromy * TILEYOFFSET - CENTERY}
-                 destX={(tox + yshift(toy)) * TILEWIDTH - CENTERX}
-                 destY={toy * TILEYOFFSET - CENTERY}/> */}
+        {path}
         {location && <span className="name">
                         <AgentCount count={location.agents.length}/>
                         {location.name.short}
@@ -97,21 +100,41 @@ export function Cell(props: {
 }
 
 export function Map(props: {
-    world: WorldView, 
+    world: WorldView
     selected: Cell|undefined
+    path: readonly Cell[]|undefined
 }) {
 
     const {map: {grid, vision}} = useWorld();
     const tiles : JSX.Element[] = []
 
+    const [pathBefore, pathAfter] = useMemo<[(n: number) => Cell|undefined, 
+                                             (n: number) => Cell|undefined]>(() => {
+        if (!props.path || !props.path.length || typeof props.selected === "undefined") 
+            return [() => undefined, () => undefined];
+        // For each cell on the map, store 0 if no before (resp. after), or 
+        // the other cell+1.
+        const before = new Int32Array(grid.count);
+        const after  = new Int32Array(grid.count);
+        before[props.path[0]] = props.selected + 1;
+        for (let i = 1; i < props.path.length; ++i) {
+            before[props.path[i]] = props.path[i-1] + 1;
+            after[props.path[i-1]] = props.path[i] + 1
+        }
+        return [(n) => before[n] ? before[n] - 1 : undefined,
+                (n) => after[n] ? after[n] - 1 : undefined]
+    }, [grid, props.path])
+
     for (let y = 0; y < grid.side; ++y) {
         for (let x = 0; x < grid.side; ++x) {
             const cell = grid.cell(x,y);
             if (!vision[cell]) continue;
-            tiles.push(<Cell 
+            tiles.push(<MapCell 
                 key={cell} 
                 fog={vision[cell] < 2}
                 cell={cell} 
+                pathAfter={pathAfter(cell)}
+                pathBefore={pathBefore(cell)}
                 selected={props.selected === cell}
                 top={y * TILEYOFFSET - CENTERY} 
                 left={(x + yshift(y)) * TILEWIDTH - CENTERX}/>)

@@ -1,9 +1,10 @@
 import { h, JSX } from "preact"
 import { Map, pick, cellPos } from 'components/Map'
 import type { Cell } from 'model/grid';
-import { useState, useCallback, useEffect } from 'preact/hooks';
+import { useState, useCallback, useMemo } from 'preact/hooks';
 import { useWorld } from './Context';
 import type { Selection } from './Screen';
+import type { AgentView } from 'view/agents';
 
 export type MapScrollerProps = {
     // Dimensions of the screen
@@ -21,6 +22,18 @@ type MapScroller = {
     select: (cell: Cell) => void
 }
 
+function agentCellAndPath(agent: AgentView): [Cell, readonly Cell[]|undefined] {
+    if (agent.order.kind !== "travel") 
+        return [agent.cell, undefined];
+
+    let path : Cell[] = [];
+    for (let [difficulty, cell] of agent.order.path) 
+        if (cell != agent.cell && difficulty >= agent.order.accumulated) 
+            path.push(cell);
+    
+    return [agent.cell, path];
+}
+
 export function MapScroller(props: MapScrollerProps): JSX.Element {
 
     const {screenW, screenH, selected, setSelected} = props;
@@ -36,11 +49,14 @@ export function MapScroller(props: MapScrollerProps): JSX.Element {
 
     // Determine if we need to override the position based on an 
     // active selection ?
-    const cell = 
-        selected.selected === "agent"    ? world.agents[selected.id].cell :
-        selected.selected === "location" ? world.locations[selected.id].cell :
-        undefined;
-
+    const [cell, path] = useMemo<[Cell|undefined, readonly Cell[]|undefined]>(() => 
+        selected.selected === "agent"    
+        ? agentCellAndPath(world.agents[selected.id]) :
+        selected.selected === "location" 
+        ? [world.locations[selected.id].cell, undefined] :
+            [undefined,undefined], 
+        [selected, world]);
+        
     const [x,y] = 
         typeof cell === "undefined" ? [selfx, selfy] :
         cellPos(cell, grid);
@@ -81,7 +97,7 @@ export function MapScroller(props: MapScrollerProps): JSX.Element {
             transitionDuration: "0.2s",
             transitionTimingFunction: "ease-out"
         }}>
-            <Map world={world} selected={cell} />
+            <Map world={world} selected={cell} path={path}/>
         </div>
     </div>
 }
