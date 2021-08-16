@@ -14,6 +14,8 @@ export function InnerAgentList(props: {
     agents: readonly AgentView[],
     // The pixel height available for the component to display in
     height: number
+    // Message displayed if the list is empty.
+    empty: string
     // Hide the location of the agent (for instance, if the list is 
     // displayed in the location's own window)
     noLocation?: boolean
@@ -34,6 +36,7 @@ export function InnerAgentList(props: {
 
     return <div>
         <ul className="gui-agents" style={{height: 50*pagesize}}>
+            {shown.length == 0 ? <li className="empty">{props.empty}</li> : undefined}
             {shown.map(agent => {
                 const where = props.noLocation ? undefined : 
                     world.map.locations[agent.cell] === undefined
@@ -78,6 +81,6 @@ export function AgentList(props: {
     const innerHeight = B.innerHeight(height);
 
     return <B.Box title="Agents" decorate={true} close={props.close}>
-        <InnerAgentList agents={agents} height={innerHeight} />
+        <InnerAgentList agents={agents} height={innerHeight} empty=""/>
     </B.Box>
 }

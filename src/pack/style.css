@@ -210,6 +210,17 @@ ul.gui-agents li:hover {
     background: linear-gradient(90deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 35%, rgba(255,255,255,0) 100%);
 }
 
+ul.gui-agents li.empty {
+    text-align: center;
+    padding: 8px;
+    font-size: 16px;
+    color: #877;
+}
+
+ul.gui-agents li.empty:hover {
+    background: none;
+}
+
 ul.gui-agents .job {
     margin-left: 8px;
     font-size: 14px;

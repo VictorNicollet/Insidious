@@ -33,6 +33,7 @@ export function LocationDetails(props: {
         <hr/>
         <InnerAgentList agents={agents} 
                         noLocation={true}
+                        empty="You have no agents in this location."
                         height={innerHeight  - INFOHEIGHT}/>
     </B.Box>
 }
