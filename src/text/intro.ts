@@ -21,4 +21,6 @@ They know their world to be broken, incomplete. You can feel it,
 too. A bland taste, a faded tapestry, a deep thirst, a lack of #aspect#. 
 Yes, more #aspect# would be precisely what this failed world needs! 
 And there is none better than #god# to provide it.
+
+As the first agent of your will, #agent# is waiting for your orders.
 `)  ;

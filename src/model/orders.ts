@@ -44,6 +44,9 @@ export const undercover : Order = {
     accumulated: 0
 }
 
+// A completed order, which will show up as 'Awaiting orders'
+export const done : Order = {...undercover, accumulated: 1}
+
 // Count how many days are remaining before the order has been completed
 export function daysRemaining(order: Order) {
     return Math.ceil((order.difficulty.value - order.accumulated) / order.speed.value)
