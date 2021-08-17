@@ -1,12 +1,11 @@
 import * as fs from "fs"
 import * as sharp from "sharp"
-import bufferToDataUrl from "buffer-to-data-url"
-import { isObject } from 'util';
+import * as BufferBuilder from "buffer-builder"
 
 const rawStyle = fs.readFileSync("./src/pack/style.css");
 const style = rawStyle.toString('utf-8').replace(/\s+/g, " ");
 
-const replacements : Promise<(style: string) => string>[] = []
+const replacements : Promise<Buffer>[] = []
 
 const styleWithHoles = style.replace(/url\([^)]*\)/g, function(url) {
     const [, sx, sy, sw, sh, sscale, simg] = 
@@ -15,16 +14,16 @@ const styleWithHoles = style.replace(/url\([^)]*\)/g, function(url) {
     const noExtract = !sx && !sy && !sw && !sh;
 
     const imgPath = JSON.parse(simg).replace("../../", "./");
-    const repl = "####" + replacements.length + "####";
-
+    
     const mime = /\.ttf$/.test(imgPath) ? "font/ttf" : "image/png";
+    const repl = "##" + mime + "##";
 
-    async function replace() : Promise<(style: string) => string> {
+    async function theBuffer() : Promise<Buffer> {
 
-        let url : string;
+        let buffer : Buffer;
         if (noExtract)
         {
-            url = await bufferToDataUrl(mime, fs.readFileSync(imgPath));
+            buffer = fs.readFileSync(imgPath);
         }
         else
         {
@@ -38,29 +37,42 @@ const styleWithHoles = style.replace(/url\([^)]*\)/g, function(url) {
                 img = img.resize(Math.floor(width * scale), Math.floor(height * scale));
             }
 
-            const buffer = await img.toBuffer();
-
-            url = await bufferToDataUrl(mime, buffer);
+            buffer = await img.toBuffer();
         }
 
-        console.log("%s KB : %s", (url.length / 1024).toFixed(), imgPath)
+        console.log("%s KB : %s", (buffer.length / 1024).toFixed(), imgPath)
 
-        return (style: string) => 
-            style.replace(repl, "url(" + JSON.stringify(url) + ")")
+        return buffer;
     }
 
-    replacements.push(replace());
+    replacements.push(theBuffer());
 
     return repl;
 });
 
+const smallStyleWithHoles = styleWithHoles
+    .replace(/\/\*.*?\*\//g, "")
+    .replace(/ *([;:/{},]) */g, (_,a) => a);
+
+fs.writeFileSync("./src/pack/style.ts", 
+    "export function style(url: (mime: string) => string) {" + 
+    "return " + JSON.stringify(smallStyleWithHoles) + ".replace(/##(.*?)##/g, match => 'url(' + url(match[1]) + ')')" +
+    "}");
+
 async function finish(style: string) {
-    for (let promise of replacements) {
-        const repl = await promise;
-        style = repl(style);
-    }    
-    console.log("%s KB total", (style.length / 1024).toFixed())
-    fs.writeFileSync("./dist/style.css", style);
+    
+    const blobs : Buffer[] = [];
+    for (let promise of replacements) blobs.push(await promise);
+    
+    const builder = new BufferBuilder();
+    builder.appendUInt32LE(blobs.length);
+    for (let b of blobs) builder.appendUInt32LE(b.byteLength);
+    for (let b of blobs) builder.appendBuffer(b);
+
+    const blob : Buffer = builder.get();
+
+    console.log("%s KB total", (blob.length / 1024).toFixed())
+    fs.writeFileSync("./dist/assets.bin", blob);
 }
 
 finish(styleWithHoles);

@@ -1,11 +1,17 @@
 import { generate } from 'model/generation/worldgen';
 import { h, render } from "preact"
 import { Screen } from 'components/Screen';
-import { world } from 'view/world';
+import { loadAndUnpack } from 'pack/unpack';
 
-const worldModel = generate();
+async function loadAndRun() {
 
-render(
-    <Screen world={worldModel}/>,
-    document.body);
+    await loadAndUnpack();
 
+    const worldModel = generate();
+
+    render(
+        <Screen world={worldModel}/>,
+        document.body);
+}
+
+loadAndRun();
