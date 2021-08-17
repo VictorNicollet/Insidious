@@ -1,5 +1,5 @@
 import { h, JSX } from "preact"
-import { AgentView, } from 'view/agents'
+import { AgentView, agent, } from 'view/agents'
 import { Order, undercover, daysRemaining } from 'model/orders'
 import { never } from 'never';
 import { signedDecimal, decimal } from './numbers';
@@ -211,6 +211,10 @@ export function AgentOrders(props: {
     const [descent, setDescent] = useState<number[]>([])
     const world = useWorld();
 
+    // Display the order tree _despite_ the agent already having
+    // (non-completed) orders given to them ?
+    const [despiteAlready, setDespiteAlready] = useState(false);
+
     let nodes: OrderNode[] = useMemo(() => 
         makeOrderTree(props.agent, world),
         [props.agent, world]);
@@ -222,34 +226,45 @@ export function AgentOrders(props: {
         agent.order = order;
         agent.world.refresh();
         setDescent([])
+        setDespiteAlready(false)
     }, [props.agent, setDescent]);
 
     return <div className="gui-give-orders">
         <table className="gui-info-table">
             <tr><th>Current orders</th><DescribeOrder order={order}/></tr>
         </table>
-        {order.accumulated >= order.difficulty.value ? undefined : 
+        {order.accumulated >= order.difficulty.value ? undefined :
             <OrderProgress order={order}/>}
         <hr/>
-        {descent.length == 0 ? 
-            <div style={{color:"#877",padding:"4px 2px"}}>Give new orders</div> : 
-            <button className="gui-order" 
-                onClick={() => setDescent(a => a.slice(0, a.length-1))}>
-            &larr; Back
-        </button>}
-        {nodes.map((node, i) => 
-            <Order key={i}
-                agent={props.agent}
-                label={node.label}
-                disabled={node.disabled}
-                tooltip={node.tooltip}
-                order={node.order}
-                onClick={() => {
-                    if (node.children) 
-                        setDescent(a => [...a, i])
-                    else if (node.order)
-                        setOrder(node.order)
-                }}
-                effects={node.effects}/>)}
+        {order.accumulated < order.difficulty.value && !despiteAlready 
+            /* Display "already has orders" message */
+            ? <div className="already">
+                And so it shall be done.
+                <button onClick={() => setDespiteAlready(true)}>
+                    Change
+                </button>
+            </div> : <div>
+            {/* Display the orders list */}
+                {descent.length == 0 ? 
+                    undefined : 
+                    <button className="gui-order" 
+                        onClick={() => setDescent(a => a.slice(0, a.length-1))}>
+                    &larr; Back
+                </button>}
+                {nodes.map((node, i) => 
+                    <Order key={i}
+                        agent={props.agent}
+                        label={node.label}
+                        disabled={node.disabled}
+                        tooltip={node.tooltip}
+                        order={node.order}
+                        onClick={() => {
+                            if (node.children) 
+                                setDescent(a => [...a, i])
+                            else if (node.order)
+                                setOrder(node.order)
+                        }}
+                        effects={node.effects}/>)}
+            </div>}
     </div>
 }

@@ -64,11 +64,11 @@ export function Navbar(props: {
     const world = useWorld();
     const {gold, touch} = world.resources;
     return <div className="gui-navbar">
-        <button onClick={() => left("locations")}>Locations</button>
-        <button onClick={() => left("agents")}>Agents</button>
-        <button onClick={() => left("cult")}>Cult</button>
-        <button onClick={() => left("rituals")}>Rituals</button>
-        <button onClick={() => left("artifacts")}>Artifacts</button>
+        <button className="link" onClick={() => left("locations")}>Locations</button>
+        <button className="link" onClick={() => left("agents")}>Agents</button>
+        <button className="link" onClick={() => left("cult")}>Cult</button>
+        <button className="link" onClick={() => left("rituals")}>Rituals</button>
+        <button className="link" onClick={() => left("artifacts")}>Artifacts</button>
         {/* float:right appear in reverse order */}
         <button className="turn" onClick={() => world.world.endTurn()}>End Turn</button>
         <Resource kind="gold" current={gold.current} daily={gold.daily} Tooltip={GoldTooltip}/>

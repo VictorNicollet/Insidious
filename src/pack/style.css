@@ -26,7 +26,7 @@
     z-index: 1000;
 }
 
-.gui-navbar button {
+.gui-navbar button.link {
     border: none;
     background: none;
     color: #DDC;
@@ -37,7 +37,7 @@
     cursor: pointer;
 }
 
-.gui-navbar button:hover {
+.gui-navbar button.link:hover {
     text-shadow: #998 0 0 8px;
     color: #FFE;
 }
@@ -48,14 +48,8 @@
         click the button. */
     width: 171px;
     padding: 14px 84px 18px 24px;
-    margin-right: -70px;
-    font-size: 15px;
-    text-shadow: black 0 -1px 0;
-    background: url(/* 0 0 101 32 90 */ "../../BigAssets/Citadel RPG GUI/Sliced/Standalone Content Buttons/small_button_n.png") no-repeat 10px 8px;
-}
-
-.gui-navbar button.turn:hover {
-    background-image: url(/* 0 0 101 32 90 */ "../../BigAssets/Citadel RPG GUI/Sliced/Standalone Content Buttons/small_button_h.png");
+    margin: -12px -70px -12px 0;
+    background-position: 10px 8px;
 }
 
 .gui-navbar .resource {
@@ -421,6 +415,19 @@ button.go.right:disabled {
     top: 6px;
     right: 12px;
     font-size: 13px;
+}
+
+/* .gui-give-orders */
+
+.gui-give-orders .already {
+    text-align: center;
+    color: #877;
+    margin-top: 40px;
+}
+
+.gui-give-orders .already button {
+    display: block;
+    margin: auto;
 }
 
 /* .gui-order-progress */
@@ -1023,4 +1030,21 @@ span.turns + b {
     border-width: 1px;
     border-radius: 19px;
     background-size: 38px 38px;
+}
+
+/* Button */
+
+button {
+    color: #DDC;
+    border: none;
+    padding: 14px;
+    cursor: pointer;
+    font-size: 15px;
+    text-shadow: black 0 -1px 0;
+    background: url(/* 0 0 101 32 90 */ "../../BigAssets/Citadel RPG GUI/Sliced/Standalone Content Buttons/small_button_n.png") no-repeat center center;
+    text-align: center;
+}
+
+button:hover {
+    background-image: url(/* 0 0 101 32 90 */ "../../BigAssets/Citadel RPG GUI/Sliced/Standalone Content Buttons/small_button_h.png");
 }
