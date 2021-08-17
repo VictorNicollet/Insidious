@@ -67,6 +67,31 @@
     position: relative;
 }
 
+/* .gui-notifications */
+
+.gui-notifications {
+    position: fixed;
+    bottom: 50px;
+    left: 50%;
+    width: 400px;
+    transform: translateX(-50%);
+    z-index: 100;
+}
+
+.gui-notifications .notif {
+    border-image: url(/* 0 0 318 72 50 */ "../../BigAssets/Citadel RPG GUI/Sliced/Announcement/announcement_texture.png") 18 30 / 18px 30px;
+    width: 100%;
+    height: 36px;
+    color: #EEE;
+    line-height: 36px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.gui-notifications .notif:hover {
+    filter: brightness(1.2)
+}
+
 /* .gui-agent-count  */
 
 .gui-agent-count {

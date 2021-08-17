@@ -15,6 +15,8 @@ export type WorldView = {
     readonly initial: Cell
     readonly resources: ResourcesOf<{ current: number, daily: Explained }>
     readonly routes : Routes
+    // Agents that need orders
+    readonly needOrders: readonly AgentView[]
     // Reference to the model. This is a mutable class, so don't use it
     // or its fields for anything involving memoization.
     readonly world: World
@@ -24,6 +26,7 @@ export type WorldView = {
 
 export function world(w: World): WorldView {
     const locations = w.seenLocations
+    const agents = w.agents().map(agent)
     const daily = w.dailyResources();
     const resources = {
         gold: {
@@ -35,14 +38,16 @@ export function world(w: World): WorldView {
             daily: daily.touch
         }
     }
+
     return {
         world: w,
         locations: locations.map(location),
-        agents: w.agents().map(agent),
+        agents,
         map: map(w.map),
         initial: locations[0].cell,
         routes: w.routes(),
         message: w.firstMessage(),
+        needOrders: agents.filter(a => a.order.accumulated >= a.order.difficulty.value),
         resources
     }
 }
