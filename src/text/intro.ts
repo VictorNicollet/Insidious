@@ -31,4 +31,16 @@ export const second = format<{
     agent:string
     occupation: string 
     location:string
-}>(``);
+}>(`
+The first day ends, and #agent# reaches out again with a midnight prayer.
+You can feel your :touch: over this world strengthen. Soon, you will be 
+able to bring all your might to bear. But until then…
+
+A distressing proportion of this world's mortals are quite content with
+the current state of reality. In fact, they think there is too much #aspect#
+in this world already, however absurd this may seem. They will react 
+violently to your plans of improving their situation. 
+
+You must work in secret. Insidiously. #agent# should try to find 
+like-minded mortals, and recruit them as your *agents* throughout 
+the kingdom.`);
