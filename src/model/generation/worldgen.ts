@@ -270,7 +270,7 @@ export function generate() : World {
 
     // Create the locations themselves, naming them.
     for (let {population,cell} of futureLocations)
-        world.newLocation(randomLocation(), cell, population);
+        world.newLocation(cell, population);
 
     // Generate an agent in the last location
     const locs = world.locations();

@@ -58,11 +58,10 @@ export class World {
     }
 
     public newLocation(
-        name: LocationName,
         coords: Cell,
         population: number)
     {
-        this._locations.push(new Location(this, name, coords, population));
+        this._locations.push(new Location(this, coords, population));
     }
 
     public locations() : readonly Location[] { return this._locations; }
