@@ -345,9 +345,7 @@ function locationOfKind(kind: LocationKind): LocationName {
 
 
 function location(kind: LocationKind) : LocationName { 
-    const value = notBad(() => locationOfKind(kind)) 
-    console.log("%s : %s", kind, value.short);
-    return value;
+    return notBad(() => locationOfKind(kind)) 
 }
 
 // Generate a random person name
