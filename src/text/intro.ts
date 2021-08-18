@@ -23,4 +23,12 @@ Yes, more #aspect# would be precisely what this failed world needs!
 And there is none better than #god# to provide it.
 
 As the first agent of your will, #agent# is waiting for your orders.
-`)  ;
+`);
+
+export const second = format<{
+    god: string 
+    aspect: string
+    agent:string
+    occupation: string 
+    location:string
+}>(``);

@@ -9,11 +9,13 @@ import { countDailyResources, executeOrder } from './execute';
 import { Explained, Reason, explain, dedup } from './explainable';
 import { Routes } from './routes';
 import { Message } from './message';
+import { Sagas, ActiveSaga } from './saga';
 
 export class World {
     private readonly _locations : Location[]
     private readonly _agents : Agent[]
     private readonly _listeners : (() => void)[]
+    private readonly _sagas : Sagas
     public readonly map : WorldMap
     public readonly seenLocations : Location[]
     public readonly resources: Resources
@@ -33,6 +35,7 @@ export class World {
         this.map = new WorldMap(grid, this);
         this._routes = undefined
         this.resources = { gold: 0, touch: 0 }
+        this._sagas = new Sagas(this);
     }
 
     // Add a new message, to be displayed on the next render.
@@ -160,8 +163,15 @@ export class World {
             agent.order = executeOrder(agent)
         }
 
+        // Run through all sagas.
+        this._sagas.run();
+
         // All done, notify the view that it should be re-rendered because
         // the world changed.
         this.refresh()
+    }
+
+    public addSaga(saga: ActiveSaga) {
+        this._sagas.add(saga);
     }
 }
