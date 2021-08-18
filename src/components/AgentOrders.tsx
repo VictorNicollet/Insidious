@@ -240,7 +240,7 @@ export function AgentOrders(props: {
             /* Display "already has orders" message */
             ? <div className="already">
                 And so it shall be done.
-                <button onClick={() => setDespiteAlready(true)}>
+                <button className="red" onClick={() => setDespiteAlready(true)}>
                     Change
                 </button>
             </div> : <div>

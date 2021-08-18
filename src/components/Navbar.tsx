@@ -70,7 +70,7 @@ export function Navbar(props: {
         <button className="link" onClick={() => left("rituals")}>Rituals</button>
         <button className="link" onClick={() => left("artifacts")}>Artifacts</button>
         {/* float:right appear in reverse order */}
-        <button className="turn" onClick={() => world.world.endTurn()}>End Turn</button>
+        <button className="red turn" onClick={() => world.world.endTurn()}>End Turn</button>
         <Resource kind="gold" current={gold.current} daily={gold.daily} Tooltip={GoldTooltip}/>
         <Resource kind="touch" current={touch.current} daily={touch.daily} Tooltip={TouchTooltip}/>
     </div>

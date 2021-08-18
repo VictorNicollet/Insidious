@@ -1034,7 +1034,7 @@ span.turns + b {
 
 /* Button */
 
-button {
+button.red {
     color: #DDC;
     border: none;
     padding: 14px;
@@ -1045,6 +1045,6 @@ button {
     text-align: center;
 }
 
-button:hover {
+button.red:hover {
     background-image: url(/* 0 0 101 32 90 */ "../../BigAssets/Citadel RPG GUI/Sliced/Standalone Content Buttons/small_button_h.png");
 }
