@@ -65,28 +65,28 @@ export const lvlxp = (function() {
 // each occupation (0 = impossible, 1 = hard, 3 = normal, 5 = easy)
 export const presenceByLocationKind : ByLocationKind<ByOccupation<number>> = {
     ruins: {
-        Merchant: 3, 
-        Farmer: 4,
-        Smith: 4,
-        Hunter: 3,
-        Mercenary: 4,
-        Criminal: 4,
+        Merchant: 1, 
+        Farmer: 2,
+        Smith: 2,
+        Hunter: 1,
+        Mercenary: 2,
+        Criminal: 2,
         Mage: 0,
         Noble: 0
     },
     town: {
-        Merchant: 4,
+        Merchant: 3,
         Farmer: 5,
-        Smith: 4,
-        Hunter: 4,
-        Mercenary: 3,
-        Criminal: 3,
+        Smith: 3,
+        Hunter: 3,
+        Mercenary: 2,
+        Criminal: 2,
         Mage: 0,
         Noble: 0 
     },
     workcamp: {
         Merchant: 3,
-        Farmer: 5,
+        Farmer: 4,
         Smith: 5,
         Hunter: 3,
         Mercenary: 3,
@@ -105,10 +105,10 @@ export const presenceByLocationKind : ByLocationKind<ByOccupation<number>> = {
         Noble: 1
     },
     fortress: {
-        Merchant: 3,
-        Farmer: 4,
-        Smith: 4,
-        Hunter: 4,
+        Merchant: 2,
+        Farmer: 3,
+        Smith: 3,
+        Hunter: 3,
         Mercenary: 5,
         Criminal: 2,
         Mage: 1,
