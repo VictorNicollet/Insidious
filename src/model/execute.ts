@@ -51,7 +51,9 @@ export function executeOrder(agent: Agent): Order {
     const isDone = newAccumulated == difficulty.value;
 
     switch (order.kind) {
-        case "undercover": break;
+        case "undercover": 
+            agent.earnExperience(agent.occupation, 1);
+            break;
         case "travel": 
             for (let i = 0; i < order.path.length; ++i) {
                 const [difficulty, cell] = order.path[i];

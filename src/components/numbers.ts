@@ -1,4 +1,5 @@
 export function integer(n: number) {
+    if (n == Number.POSITIVE_INFINITY) return "∞";
     // Separator is a narrow non-breaking space \u202F
     return n.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, " ");
 }

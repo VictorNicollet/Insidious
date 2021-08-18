@@ -2,7 +2,7 @@ import { h, JSX } from "preact"
 import { AgentView, agent, } from 'view/agents'
 import { Order, undercover, daysRemaining } from 'model/orders'
 import { never } from 'never';
-import { signedDecimal, decimal } from './numbers';
+import { signedDecimal, decimal, integer } from './numbers';
 import { useState, useMemo, useCallback } from 'preact/hooks';
 import { Tooltip } from './Tooltip';
 import { occupations } from 'model/occupation';
@@ -90,7 +90,7 @@ function Order(props: {
                 {props.effects.map((e, i) => 
                     <span key={i}>&nbsp;<span class={e[0]}/>{e[1]}</span>)}
                 <span>
-                    &nbsp;<span class="turns"/><b>{daysRemaining(props.order)}</b>
+                    &nbsp;<span class="turns"/><b>{integer(daysRemaining(props.order))}</b>
                 </span>
             </span>}
     </button>
@@ -153,7 +153,12 @@ their :exposure:.`, undercoverEffects, [
 #name# will not expect new orders for the next seven turns. You may
 still give them new orders before that.`, 
                 undercoverEffects,
-                { ...undercover, difficulty: { value: 7, reasons: [] } })
+                { ...undercover, difficulty: { value: 7, reasons: [] } }),
+            new OrderNode(
+                "Stay undercover until further notice.", `
+#name# will stay undercover until you decide to give them new orders.`,
+                undercoverEffects,
+                { ...undercover, difficulty: { value: Number.POSITIVE_INFINITY, reasons: [] } }),
         ]),
 
         // RECRUITMENT =======================================================
@@ -198,7 +203,7 @@ function OrderProgress(props: {
             <div style={{width:(100*fractionDone) + "%"}}></div>
         </div>
         <span>
-            <span className="turns"/><b>{daysRemaining(props.order)}</b> 
+            <span className="turns"/><b>{integer(daysRemaining(props.order))}</b> 
         </span>
     </div>
 }
