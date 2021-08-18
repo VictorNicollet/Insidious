@@ -9,11 +9,11 @@ export type AgentView = {
     readonly id: number
     readonly name: PersonName
     readonly cell: number
+    readonly exposure: number
     readonly occupation: Occupation
     readonly levels: Readonly<ByOccupation<number>>
     readonly stats: Readonly<Stats>
     readonly order: Readonly<Order>
-    readonly progress: number
     readonly ctx: TxtContext
     // The original model object. Mutable, so don't use it, or its properties,
     // for anything around memoization !
@@ -30,11 +30,11 @@ export function agent(a: Agent, id: number): AgentView {
         levels: {...a.levels},
         stats: a.stats,
         order: a.order,
-        progress: a.progress,
+        exposure: a.exposure,
         ctx: {
-            name() { return a.name.short },
-            occupation() { return a.occupation },
-            location() { return a.location ? a.location.name.short : "Outdoors"},
+            name: a.name.short,
+            occupation: a.occupation,
+            location: a.location ? a.location.name.short : "Outdoors",
         }
     }
 }

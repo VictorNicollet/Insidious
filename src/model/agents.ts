@@ -10,7 +10,7 @@ import { objmap } from 'objmap'
 export class Agent {
     public stats : Stats
     public order : Order
-    public progress : number
+    public exposure : number
     private experience : ByOccupation<number>
     constructor(
         public readonly world : World,
@@ -22,7 +22,7 @@ export class Agent {
     ) {
         this.stats = computeStats(this);
         this.order = done;
-        this.progress = 0;
+        this.exposure = 0;
         this.experience = objmap(this.levels, lvl => lvlxp[lvl])
     }
 

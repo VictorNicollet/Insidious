@@ -1,12 +1,33 @@
-import { h, JSX } from "preact"
+import { h, JSX, Fragment } from "preact"
 import * as B from "./Box"
 import { useWorld, useSelectors } from './Context';
 import { AgentStats } from './AgentStat';
 import { useState } from 'preact/hooks';
 import { AgentOrders } from './AgentOrders';
+import * as Help from "text/help"
+import { Tooltip } from './Tooltip';
 
 type Tabs = "Orders" | "Stats"
 const tabs: Tabs[] = ["Orders", "Stats"]
+
+function AgentInfoLine(props: {
+    label: string,
+    value: JSX.Element|string,
+    tooltip?: JSX.Element
+}): JSX.Element {
+
+    const [tip, showTip] = useState(false);
+
+    return <tr onMouseEnter={() => showTip(true)}
+               onMouseLeave={() => showTip(false)}>
+        <th>{props.label}</th>
+        <td>
+            {tip ? props.tooltip : undefined}
+            {props.value}
+        </td>
+    </tr>
+
+}
 
 export function AgentDetails(props: {
     // The agent to display
@@ -40,11 +61,15 @@ export function AgentDetails(props: {
             <div className="portrait"/>
             <div className="top">
                 <table class="gui-info-table">
-                    <tr><th>Location</th><td>{where}</td></tr>
-                    <tr><th>Occupation</th><td>
-                        {agent.occupation} Lv.{agent.levels[agent.occupation]}
-                    </td></tr>
-                    <tr><th>Exposure</th><td>0</td></tr>
+                    <AgentInfoLine label="Location" value={where}/>
+                    <AgentInfoLine label="Occupation"  
+                        value={agent.occupation + " Lv." + agent.levels[agent.occupation]}
+                        tooltip={<Tooltip tip={Help.occupationTooltip[agent.occupation]}
+                                    inserts={[]}
+                                    ctx={{}}/>}/>
+                    <AgentInfoLine label="Exposure" 
+                        value={<Fragment><span className="exposure"/><b>{agent.exposure}</b></Fragment>}
+                        tooltip={<Tooltip tip={Help.exposureTip} inserts={[]} ctx={{}}/>}/>
                 </table>
             </div>
             <hr/>

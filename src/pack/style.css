@@ -554,6 +554,7 @@ button.go.right:disabled {
     width: 400px;
     font-size: 14px;
     border-radius: 4px;
+    text-align: left;
 }
 
 .tooltip > div::after {
@@ -1011,6 +1012,21 @@ span.turns {
 span.turns + b {
     font-weight: normal;
     color: #0BE;
+}
+
+span.exposure {
+    width: 16px;
+    height: 16px;
+    overflow: hidden;
+    background: url(/* 0 0 500 500 3 */ "../../BigAssets/Citadel RPG GUI/Sliced/Created Resources/ability_discipline.png") center center no-repeat;
+    display: inline-block;
+    vertical-align: top;
+    margin-right: 2px;
+}
+
+span.exposure + b {
+    font-weight: normal;
+    color: #ED8;
 }
 
 /* .portrait */

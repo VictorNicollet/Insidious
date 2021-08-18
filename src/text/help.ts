@@ -81,3 +81,19 @@ How well this agent can deceive and manipulate others,
 and spread lies and rumors. Also makes the agent less 
 suspicious, gaining less exposure from their actions.`
 }
+
+export const exposureTip : TxtFormat = `
+An agent's :exposure: measures how noticeable that agent's actions 
+are—assuming that your enemies choose to look. 
+
+The *Kingdom*, the *Inquisitors* and other factions opposing you will 
+easily detect any agents whose :exposure: exceeds that faction's 
+alertness level in a given location. 
+
+Agents gain significant :exposure: when they act overtly in service 
+to your plans.
+
+They gain some :exposure: when they are seen doing things they should not 
+do, or being in places they should not be. 
+
+Agents can decrease their :exposure: by *staying undercover*.`
