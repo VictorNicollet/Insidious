@@ -1,4 +1,5 @@
 import { ActiveSaga, SetNextStep, SagaStep } from "model/saga"
+import { withProceed } from "model/message"
 import type { World } from "model/world";
 import * as Intro from "text/intro"
 
@@ -17,13 +18,13 @@ function intro(w: World) {
     };
 
     return function(w: World, setNext: SetNextStep) {    
-        w.newMessage({ contents: Intro.intro.toHTML(context) })
+        w.newMessage(withProceed(Intro.intro.toHTML(context)));
         setNext(secondDay);
     }
 
     function secondDay(w: World): SagaStep {
         return function(w: World, setNext: SetNextStep) {
-            w.newMessage({ contents: Intro.second.toHTML(context) })
+            w.newMessage(withProceed(Intro.second.toHTML(context)));
             setNext(undefined);
         }
     }

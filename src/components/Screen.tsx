@@ -9,8 +9,8 @@ import { LocationView } from 'view/locations';
 import { AgentView } from 'view/agents';
 import { Context } from './Context';
 import { World } from 'model/world';
-import { ModalBox } from './Box';
 import { Notifications } from './Notification';
+import { Message as MessageBox } from './Message';
 
 export type Selection = {
     selected: "agent"
@@ -78,9 +78,7 @@ export function Screen(props: { world: World }): JSX.Element {
             <Notifications/>
             <Navbar 
                 left={LeftPanel.toggle} />
-            {world.message && <ModalBox close={() => { world.world.removeMessage() ; world.world.refresh() }}>
-                {world.message.contents}
-            </ModalBox>}
+            {world.message && <MessageBox message={world.message}/>}
         </Context>
     </div>
 }
