@@ -70,15 +70,15 @@ const outdoorsByOccupation : ByOccupation<[number,number]> = {
 
 const combatByOccupation : ByOccupation<[number,number]> = {
     // Initial, and per-level bonus (ignored when negative)
-    //                      Lv.0 Lv.1 Lv.2 Lv.3 Lv.4 Lv.5 Lv.6 Lv.7 Lv.8 Lv.9
-    Noble:     [0,   2], //    0    2    4    6    8   10   12   14   16   18
-    Mage:      [-12, 5], //    0    0    0    3    8   13   18   23   28   33
-    Merchant:  [1,   0], //    0    1    1    1    1    1    1    1    1    1
-    Criminal:  [3,   1], //    0    4    5    6    7    8    9   10   11   12
-    Smith:     [0,   0], //    0    0    0    0    0    0    0    0    0    0
-    Farmer:    [-6,  1], //    0    0    0    0    0    0    0    1    2    3
-    Mercenary: [3,   3], //    0    6    9   12   15   18   21   24   27   30
-    Hunter:    [-1,  3], //    0    2    5    8   11   14   17   20   23   26
+    //                       Lv.0 Lv.1 Lv.2 Lv.3 Lv.4 Lv.5 Lv.6 Lv.7 Lv.8 Lv.9
+    Noble:     [  0,  6], //    0    6   12   18   24   30   36   42   48   54
+    Mage:      [-36, 15], //    0    0    0    9   24   39   54   69   84   99
+    Merchant:  [  3,  0], //    0    3    3    3    3    3    3    3    3    3
+    Criminal:  [  9,  3], //    0   12   15   18   21   24   27   30   33   36
+    Smith:     [  0,  0], //    0    0    0    0    0    0    0    0    0    0
+    Farmer:    [-18,  3], //    0    0    0    0    0    0    0    3    6    9
+    Mercenary: [  9,  9], //    0   18   27   36   45   54   63   72   81   90
+    Hunter:    [ -3,  9], //    0    6   15   24   33   42   51   60   69   78
 }
 
 const conduitByOccupation : ByOccupation<number> = {
@@ -179,10 +179,10 @@ export const skills : StatKey[] = allStats.filter(c => c != "idleIncome" && c !=
 // maximum that can be used for comparison.
 export const maxStats : StatsOf<number> = {
     idleIncome: 50,
+    conduit:    5,
     recruit:    100,
     outdoors:   100,
-    combat:     30,
-    conduit:    5,
+    combat:     100,
     deceit:     100,
 }
 
