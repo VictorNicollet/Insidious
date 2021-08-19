@@ -86,7 +86,7 @@ export const presenceByLocationKind : ByLocationKind<ByOccupation<number>> = {
     },
     workcamp: {
         Merchant: 3,
-        Farmer: 4,
+        Farmer: 3,
         Smith: 5,
         Hunter: 3,
         Mercenary: 3,
@@ -97,7 +97,7 @@ export const presenceByLocationKind : ByLocationKind<ByOccupation<number>> = {
     city: {
         Merchant: 4,
         Farmer: 5,
-        Smith: 5,
+        Smith: 4,
         Hunter: 2,
         Mercenary: 4,
         Criminal: 4,
@@ -106,8 +106,8 @@ export const presenceByLocationKind : ByLocationKind<ByOccupation<number>> = {
     },
     fortress: {
         Merchant: 2,
-        Farmer: 3,
-        Smith: 3,
+        Farmer: 2,
+        Smith: 5,
         Hunter: 3,
         Mercenary: 5,
         Criminal: 2,
@@ -116,10 +116,10 @@ export const presenceByLocationKind : ByLocationKind<ByOccupation<number>> = {
     },
     academy: {
         Merchant: 1,
-        Farmer: 2,
-        Smith: 1,
+        Farmer: 1,
+        Smith: 2,
         Hunter: 1,
-        Mercenary: 1,
+        Mercenary: 2,
         Criminal: 2,
         Mage: 4,
         Noble: 0

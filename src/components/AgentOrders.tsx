@@ -15,7 +15,7 @@ import { recruitOrder, travelOrder } from 'model/neworder';
 function DescribeOrder(props: {order: Order}): JSX.Element {
     const world = useWorld();
     const order = props.order;
-    if (order.accumulated >= order.difficulty.value)
+    if (order.progress >= order.difficulty.value)
         return <td className="no-orders">None</td>
     switch (order.kind) {
         case "undercover":
@@ -34,11 +34,12 @@ function DescribeOrder(props: {order: Order}): JSX.Element {
 
 type Effect = "gold"|"touch"
 
-function Explain(props: {value: Explained}): JSX.Element {
+function Explain(props: {left?: string, value: Explained}): JSX.Element {
     const e = props.value;
     if (e.multiplier) {
         return <span>
-            = {decimal(e.multiplier)}&nbsp;<span style={{opacity:0.5}}>(Base)</span> {e.reasons.map(r => 
+            {typeof props.left === "undefined" ? " = " : " " + props.left + " "}
+            {decimal(e.multiplier)}&nbsp;<span style={{opacity:0.5}}>(Base)</span> {e.reasons.map(r => 
                 <span>{r.contrib > 0 ? " +" : " -"}&nbsp;{integer(Math.abs(r.contrib * 100))}%&nbsp;<span style={{opacity:0.5}}>({r.why})</span></span>)}
         </span>
     }
@@ -66,24 +67,13 @@ function Order(props: {
     const days = props.order ? daysRemaining(props.order) : 0;
     const inserts = !props.order ? [] : [
         <Fragment>
-            <p>
-                Duration <span class="turns"/><b>{days}</b> = {decimal(props.order.difficulty.value)} / {decimal(props.order.speed.value)}
+            <p style={{paddingLeft:40,textIndent:-40}}>
+                <span class="turns"/><b>{days}</b><Explain value={props.order.difficulty}/>
             </p>
-            <p style={{paddingLeft: 20}}>
-                <span style={{opacity:0.5}}>Difficulty&nbsp;</span> 
-                {decimal(props.order.difficulty.value)}<Explain value={props.order.difficulty}/>
-            </p>
-            <p style={{paddingLeft: 20}}>
-                <span style={{opacity:0.5}}>Ability&nbsp;</span> 
-                {decimal(props.order.speed.value)}<Explain value={props.order.speed}/>
-            </p>
-            <p>
-                Exposure <span class="exposure"/><b>{decimal(days * props.order.exposure.value)}</b>
-                &nbsp;= <span class="turns"/><b>{days}</b> &times; {props.order.exposure.value}
-            </p>
-            <p style={{paddingLeft: 20}}>
-                <span style={{opacity:0.5}}>Daily&nbsp;</span>
-                {decimal(props.order.exposure.value)}<Explain value={props.order.exposure}/>
+            <p style={{paddingLeft:40,textIndent:-40}}>
+                <span class="exposure"/><b>{decimal(days * props.order.exposure.value)}</b>
+                &nbsp;= <span class="turns"/><b>{days}</b>
+                <Explain left={"×"} value={props.order.exposure}/>
             </p>
         </Fragment>
     ]
@@ -213,16 +203,14 @@ give them different orders before they are done.`, [],
                     ``, 
                     [],
                     travelOrder(agent.agent, route));
-            }).sort((o1, o2) => 
-                (o1.order.difficulty.value / o1.order.speed.value) - 
-                (o2.order.difficulty.value / o2.order.speed.value)))
+            }).sort((o1, o2) => o1.order.difficulty.value - o2.order.difficulty.value))
     ];
 }
 
 function OrderProgress(props: {
     order: Order
 }): JSX.Element {
-    const fractionDone = props.order.accumulated / props.order.difficulty.value;
+    const fractionDone = props.order.progress / props.order.difficulty.value;
     return <div className="gui-order-progress">
         <div className="progress-time">
             <div style={{width:(100*fractionDone) + "%"}}></div>
@@ -263,10 +251,10 @@ export function AgentOrders(props: {
         <table className="gui-info-table">
             <tr><th>Current orders</th><DescribeOrder order={order}/></tr>
         </table>
-        {order.accumulated >= order.difficulty.value ? undefined :
+        {order.progress >= order.difficulty.value ? undefined :
             <OrderProgress order={order}/>}
         <hr/>
-        {order.accumulated < order.difficulty.value && !despiteAlready 
+        {order.progress < order.difficulty.value && !despiteAlready 
             /* Display "already has orders" message */
             ? <div className="already">
                 And so it shall be done.

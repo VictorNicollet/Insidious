@@ -30,7 +30,7 @@ function agentCellAndPath(
 
     let path : Cell[] = [];
     for (let [difficulty, cell] of agent.order.path) 
-        if (cell != agent.cell && difficulty >= agent.order.accumulated) 
+        if (cell != agent.cell && difficulty >= agent.order.progress) 
             path.push(cell);
     
     return [agent.cell, path];

@@ -44,15 +44,15 @@ const weeklyIdleIncomeByOccupation : ByOccupation<[number,number]> = {
 
 const agentRecruitPowerByOccupation : ByOccupation<[number,number]> = {
     // Per-level bonus if main, per-level bonus if secondary
-    // Skill on 1-20 range. 
-    Noble:     [1  , 0.4],
-    Mage:      [0.2, 0  ],
-    Merchant:  [  2, 1  ],
-    Mercenary: [0.6, 0.2],
-    Criminal:  [0.4, 0.4],
-    Smith:     [0.2, 0  ],
-    Farmer:    [0.2, 0  ],
-    Hunter:    [0.2, 0  ]
+    // Skill on 1-100 range. 
+    Noble:     [ 5, 2],
+    Mage:      [ 1, 0],
+    Merchant:  [10, 5],
+    Mercenary: [ 3, 1],
+    Criminal:  [ 2, 2],
+    Smith:     [ 1, 0],
+    Farmer:    [ 1, 0],
+    Hunter:    [ 1, 0]
 }
 
 const outdoorsByOccupation : ByOccupation<[number,number]> = {
@@ -172,7 +172,7 @@ export const allStats = Object.keys(rules) as StatKey[]
 // maximum that can be used for comparison.
 export const maxStats : StatsOf<number> = {
     idleIncome: 50,
-    recruit:    20,
+    recruit:    100,
     outdoors:   5,
     combat:     30,
     conduit:    5,

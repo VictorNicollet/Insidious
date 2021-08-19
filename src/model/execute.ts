@@ -41,11 +41,11 @@ export function executeOrder(agent: Agent): Order {
     const order = agent.order;
 
     // Nothing to do if order is already done.
-    const {accumulated,difficulty,speed} = order;
+    const {progress: accumulated, difficulty} = order;
     if (accumulated >= difficulty.value) return order;
 
     // Increase the accumulated progress.
-    const newAccumulated = Math.min(accumulated + speed.value, difficulty.value);
+    const newAccumulated = Math.min(accumulated + 1, difficulty.value);
 
     // Flag: the order has completed during this turn.
     const isDone = newAccumulated == difficulty.value;
@@ -83,5 +83,5 @@ export function executeOrder(agent: Agent): Order {
 
     // Orders are immutable (since they are used as both model and view)
     // so return a copy with the new accumulated progress.
-    return { ...agent.order, accumulated: newAccumulated }
+    return { ...agent.order, progress: newAccumulated }
 }

@@ -29,9 +29,9 @@ export class Location {
     ) {
         const ck = world.map.cells[cell];
         this.kind = 
-            ck.is(M.castleA, M.castleB, M.castleC, M.castleD, M.castleE) ? "city" : 
+            ck.is(M.castleA, M.castleB, M.castleC, M.castleE) ? "city" : 
             ck.is(M.mountainMine, M.hillsMine, M.foresterA, M.foresterB, M.smithy) ? "workcamp" : 
-            ck.is(M.fortA, M.fortB) ? "fortress" :
+            ck.is(M.castleD, M.fortA, M.fortB) ? "fortress" :
             ck.is(M.academy) ? "academy" : 
             ck.is(M.village, M.villageUnder, M.villageSmall, M.inn) ? "town" : "ruins";
         this.name = randomLocation(this.kind);

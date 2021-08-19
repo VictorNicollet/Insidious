@@ -27,13 +27,11 @@ export type Order =
     ( UndercoverOrder 
     | TravelOrder
     | RecruitAgentOrder ) & {
-    // The difficulty.
+    // The difficulty, expressed in days.
     readonly difficulty: Explained
-    // The speed. Time to complete = difficulty/speed
-    readonly speed: Explained    
     // Work accumulated so far ; initially 0, equals
     // speed times the number of days spent on the order.
-    readonly accumulated: number
+    readonly progress: number
     // Daily exposure gain
     readonly exposure : Explained
 }
@@ -42,15 +40,14 @@ export type Order =
 export const undercover : Order = {
     kind: "undercover",
     difficulty: { value: 1, reasons: [] },
-    speed: { value: 1, reasons: [] },
     exposure: { value: -1, reasons: [] },
-    accumulated: 0
+    progress: 0
 }
 
 // A completed order, which will show up as 'Awaiting orders'
-export const done : Order = {...undercover, accumulated: 1}
+export const done : Order = {...undercover, progress: 1}
 
 // Count how many days are remaining before the order has been completed
 export function daysRemaining(order: Order) {
-    return Math.ceil((order.difficulty.value - order.accumulated) / order.speed.value)
+    return Math.ceil(order.difficulty.value - order.progress)
 }

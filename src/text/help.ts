@@ -62,7 +62,7 @@ They are the best at traveling *outdoors*, and decent in
 
 export const statTip : StatsOf<TxtFormat> = {
     recruit: `
-How quickly this agent can recruit other agents. Effectiveness is
+How quickly this agent can recruit other agents. Skill is
 doubled when recruiting an agent of the same occupation.`,
     idleIncome: `
 Amount of :gold: produced (or consumed) by this agent, for every 

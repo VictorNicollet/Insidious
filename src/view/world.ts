@@ -47,7 +47,7 @@ export function world(w: World): WorldView {
         initial: locations[0].cell,
         routes: w.routes(),
         message: w.firstMessage(),
-        needOrders: agents.filter(a => a.order.accumulated >= a.order.difficulty.value),
+        needOrders: agents.filter(a => a.order.progress >= a.order.difficulty.value),
         resources
     }
 }

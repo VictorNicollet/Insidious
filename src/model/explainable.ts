@@ -22,12 +22,14 @@ export type Reason = {
 }
 
 // Produce an explained value using a sum of resons.
-export function explain(reasons: readonly Reason[], multiplier?: number): Explained {
+export function explain(reasons: readonly Reason[], multiplier?: number, minimum?: number): Explained {
     let value = 0;
     for (let reason of reasons) value += reason.contrib;
     if (typeof multiplier === "undefined") 
         return {value, reasons}
     value = multiplier * (1 + value);
+    if (typeof minimum !== "undefined")
+        value = Math.max(minimum, value);
     return {value, reasons, multiplier}
 }
 
