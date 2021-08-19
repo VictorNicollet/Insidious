@@ -212,13 +212,34 @@ give them different orders before they are done.`,
         ),
 
         // TRAVELING =========================================================
-        new OrderNode("Travel to...", ``, 
+        new OrderNode("Travel to...", `
+By land or by water, #name# will attempt to reach another town, city or 
+location.
+
+Land travel is slow and dangerous, but can be improved by the *outdoors* 
+skill of the agent.
+
+Water travel is fast, but costs :gold: to hire a ship and a crew.`, 
             world.routes.allFrom(agent.cell).map(route => 
             {
                 const location = world.locations[route.to];
                 return new OrderNode(
                     (route.sail ? "Sail to " : "Travel to ") + location.name.short,
-                    ``, 
+                    (route.sail ? `
+#name# will hire a ship and a crew and sail to destination, for a fee
+proportional to the distance travelled.
+
+Sailing carries a small risk of encountering a deadly storm or 
+a pirate attack.` : `
+#name# will travel across the land to reach the destination. Crossing
+:plains: and :farmland: is easy, but other terrain types can greatly 
+increase the difficulty of the journey. 
+
+Land travels carry a moderate risk of encountering wild beasts
+or a bandit attack. 
+
+Both the difficulty and the risks are reduced by the agent's *outdoors* skill.
+`), 
                     checkResources(travelOrder(agent.agent, route)));
             }).sort((o1, o2) => o1.order.difficulty.value - o2.order.difficulty.value))
     ];
