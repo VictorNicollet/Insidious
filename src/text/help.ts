@@ -97,3 +97,9 @@ They gain some :exposure: when they are seen doing things they should not
 do, or being in places they should not be. 
 
 Agents can decrease their :exposure: by *staying undercover*.`
+
+export const undercoverTip : TxtFormat = `
+
+Every day provides the agent's *income* as :gold:,
+and decreases their :exposure: by 1, though it cannot cause the
+:exposure: to go below the agent's *authority*.`

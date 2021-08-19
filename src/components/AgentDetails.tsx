@@ -6,6 +6,7 @@ import { useState } from 'preact/hooks';
 import { AgentOrders } from './AgentOrders';
 import * as Help from "text/help"
 import { Tooltip } from './Tooltip';
+import { integer } from './numbers';
 
 type Tabs = "Orders" | "Stats"
 const tabs: Tabs[] = ["Orders", "Stats"]
@@ -68,7 +69,7 @@ export function AgentDetails(props: {
                                     inserts={[]}
                                     ctx={{}}/>}/>
                     <AgentInfoLine label="Exposure" 
-                        value={<Fragment><span className="exposure"/><b>{agent.exposure}</b></Fragment>}
+                        value={<Fragment><span className="exposure"/><b>{integer(agent.exposure)}</b></Fragment>}
                         tooltip={<Tooltip tip={Help.exposureTip} inserts={[]} ctx={{}}/>}/>
                 </table>
             </div>

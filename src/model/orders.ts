@@ -34,6 +34,8 @@ export type Order =
     // Work accumulated so far ; initially 0, equals
     // speed times the number of days spent on the order.
     readonly accumulated: number
+    // Daily exposure gain
+    readonly exposure : Explained
 }
 
 // The default "stay undercover" order.
@@ -41,6 +43,7 @@ export const undercover : Order = {
     kind: "undercover",
     difficulty: { value: 1, reasons: [] },
     speed: { value: 1, reasons: [] },
+    exposure: { value: -1, reasons: [] },
     accumulated: 0
 }
 

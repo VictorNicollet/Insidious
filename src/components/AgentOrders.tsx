@@ -1,12 +1,12 @@
-import { h, JSX } from "preact"
-import { AgentView, agent, } from 'view/agents'
+import { h, JSX, Fragment } from "preact"
+import { AgentView } from 'view/agents'
 import { Order, undercover, daysRemaining } from 'model/orders'
 import { never } from 'never';
 import { signedDecimal, decimal, integer } from './numbers';
 import { useState, useMemo, useCallback } from 'preact/hooks';
 import { Tooltip } from './Tooltip';
 import { occupations } from 'model/occupation';
-import { occupationTooltip } from 'text/help';
+import * as Help from 'text/help';
 import { Explained } from 'model/explainable';
 import { useWorld } from './Context';
 import { WorldView } from 'view/world';
@@ -38,12 +38,12 @@ function Explain(props: {value: Explained}): JSX.Element {
     const e = props.value;
     if (e.multiplier) {
         return <span>
-            {decimal(e.value)} = {decimal(e.multiplier)} &times; (1{e.reasons.map(r => 
-                <span>{" +"}&nbsp;{decimal(r.contrib)}&nbsp;<span style={{opacity:0.5}}>({r.why})</span></span>)})
+            = {decimal(e.multiplier)}&nbsp;<span style={{opacity:0.5}}>(Base)</span> {e.reasons.map(r => 
+                <span>{r.contrib > 0 ? " +" : " -"}&nbsp;{integer(Math.abs(r.contrib * 100))}%&nbsp;<span style={{opacity:0.5}}>({r.why})</span></span>)}
         </span>
     }
     return <span>
-        {decimal(e.value)}{e.reasons.map((r,i) => 
+        {e.reasons.map((r,i) => 
             <span>{i == 0 ? " =" : " +"}&nbsp;{decimal(r.contrib)}&nbsp;<span style={{opacity:0.5}}>({r.why})</span></span>)}
     </span>
 }
@@ -63,20 +63,29 @@ function Order(props: {
             ? "\n\n***\n\n" + props.disabled : "") + 
         (props.order && props.order.kind != "undercover" 
             ? "\n\n***\n\n%0" : "");
+    const days = props.order ? daysRemaining(props.order) : 0;
     const inserts = !props.order ? [] : [
-        <div>
+        <Fragment>
             <p>
-                Duration <span class="turns"/><b>{daysRemaining(props.order)}</b> = {decimal(props.order.difficulty.value)} / {decimal(props.order.speed.value)}
+                Duration <span class="turns"/><b>{days}</b> = {decimal(props.order.difficulty.value)} / {decimal(props.order.speed.value)}
             </p>
             <p style={{paddingLeft: 20}}>
                 <span style={{opacity:0.5}}>Difficulty&nbsp;</span> 
-                <Explain value={props.order.difficulty}/>
+                {decimal(props.order.difficulty.value)}<Explain value={props.order.difficulty}/>
             </p>
             <p style={{paddingLeft: 20}}>
                 <span style={{opacity:0.5}}>Ability&nbsp;</span> 
-                <Explain value={props.order.speed}/>
+                {decimal(props.order.speed.value)}<Explain value={props.order.speed}/>
             </p>
-        </div>
+            <p>
+                Exposure <span class="exposure"/><b>{decimal(days * props.order.exposure.value)}</b>
+                &nbsp;= <span class="turns"/><b>{days}</b> &times; {props.order.exposure.value}
+            </p>
+            <p style={{paddingLeft: 20}}>
+                <span style={{opacity:0.5}}>Daily&nbsp;</span>
+                {decimal(props.order.exposure.value)}<Explain value={props.order.exposure}/>
+            </p>
+        </Fragment>
     ]
     return <button className="gui-order" 
                    disabled={!!props.disabled} 
@@ -89,6 +98,9 @@ function Order(props: {
         {props.order && <span className="effects">
                 {props.effects.map((e, i) => 
                     <span key={i}>&nbsp;<span class={e[0]}/>{e[1]}</span>)}
+                <span>
+                    <span class="exposure"/><b>{integer(Math.round(props.order.exposure.value * daysRemaining(props.order)))}</b>
+                </span>
                 <span>
                     &nbsp;<span class="turns"/><b>{integer(daysRemaining(props.order))}</b>
                 </span>
@@ -145,18 +157,31 @@ Undercover agents attract less attention, slowly reducing
 their :exposure:.`, undercoverEffects, [
             new OrderNode(
                 "Stay undercover for a day.",
-                `#name# will expect new orders on the next turn.`,
+                `
+#name# will expect new orders on the next turn.
+
+***
+
+` + Help.undercoverTip,
                 undercoverEffects,
                 undercover),
             new OrderNode(
                 "Stay undercover for a week.", `
 #name# will not expect new orders for the next seven turns. You may
-still give them new orders before that.`, 
+still give them new orders before that.
+
+***
+
+` + Help.undercoverTip, 
                 undercoverEffects,
                 { ...undercover, difficulty: { value: 7, reasons: [] } }),
             new OrderNode(
                 "Stay undercover until further notice.", `
-#name# will stay undercover until you decide to give them new orders.`,
+#name# will stay undercover until you decide to give them new orders.
+
+***
+
+` + Help.undercoverTip, 
                 undercoverEffects,
                 { ...undercover, difficulty: { value: Number.POSITIVE_INFINITY, reasons: [] } }),
         ]),
@@ -173,7 +198,7 @@ give them different orders before they are done.`, [],
             ? `!!New agents cannot be recruited outdoors.!!`
             : occupations.map(occupation => new OrderNode(
                 "Recruit a " + occupation,
-                occupationTooltip[occupation],
+                Help.occupationTooltip[occupation],
                 [],
                 recruitOrder(occupation, agent.agent, location)))
         ),

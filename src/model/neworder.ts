@@ -19,20 +19,27 @@ export function recruitOrder(occupation: Occupation, agent: Agent, location: Loc
         {why: "Base", contrib: 2}, 
         {why: `${occupation} ${cellKind.inThis()}`, contrib: 60 / ease}]);
 
-    const multipliers: Reason[] = [
+    const speedMult: Reason[] = [
         {why: "Skill", contrib: agent.stats.recruit.value}
     ]
 
-    if (agent.occupation == occupation)
-        multipliers.push({why: "Same occupation", contrib: agent.stats.recruit.value});
+    const exposureMult: Reason[] = [{why: "Deceit", contrib: -agent.stats.deceit.value/100} ]
 
-    const speed = explain(multipliers, 2)
+    if (agent.occupation == occupation) {
+        speedMult.push({why: "Same occupation", contrib: agent.stats.recruit.value});
+        exposureMult.push({why: "Same occupation", contrib: -0.1});
+    }
+
+    const speed = explain(speedMult, 2)
+
+    const exposure = explain(exposureMult, 2);
 
     return {
         kind: "recruit-agent",
         occupation,
         difficulty,
         speed,
+        exposure,
         accumulated: 0
     }
 }
@@ -57,6 +64,7 @@ export function travelOrder(agent: Agent, route: Route): Order|string {
             route.sail ? {why: "Sail", contrib: 1} : 
             {why: "Skill", contrib: agent.stats.outdoors.value}
         ]),
+        exposure: { value: 0, reasons: [] },
         accumulated: 0,
         path
     }

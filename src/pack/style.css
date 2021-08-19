@@ -550,7 +550,7 @@ button.go.right:disabled {
     padding: 12px;
     color: #DCC;
     text-shadow: black 0 0 2px;
-    top: -6px;
+    top: -57px;
     width: 400px;
     font-size: 14px;
     border-radius: 4px;
@@ -567,7 +567,7 @@ button.go.right:disabled {
     border-bottom: 10px solid transparent;
     border-left: 10px solid rgba(0,0,0,0.7);
     right: -10px;
-    top: 7px;
+    top: 57px;
 }
 
 .tooltip p {

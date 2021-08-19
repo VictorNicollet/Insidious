@@ -95,14 +95,14 @@ const conduitByOccupation : ByOccupation<number> = {
 
 const deceitByOccupation : ByOccupation<[number,number]> = {
     // Per-level bonus if main, and if secondary
-    Criminal: [1.5, 1],
-    Noble: [1, 0.5],
-    Merchant: [1, 0.5],
-    Mercenary: [0.5, 0.1],
-    Mage: [1, 0.1],
-    Farmer: [0.1, 0],
-    Hunter: [0.1, 0],
-    Smith: [0.1, 0]
+    Criminal: [9, 6],
+    Noble: [6, 3],
+    Merchant: [6, 3],
+    Mercenary: [3, 1],
+    Mage: [6, 1],
+    Farmer: [1, 0],
+    Hunter: [1, 0],
+    Smith: [1, 0]
 }
 
 // The rules to compute all the stats based on an agent.
@@ -176,7 +176,7 @@ export const maxStats : StatsOf<number> = {
     outdoors:   5,
     combat:     30,
     conduit:    5,
-    deceit:     15
+    deceit:     100,
 }
 
 // Compute the current stats for an agent
