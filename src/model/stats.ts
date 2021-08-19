@@ -60,12 +60,12 @@ const outdoorsByOccupation : ByOccupation<[number,number]> = {
     //                     Lv.0 Lv.1 Lv.2 Lv.3 Lv.4 Lv.5 Lv.6 Lv.7 Lv.8 Lv.9
     Noble:     [0,  0], //    0    0    0    0    0    0    0    0    0    0
     Mage:      [0,  0], //    0    0    0    0    0    0    0    0    0    0
-    Merchant:  [-2, 2], //    0    0    2    4    6    8   10   12   14   16
-    Criminal:  [-2, 1], //    0    0    0    1    2    3    4    5    6    7
+    Merchant:  [-4, 4], //    0    0    4    8   12   16   20   24   28   32
+    Criminal:  [-4, 2], //    0    0    0    2    4    6    8   10   12   14
     Smith:     [0,  0], //    0    0    0    0    0    0    0    0    0    0
-    Farmer:    [0,  1], //    0    1    2    3    4    5    6    7    8    9
-    Mercenary: [0,  2], //    0    2    4    6    8   10   12   14   16   18
-    Hunter:    [0,  3]  //    0    3    6    9   12   15   18   21   24   27
+    Farmer:    [0,  2], //    0    2    4    6    8   10   12   14   16   18
+    Mercenary: [0,  4], //    0    4    8   12   16   20   24   28   32   36
+    Hunter:    [0,  6]  //    0    6   12   18   24   30   36   42   48   54
 }
 
 const combatByOccupation : ByOccupation<[number,number]> = {
@@ -137,14 +137,18 @@ const rules: StatsOf<(reasons: Reason[], agent: Agent) => void> = {
         }
     },
     outdoors: function(reasons: Reason[], agent: Agent) {
-        reasons.push({ why: "Base", contrib: 1})
         for (let occupation in outdoorsByOccupation) {
             const [base, byLevel] = outdoorsByOccupation[occupation];
             const level = agent.levels[occupation];
             const value = Math.max(0, base + level * byLevel);    
             if (value > 0) 
-                reasons.push({ why: occupation + " Lv." + level, contrib: value/5 })
+                reasons.push({ why: occupation + " Lv." + level, contrib: value })
         }
+        if (reasons.length == 0) 
+            reasons.push({ 
+                why: agent.occupation + " Lv." + agent.levels[agent.occupation],
+                contrib: 0
+            })
     },
     combat: function(reasons: Reason[], agent: Agent) {
         for (let occupation in combatByOccupation) {
@@ -168,12 +172,15 @@ const rules: StatsOf<(reasons: Reason[], agent: Agent) => void> = {
 
 export const allStats = Object.keys(rules) as StatKey[]
 
+export const resources : StatKey[] = ["idleIncome", "conduit"]
+export const skills : StatKey[] = allStats.filter(c => c != "idleIncome" && c != "conduit")
+
 // Not actually the maximum, we just advertise this as a reasonable 
 // maximum that can be used for comparison.
 export const maxStats : StatsOf<number> = {
     idleIncome: 50,
     recruit:    100,
-    outdoors:   5,
+    outdoors:   100,
     combat:     30,
     conduit:    5,
     deceit:     100,

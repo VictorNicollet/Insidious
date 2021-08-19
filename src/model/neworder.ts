@@ -2,7 +2,7 @@ import { Occupation, presenceByLocationKind } from "./occupation";
 import type { Location } from './locations';
 import type { Agent } from './agents';
 import type { Order } from './orders';
-import { explain, Reason } from './explainable';
+import { explain, Reason, Explained } from './explainable';
 import { Route } from './routes';
 import { Cell } from './grid';
 
@@ -54,17 +54,27 @@ export function travelOrder(agent: Agent, route: Route): Order|string {
     
     const cells = agent.world.map.cells;
 
+    let difficulty : Explained = explain([{why: "Sail", contrib: route.distance}])
+    if (!route.sail) {
+        const mult : Reason[] = [
+            {why: "Skill", contrib: -agent.stats.outdoors.value/100}
+        ];
+        difficulty = explain(mult, route.distance, 1)
+    }
+
+    const ratio = difficulty.value / route.distance;
+
     let offset = 0
     let path : [number,Cell][] = []
     for (let cell of route.steps) {
-        path.push([offset, cell]);
+        path.push([offset * ratio, cell]);
         offset += cells[cell].difficulty;
-    }   
+    }
 
     return {
         kind: "travel",
         sail: route.sail,
-        difficulty: explain([{why: "Travel", contrib: route.distance}]),
+        difficulty,
         exposure: { value: 0, reasons: [] },
         progress: 0,
         path

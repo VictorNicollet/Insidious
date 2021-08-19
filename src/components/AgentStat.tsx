@@ -1,5 +1,5 @@
 import { h, JSX } from "preact"
-import { StatsOf, Stats, maxStats, allStats } from "model/stats";
+import { StatsOf, Stats, maxStats, allStats, resources, skills } from "model/stats";
 import { decimal } from './numbers';
 import { useState } from 'preact/hooks';
 import { Tooltip } from './Tooltip';
@@ -46,6 +46,7 @@ function Stat(props: {
             {props.stat === "idleIncome" && <span className="gold"/>}
             {props.stat === "conduit" && <span className="touch"/>}
             {decimal(props.value.value)}
+            {props.stat !== "idleIncome" && props.stat !== "conduit" ? "%" : ""}
         </div>
     </div>
 }
@@ -54,7 +55,11 @@ function Stat(props: {
 // agent's detail page.
 export function AgentStats(props: { agent: AgentView }) {
     return <div class="stats">
-        {allStats.map(stat => 
+        <div style={{padding:4,textAlign:"center"}}>☙ Resources ❧</div>
+        {resources.map(stat => 
+            <Stat key={stat} stat={stat} value={props.agent.stats[stat]}/>)}
+        <div style={{padding:4,textAlign:"center"}}>☙ Skills ❧</div>
+        {skills.map(stat => 
             <Stat key={stat} stat={stat} value={props.agent.stats[stat]}/>)}
     </div>
 }

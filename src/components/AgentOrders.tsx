@@ -70,11 +70,12 @@ function Order(props: {
             <p style={{paddingLeft:40,textIndent:-40}}>
                 <span class="turns"/><b>{days}</b><Explain value={props.order.difficulty}/>
             </p>
-            <p style={{paddingLeft:40,textIndent:-40}}>
-                <span class="exposure"/><b>{decimal(days * props.order.exposure.value)}</b>
-                &nbsp;= <span class="turns"/><b>{days}</b>
-                <Explain left={"×"} value={props.order.exposure}/>
-            </p>
+            {props.order.exposure.value > 0 ? 
+                <p style={{paddingLeft:40,textIndent:-40}}>
+                    <span class="exposure"/><b>{decimal(days * props.order.exposure.value)}</b>
+                    &nbsp;= <span class="turns"/><b>{days}</b>
+                    <Explain left={"×"} value={props.order.exposure}/>
+                </p> : undefined}
         </Fragment>
     ]
     return <button className="gui-order" 
@@ -88,11 +89,11 @@ function Order(props: {
         {props.order && <span className="effects">
                 {props.effects.map((e, i) => 
                     <span key={i}>&nbsp;<span class={e[0]}/>{e[1]}</span>)}
+                {props.order.exposure.value > 0 ? <span>
+                    <span class="exposure"/><b>{integer(Math.round(props.order.exposure.value * props.order.difficulty.value))}</b>
+                </span> : undefined}
                 <span>
-                    <span class="exposure"/><b>{integer(Math.round(props.order.exposure.value * daysRemaining(props.order)))}</b>
-                </span>
-                <span>
-                    &nbsp;<span class="turns"/><b>{integer(daysRemaining(props.order))}</b>
+                    &nbsp;<span class="turns"/><b>{integer(props.order.difficulty.value)}</b>
                 </span>
             </span>}
     </button>

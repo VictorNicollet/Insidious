@@ -58,9 +58,9 @@ export function executeOrder(agent: Agent): Order {
             for (let i = 0; i < order.path.length; ++i) {
                 const [difficulty, cell] = order.path[i];
                 // Already passed through this cell ?
-                if (difficulty <= accumulated) continue;
+                if (difficulty - 0.001 <= accumulated) continue;
                 // Moved as far as possible ? 
-                if (difficulty > newAccumulated) break;
+                if (difficulty - 0.001 > newAccumulated) break;
                 agent.moveTo(cell);
             }
             break;
