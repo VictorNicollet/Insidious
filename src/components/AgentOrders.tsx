@@ -11,6 +11,7 @@ import { Explained } from 'model/explainable';
 import { useWorld } from './Context';
 import { WorldView } from 'view/world';
 import { recruitOrder, travelOrder } from 'model/neworder';
+import { zero } from 'model/resources';
 
 function DescribeOrder(props: {order: Order}): JSX.Element {
     const world = useWorld();
@@ -60,8 +61,8 @@ function Order(props: {
     const [tip, setTip] = useState(false);
     const tooltip = props.tooltip + 
         (props.disabled 
-            ? "\n\n***\n\n" + props.disabled : "") + 
-        (props.order && props.order.kind != "undercover" 
+            ? "\n\n***\n\n" + props.disabled : 
+         props.order && props.order.kind != "undercover" 
             ? "\n\n***\n\n%0" : "");
     const days = props.order ? daysRemaining(props.order) : 0;
     const inserts = !props.order ? [] : [
@@ -102,6 +103,12 @@ function Order(props: {
     </button>
 }
 
+// A future order (or disabled order) given in a node
+type FutureOrder = {
+    disabled?: string,
+    order?: Order
+}
+
 // A node in the decision tree that leads to producing orders.
 class OrderNode {
     public readonly children: OrderNode[]|undefined
@@ -110,20 +117,16 @@ class OrderNode {
     constructor(
         public readonly label: string,
         public readonly tooltip: string,
-        childrenOrOrder: OrderNode[]|Order|string
+        childrenOrOrder: OrderNode[]|FutureOrder
     ) {
         if (Array.isArray(childrenOrOrder)) {
             this.children = childrenOrOrder;
             this.order = undefined;
             this.disabled = undefined
-        } else if (typeof childrenOrOrder === "string") {
-            this.children = undefined;
-            this.order = undefined;
-            this.disabled = childrenOrOrder;
         } else {
             this.children = undefined;
-            this.order = childrenOrOrder;
-            this.disabled = undefined;
+            this.order = childrenOrOrder.order;
+            this.disabled = childrenOrOrder.disabled;
         }
     }
 }
@@ -131,6 +134,28 @@ class OrderNode {
 function makeOrderTree(agent: AgentView, world: WorldView): OrderNode[] {
     
     const location = agent.agent.location;
+    
+    // If an order's initial cost is too high, prevent it from being selected.
+    // Note that if the agent already has an active order with an initial cost that 
+    // has NOT been paid, then it will be refunded when a new order is selected
+    // (and therefore must be taken into account as available).
+    const currentOrderRes = agent.order.progress == 0 ? agent.order.cost : zero;
+    function checkResources(order: Order|string): FutureOrder {
+        if (typeof order === "string") return { disabled: order };
+        const needGold = order.cost.gold - (world.resources.gold.current + currentOrderRes.gold);
+        const needTouch = order.cost.touch - (world.resources.touch.current + currentOrderRes.touch);
+        if (needGold > 0) 
+            return {
+                disabled: `!!An additional :gold=${Math.ceil(needGold)}: is needed.!!`,
+                order
+            };
+        if (needTouch > 0)
+            return {
+                disabled: `!!An additional :touch=${Math.ceil(needTouch)}: is needed.!!`,
+                order
+            };
+        return {order}
+    }
 
     return [
 
@@ -152,7 +177,7 @@ their :exposure:.`, [
 
 ***
 
-` + Help.undercoverTip, undercover),
+` + Help.undercoverTip, {order:undercover}),
             new OrderNode(
                 "Stay undercover for a week.", `
 #name# will not expect new orders for the next seven turns. You may
@@ -160,14 +185,14 @@ still give them new orders before that.
 
 ***
 
-` + Help.undercoverTip, { ...undercover, difficulty: { value: 7, reasons: [] } }),
+` + Help.undercoverTip, {order:{ ...undercover, difficulty: { value: 7, reasons: [] }}}),
             new OrderNode(
                 "Stay undercover until further notice.", `
 #name# will stay undercover until you decide to give them new orders.
 
 ***
 
-` + Help.undercoverTip, { ...undercover, difficulty: { value: Number.POSITIVE_INFINITY, reasons: [] } }),
+` + Help.undercoverTip, {order:{ ...undercover, difficulty: { value: Number.POSITIVE_INFINITY, reasons: [] }}}),
         ]),
 
         // RECRUITMENT =======================================================
@@ -179,11 +204,11 @@ so that they may both serve you. This will likely take several days.
 #name# will pray to you every night, providing :touch: and letting you 
 give them different orders before they are done.`, 
             location === undefined 
-            ? `!!New agents cannot be recruited outdoors.!!`
+            ? {disabled:`!!New agents cannot be recruited outdoors.!!`}
             : occupations.map(occupation => new OrderNode(
                 "Recruit a " + occupation,
                 Help.occupationTooltip[occupation],
-                recruitOrder(occupation, agent.agent, location)))
+                checkResources(recruitOrder(occupation, agent.agent, location))))
         ),
 
         // TRAVELING =========================================================
@@ -194,7 +219,7 @@ give them different orders before they are done.`,
                 return new OrderNode(
                     (route.sail ? "Sail to " : "Travel to ") + location.name.short,
                     ``, 
-                    travelOrder(agent.agent, route));
+                    checkResources(travelOrder(agent.agent, route)));
             }).sort((o1, o2) => o1.order.difficulty.value - o2.order.difficulty.value))
     ];
 }

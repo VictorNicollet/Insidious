@@ -30,12 +30,12 @@ export function byOccupation<T>(value: T): ByOccupation<T> {
 }
 
 export const occupations : readonly Occupation[] = [ 
-    "Merchant",
     "Farmer",
-    "Smith",
     "Hunter",
-    "Mercenary",
+    "Smith",
     "Criminal",
+    "Merchant",
+    "Mercenary",
     "Mage",
     "Noble" ];
 
