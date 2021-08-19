@@ -1,6 +1,7 @@
 // Each agent has a current (outward) occupation, but can have skills
 
 import { ByLocationKind } from './locations';
+import { Resources, zero } from './resources';
 
 // (and levels) in more than one occupation.
 export type Occupation = keyof(ByOccupation<number>)
@@ -37,6 +38,17 @@ export const occupations : readonly Occupation[] = [
     "Criminal",
     "Mage",
     "Noble" ];
+
+export const recruitCost : ByOccupation<Resources> = {
+    Farmer: zero,
+    Smith: zero,
+    Hunter: zero,
+    Merchant: { gold: 10, touch: 0 },
+    Mercenary: { gold: 10, touch: 0 },
+    Criminal: { gold: 5, touch: 0 },
+    Mage: { gold: 50, touch: 0 },
+    Noble: { gold: 100, touch: 0 }
+}
 
 // The total experience needed to reach a level. One unit of XP equals
 // one day of staying undercover. 

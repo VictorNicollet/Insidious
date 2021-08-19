@@ -1,6 +1,7 @@
 import type { Occupation } from './occupation'
 import type { Explained } from './explainable'
 import { Cell } from './grid'
+import { ResourcesOf } from './resources'
 
 // An order to stay undercover and act as one's outward occupation
 export type UndercoverOrder = {
@@ -34,6 +35,9 @@ export type Order =
     readonly progress: number
     // Daily exposure gain
     readonly exposure : Explained
+    // The cost, in various resources, of STARTING this order.
+    // Non-refundable once it started.
+    readonly cost: ResourcesOf<number>
 }
 
 // The default "stay undercover" order.
@@ -41,6 +45,7 @@ export const undercover : Order = {
     kind: "undercover",
     difficulty: { value: 1, reasons: [] },
     exposure: { value: -1, reasons: [] },
+    cost: {gold: 0, touch: 0},
     progress: 0
 }
 

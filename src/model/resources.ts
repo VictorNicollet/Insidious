@@ -5,3 +5,4 @@ export type ResourcesOf<T> = {
 
 export type Resources = ResourcesOf<number>
 
+export const zero = { gold: 0, touch: 0 }

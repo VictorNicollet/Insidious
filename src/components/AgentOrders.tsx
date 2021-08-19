@@ -2,7 +2,7 @@ import { h, JSX, Fragment } from "preact"
 import { AgentView } from 'view/agents'
 import { Order, undercover, daysRemaining } from 'model/orders'
 import { never } from 'never';
-import { signedDecimal, decimal, integer } from './numbers';
+import { decimal, integer } from './numbers';
 import { useState, useMemo, useCallback } from 'preact/hooks';
 import { Tooltip } from './Tooltip';
 import { occupations } from 'model/occupation';
@@ -55,7 +55,6 @@ function Order(props: {
     disabled: string|undefined
     tooltip: string
     order: Order|undefined
-    effects: readonly [Effect, string][]
     onClick: () => void
 }): JSX.Element {
     const [tip, setTip] = useState(false);
@@ -87,14 +86,18 @@ function Order(props: {
             <Tooltip tip={tooltip} ctx={props.agent.ctx} inserts={inserts}/>}
         {props.label}
         {props.order && <span className="effects">
-                {props.effects.map((e, i) => 
-                    <span key={i}>&nbsp;<span class={e[0]}/>{e[1]}</span>)}
-                {props.order.exposure.value > 0 ? <span>
-                    <span class="exposure"/><b>{integer(Math.round(props.order.exposure.value * Math.ceil(props.order.difficulty.value)))}</b>
-                </span> : undefined}
-                <span>
-                    &nbsp;<span class="turns"/><b>{integer(props.order.difficulty.value)}</b>
-                </span>
+                {props.order.cost.gold > 0 ? <Fragment>
+                    {" "}<span class="gold"/><b>{integer(props.order.cost.gold)}</b>
+                    </Fragment> : undefined}
+                {props.order.cost.touch > 0 ? <Fragment>
+                    {" "}<span class="touch"/><b>{integer(props.order.cost.touch)}</b>
+                    </Fragment> : undefined}
+                {props.order.exposure.value > 0 ? <Fragment>
+                    {" "}<span class="exposure"/><b>{integer(Math.round(props.order.exposure.value * Math.ceil(props.order.difficulty.value)))}</b>
+                </Fragment> : undefined}
+                <Fragment>
+                    {" "}<span class="turns"/><b>{integer(props.order.difficulty.value)}</b>
+                </Fragment>
             </span>}
     </button>
 }
@@ -107,7 +110,6 @@ class OrderNode {
     constructor(
         public readonly label: string,
         public readonly tooltip: string,
-        public readonly effects: readonly [Effect, string][],
         childrenOrOrder: OrderNode[]|Order|string
     ) {
         if (Array.isArray(childrenOrOrder)) {
@@ -128,9 +130,6 @@ class OrderNode {
 
 function makeOrderTree(agent: AgentView, world: WorldView): OrderNode[] {
     
-    const undercoverEffects : [Effect, string][] = 
-        [["gold", signedDecimal(agent.stats.idleIncome.value) + "/day"]]
-
     const location = agent.agent.location;
 
     return [
@@ -145,7 +144,7 @@ They will pray to you every night, providing
 :touch: and letting you give new orders for the next day.
 
 Undercover agents attract less attention, slowly reducing 
-their :exposure:.`, undercoverEffects, [
+their :exposure:.`, [
             new OrderNode(
                 "Stay undercover for a day.",
                 `
@@ -153,9 +152,7 @@ their :exposure:.`, undercoverEffects, [
 
 ***
 
-` + Help.undercoverTip,
-                undercoverEffects,
-                undercover),
+` + Help.undercoverTip, undercover),
             new OrderNode(
                 "Stay undercover for a week.", `
 #name# will not expect new orders for the next seven turns. You may
@@ -163,18 +160,14 @@ still give them new orders before that.
 
 ***
 
-` + Help.undercoverTip, 
-                undercoverEffects,
-                { ...undercover, difficulty: { value: 7, reasons: [] } }),
+` + Help.undercoverTip, { ...undercover, difficulty: { value: 7, reasons: [] } }),
             new OrderNode(
                 "Stay undercover until further notice.", `
 #name# will stay undercover until you decide to give them new orders.
 
 ***
 
-` + Help.undercoverTip, 
-                undercoverEffects,
-                { ...undercover, difficulty: { value: Number.POSITIVE_INFINITY, reasons: [] } }),
+` + Help.undercoverTip, { ...undercover, difficulty: { value: Number.POSITIVE_INFINITY, reasons: [] } }),
         ]),
 
         // RECRUITMENT =======================================================
@@ -184,25 +177,23 @@ still give them new orders before that.
 so that they may both serve you. This will likely take several days.
 
 #name# will pray to you every night, providing :touch: and letting you 
-give them different orders before they are done.`, [],
+give them different orders before they are done.`, 
             location === undefined 
             ? `!!New agents cannot be recruited outdoors.!!`
             : occupations.map(occupation => new OrderNode(
                 "Recruit a " + occupation,
                 Help.occupationTooltip[occupation],
-                [],
                 recruitOrder(occupation, agent.agent, location)))
         ),
 
         // TRAVELING =========================================================
-        new OrderNode("Travel to...", ``, [], 
+        new OrderNode("Travel to...", ``, 
             world.routes.allFrom(agent.cell).map(route => 
             {
                 const location = world.locations[route.to];
                 return new OrderNode(
                     (route.sail ? "Sail to " : "Travel to ") + location.name.short,
                     ``, 
-                    [],
                     travelOrder(agent.agent, route));
             }).sort((o1, o2) => o1.order.difficulty.value - o2.order.difficulty.value))
     ];
@@ -282,8 +273,7 @@ export function AgentOrders(props: {
                                 setDescent(a => [...a, i])
                             else if (node.order)
                                 setOrder(node.order)
-                        }}
-                        effects={node.effects}/>)}
+                        }}/>)}
             </div>}
     </div>
 }

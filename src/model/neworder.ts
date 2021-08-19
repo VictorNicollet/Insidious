@@ -1,10 +1,11 @@
-import { Occupation, presenceByLocationKind } from "./occupation";
+import { Occupation, presenceByLocationKind, recruitCost } from "./occupation";
 import type { Location } from './locations';
 import type { Agent } from './agents';
 import type { Order } from './orders';
 import { explain, Reason, Explained } from './explainable';
 import { Route } from './routes';
 import { Cell } from './grid';
+import { zero } from './resources';
 
 // Produces a "recruit-agent" order, or an impossibility message
 export function recruitOrder(occupation: Occupation, agent: Agent, location: Location): Order|string {
@@ -45,6 +46,7 @@ export function recruitOrder(occupation: Occupation, agent: Agent, location: Loc
         occupation,
         difficulty,
         exposure,
+        cost: recruitCost[occupation],
         progress: 0
     }
 }
@@ -77,6 +79,7 @@ export function travelOrder(agent: Agent, route: Route): Order|string {
         difficulty,
         exposure: { value: 0, reasons: [] },
         progress: 0,
+        cost: route.sail ? { gold: 2 * route.distance, touch: 0 } : zero,
         path
     }
 }
