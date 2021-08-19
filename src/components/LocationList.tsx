@@ -1,13 +1,13 @@
-import { h, JSX } from "preact"
+import { h, JSX, Fragment } from "preact"
 import { useState } from "preact/hooks"
 import * as B from "./Box"
 import * as P from './Pagination'
 import * as Numbers from './numbers'
 import { LocationView } from 'view/locations'
 import * as M from './Map'
-import { WorldView } from 'view/world'
 import { AgentCount } from './AgentCount'
 import { useSelectors } from './Context'
+import { infolevel } from './LocationDetails'
 
 // The height, in pixels, of an element in the locations list
 const ITEMSIZE = 50;
@@ -37,6 +37,8 @@ export function LocationList(props: {
     return <B.Box title="Locations" decorate={true} close={props.close}>
         <ul className="gui-locations" style={{height: 50*pagesize}}>
             {shown.map(location => {
+                const info = location.information == 0 ? undefined : 
+                    <Fragment> &middot; {infolevel[location.information]} info </Fragment>
                 return <li key={location.name.short} 
                     onClick={() => selectors.location(location)}>
                     <div className="location-mini">
@@ -50,7 +52,7 @@ export function LocationList(props: {
                         {location.name.short}
                     </div>
                     <div className="info">
-                        {location.cellKind.name} &middot; Pop {Numbers.population(location.population)}
+                        {location.cellKind.name} {info}
                     </div>
                 </li>
             })}

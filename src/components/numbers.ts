@@ -8,7 +8,15 @@ export function days(n: number) {
     return integer(n) + (n == 1 ? " day" : " days");
 }
 
-export function population(pop: number) {
+export function population(pop: number, info: number) {
+    if (info == 0) return "Unknown";
+    if (info == 1) {
+        if (pop < 100) return "Tens";
+        if (pop < 1000) return "Hundreds";
+        if (pop < 10000) return "Thousands";
+        if (pop < 100000) return "Tens of thousands";
+        return "Over a hundred thousand";
+    }
     return integer(Math.floor(pop));
 }
 

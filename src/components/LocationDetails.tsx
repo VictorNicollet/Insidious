@@ -8,7 +8,7 @@ import { useWorld } from './Context'
 // Size of the top-of-box info region
 const INFOHEIGHT = 48 /* table */ + 17 /* h4 */;
 
-const infolevel = [
+export const infolevel = [
     /* 0 */ "None",     
     /* 1 */ "Basic",
     /* 2 */ "Poor",
@@ -38,7 +38,7 @@ export function LocationDetails(props: {
     return <B.Box title={location.name.short} close={props.close}>
         <table class="gui-info-table">
             <tr><th>Location Type</th><td>{location.cellKind.name}</td></tr>
-            <tr><th>Adult Population</th><td>{population(location.population)}</td></tr>
+            <tr><th>Adult Population</th><td>{population(location.population, location.information)}</td></tr>
             <tr><th>Information</th><td>{infolevel[location.information]}</td></tr>
         </table>
         <hr/>
