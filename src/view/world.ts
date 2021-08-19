@@ -27,15 +27,23 @@ export type WorldView = {
 export function world(w: World): WorldView {
     const locations = w.seenLocations
     const agents = w.agents().map(agent)
-    const daily = w.dailyResources();
+
+    // We subtract the 'once' delta from the available resources, to 
+    // take into account the cost of orders that are given but not yet
+    // executed. This means: 
+    //  - the order's cost is "paid" as soon as it is selected (and
+    //    thus can be rejected if too costly)
+    //  - the order's cost is "refunded" if another order is given in
+    //    the same turn
+    const delta = w.resourceDelta();
     const resources = {
         gold: {
-            current: w.resources.gold,
-            daily: daily.gold
+            current: w.resources.gold + delta.gold.once,
+            daily: delta.gold.daily
         },
         touch: {
-            current: w.resources.touch,
-            daily: daily.touch
+            current: w.resources.touch + delta.touch.once,
+            daily: delta.touch.daily
         }
     }
 

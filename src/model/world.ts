@@ -5,7 +5,7 @@ import { WorldMap } from './map';
 import type { Cell, Grid } from './grid';
 import type { ByOccupation, Occupation } from './occupation';
 import type { Resources, ResourcesOf } from './resources';
-import { countDailyResources, executeOrder } from './execute';
+import { countResourceDelta, executeOrder } from './execute';
 import { Explained, Reason, explain, dedup } from './explainable';
 import { Routes } from './routes';
 import { Message } from './message';
@@ -117,12 +117,22 @@ export class World {
 
     // Compute the current daily resource production (does not include
     // one-off consumption). 
-    public dailyResources(): ResourcesOf<Explained> {
-        const total : ResourcesOf<Reason[]> = { gold: [], touch: [] };
-        for (let agent of this._agents) countDailyResources(agent, total);
+    public resourceDelta(): ResourcesOf<{daily:Explained, once:number}> {
+        const total : ResourcesOf<{daily:Reason[], once:number}> = { 
+            gold: { daily:[], once: 0 },
+            touch: { daily:[], once: 0 }
+        };
+        for (let agent of this._agents) 
+            countResourceDelta(agent, total);
         return {
-            gold: explain(dedup(total.gold)),
-            touch: explain(dedup(total.touch))
+            gold: {
+                daily: explain(dedup(total.gold.daily)),
+                once: total.gold.once
+            },
+            touch: {
+                daily: explain(dedup(total.touch.daily)),
+                once: total.touch.once
+            }
         }
     }
 
@@ -144,18 +154,10 @@ export class World {
     // End the current turn, applying a simulation step
     public endTurn() {
 
-        // First, apply resource changes. This is done for two reasons: 
-        //  1. to reuse the dailyResources() function, and thus be 
-        //     certain that the shown daily resource usage is the one 
-        //     used for actual computations.
-        //  2. so that the order of execution does not cause orders to 
-        //     run out of resources by mistake (e.g. with zero gold, 
-        //     executing (-5, +10) fails but (+10, -5) works). 
-        // This may cause resources to go negative. We'll fix this in 
-        // a later stage !
-        const res = this.dailyResources();
-        this.resources.gold += res.gold.value;
-        this.resources.touch += res.touch.value;
+        // Apply resource changes
+        const res = this.resourceDelta();
+        this.resources.gold += res.gold.daily.value + res.gold.once;
+        this.resources.touch += res.touch.daily.value + res.touch.once;
         
         // Now, execute orders, applying their effects.
         for (let agent of this._agents) {

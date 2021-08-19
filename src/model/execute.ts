@@ -6,19 +6,24 @@ import { Order } from './orders';
 import { randomPerson } from './generation/namegen';
 import { byOccupation } from './occupation';
 
-function countDailyResourcesForOrder(
+function countResourceDeltaForOrder(
     agent: Agent, 
     order: Order, 
-    resources: ResourcesOf<Reason[]>
+    resources: ResourcesOf<{daily:Reason[],once:number}>
 ) {
     const stats = agent.stats;
     
-    resources.touch.push({ why: "Agents", contrib: stats.conduit.value });
+    if (order.progress == 0) {
+        resources.touch.once -= order.cost.touch;
+        resources.gold.once -= order.cost.gold;
+    }
+
+    resources.touch.daily.push({ why: "Agents", contrib: stats.conduit.value });
     if (order.progress >= order.difficulty.value) return;
 
     switch (order.kind) {
         case "undercover": 
-            resources.gold.push(
+            resources.gold.daily.push(
                 { why: "Undercover agents", contrib: stats.idleIncome.value });
             return;
         case "recruit-agent":
@@ -30,10 +35,13 @@ function countDailyResourcesForOrder(
     }
 }
 
-// Counts daily contributions of an agent to global resources, appending them to 
-// the arrays passed as argument.
-export function countDailyResources(agent: Agent, resources: ResourcesOf<Reason[]>) {
-    countDailyResourcesForOrder(agent, agent.order, resources);
+// Counts daily and one-shot contributions of an agent to global resources, 
+// appending them to the arrays passed as argument.
+export function countResourceDelta(
+    agent: Agent, 
+    resources: ResourcesOf<{daily:Reason[],once:number}>
+) {
+    countResourceDeltaForOrder(agent, agent.order, resources);
 }
 
 // Executes an agent's current order, performing any necessary 
