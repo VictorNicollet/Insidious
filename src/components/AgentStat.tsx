@@ -1,5 +1,5 @@
 import { h, JSX } from "preact"
-import { StatsOf, Stats, maxStats, allStats, resources, skills } from "model/stats";
+import { StatsOf, Stats, maxStats, resources, skills } from "model/stats";
 import { decimal } from './numbers';
 import { useState } from 'preact/hooks';
 import { Tooltip } from './Tooltip';
@@ -13,6 +13,7 @@ const statName : StatsOf<string> = {
     outdoors:   "Outdoors",
     combat:     "Combat",
     conduit:    "Conduit",
+    authority:  "Authority",
     deceit:     "Deceit"
 }
 

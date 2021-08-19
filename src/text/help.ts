@@ -76,6 +76,13 @@ How well this agent can fight.`,
 How well this agent can act as a conduit for your :touch:.
 Rituals performed by a good conduit are more effective. 
 Also increases your :touch: by this amount every day.`,
+    authority: `
+This agent's authority over non-believers, whether through 
+wealth, rank or reputation. 
+
+As a downside, the agent's :exposure: 
+cannot be decreased below their :authority:, since the 
+powerful are more easily noticed.`,
     deceit: `
 How well this agent can deceive and manipulate others, 
 and spread lies and rumors. Also makes the agent less 
