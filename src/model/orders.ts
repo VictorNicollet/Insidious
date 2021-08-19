@@ -24,9 +24,22 @@ export type TravelOrder = {
     readonly path : readonly [number, Cell][]
 }
 
+export type GatherInfoMode = 
+      "street" 
+    | "tavern" 
+    | "underworld" 
+    | "gentry" 
+    | "bribe"
+
+export type GatherInfoOrder = {
+    readonly kind : "gather-info"
+    readonly mode : GatherInfoMode
+}
+
 export type Order = 
     ( UndercoverOrder 
     | TravelOrder
+    | GatherInfoOrder
     | RecruitAgentOrder ) & {
     // The difficulty, expressed in days.
     readonly difficulty: Explained

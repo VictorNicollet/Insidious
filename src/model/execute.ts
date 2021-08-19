@@ -30,6 +30,8 @@ function countResourceDeltaForOrder(
             return;
         case "travel":
             return;
+        case "gather-info":
+            return;
         default: 
             never(order);
     }
@@ -100,6 +102,16 @@ export function executeOrder(agent: Agent): Order {
                     levels);
             }
             break;
+        case "gather-info":
+            if (isDone) {
+                const max = order.mode == "street" ? 1 : 
+                            order.mode == "tavern" ? 3 : 6;
+                const oldInfo = agent.location.information;
+                const newInfo = Math.min(max, agent.location.information + 1);
+                if (oldInfo >= newInfo) break;
+                agent.location.information = newInfo;
+            }
+            break;           
         default: never(order);
     }
 

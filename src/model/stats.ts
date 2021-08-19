@@ -13,7 +13,7 @@ export type StatsOf<T> = {
     // by the "recruit agent" action every day. Recruitment 
     // succeeds when the number of units (based on the 
     // difficulty) is reached.
-    recruit: T
+    contacts: T
     // Related to travel time outdoors, also decreases dangers
     // of moving or being outdoors.
     outdoors: T
@@ -142,7 +142,7 @@ const rules: StatsOf<(reasons: Reason[], agent: Agent) => void> = {
                 reasons.push({ why: occupation + " Lv." + level, contrib: byLevel * level })
         }
     }, 
-    recruit: function(reasons: Reason[], agent: Agent) {
+    contacts: function(reasons: Reason[], agent: Agent) {
         for (let occupation in agentRecruitPowerByOccupation) {
             const [ifMain, ifSecondary] = agentRecruitPowerByOccupation[occupation];
             const level = agent.levels[occupation];
@@ -202,7 +202,7 @@ export const skills : StatKey[] = allStats.filter(c => c != "idleIncome" && c !=
 export const maxStats : StatsOf<number> = {
     idleIncome: 50,
     conduit:    5,
-    recruit:    100,
+    contacts:    100,
     outdoors:   100,
     combat:     100,
     deceit:     100,

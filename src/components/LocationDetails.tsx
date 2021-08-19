@@ -8,6 +8,16 @@ import { useWorld } from './Context'
 // Size of the top-of-box info region
 const INFOHEIGHT = 48 /* table */ + 17 /* h4 */;
 
+const infolevel = [
+    /* 0 */ "None",     
+    /* 1 */ "Basic",
+    /* 2 */ "Poor",
+    /* 3 */ "Moderate",
+    /* 4 */ "Good", 
+    /* 5 */ "Excellent", 
+    /* 6 */ "Perfect"
+]
+
 export function LocationDetails(props: {
     // The location to display
     location: number
@@ -29,6 +39,7 @@ export function LocationDetails(props: {
         <table class="gui-info-table">
             <tr><th>Location Type</th><td>{location.cellKind.name}</td></tr>
             <tr><th>Adult Population</th><td>{population(location.population)}</td></tr>
+            <tr><th>Information</th><td>{infolevel[location.information]}</td></tr>
         </table>
         <hr/>
         <InnerAgentList agents={agents} 

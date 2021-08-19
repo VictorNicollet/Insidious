@@ -8,7 +8,7 @@ import type { Explained } from 'model/explainable';
 import { statTip } from 'text/help';
 
 const statName : StatsOf<string> = {
-    recruit:    "Recruitment",
+    contacts:    "Recruitment",
     idleIncome: "Income",
     outdoors:   "Outdoors",
     combat:     "Combat",

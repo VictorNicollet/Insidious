@@ -273,6 +273,7 @@ export function generate() : World {
     // Generate an agent in the last location
     const locs = world.locations();
     const last = locs[locs.length - 1];
+    last.information = 4;
     world.seenLocations.push(last)
     const [occupation, levels] = initialOccupationAndLevels(last);
     const agent = world.newAgent(randomPerson(), last, occupation, levels);

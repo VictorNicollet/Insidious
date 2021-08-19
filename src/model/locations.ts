@@ -19,6 +19,9 @@ export class Location {
 
     public readonly kind : LocationKind
     public readonly name : LocationName
+
+    // The sum of 'gather information' scores of this location. 
+    public information : number
     
     constructor(
         // Position of this location in the "all locations" array
@@ -37,5 +40,6 @@ export class Location {
             ck.is(M.academy) ? "academy" : 
             ck.is(M.village, M.villageUnder, M.villageSmall, M.inn) ? "town" : "ruins";
         this.name = randomLocation(this.kind);
+        this.information = 0;
     }
 }

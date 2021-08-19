@@ -61,8 +61,11 @@ They are the best at traveling *outdoors*, and decent in
 }
 
 export const statTip : StatsOf<TxtFormat> = {
-    recruit: `
-How quickly this agent can recruit other agents. Skill is
+    contacts: `
+How easily this agent can contact other people, whether passively 
+through their occupation, or actively through an existing network.
+
+Covers how quickly this agent can recruit other agents. Skill is
 doubled when recruiting an agent of the same occupation.`,
     idleIncome: `
 Amount of :gold: produced (or consumed) by this agent, for every 

@@ -9,6 +9,7 @@ export type LocationView = {
     readonly cell : Cell
     readonly cellKind : CellKind
     readonly population : number
+    readonly information : number
     readonly agents : readonly number[]
 }
 
@@ -25,6 +26,7 @@ export function location(l: Location, id: number): LocationView {
         cell: l.cell,
         cellKind: l.world.map.cells[l.cell],
         population: l.population,
+        information: l.information,
         agents
     }
 }

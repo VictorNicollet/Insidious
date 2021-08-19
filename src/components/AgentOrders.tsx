@@ -10,7 +10,7 @@ import * as Help from 'text/help';
 import { Explained } from 'model/explainable';
 import { useWorld } from './Context';
 import { WorldView } from 'view/world';
-import { recruitOrder, travelOrder } from 'model/neworder';
+import { recruitOrder, travelOrder, gatherInfoOrder } from 'model/neworder';
 import { zero } from 'model/resources';
 
 function DescribeOrder(props: {order: Order}): JSX.Element {
@@ -23,6 +23,14 @@ function DescribeOrder(props: {order: Order}): JSX.Element {
             return <td>Stay undercover</td>
         case "recruit-agent":
             return <td>Recruit a {order.occupation}</td>
+        case "gather-info":
+            switch (order.mode) {
+                case "bribe": return <td>Gather info (bribe)</td>;
+                case "street": return <td>Gather info (passive)</td>;
+                case "tavern": return <td>Gather info (taverns)</td>;
+                case "underworld": return <td>Gather info (underworld)</td>;
+                case "gentry": return <td>Gather info (high society)</td>;
+            }
         case "travel":
             const [,dest] = order.path[order.path.length - 1];
             const location = world.map.locations[dest];
@@ -32,8 +40,6 @@ function DescribeOrder(props: {order: Order}): JSX.Element {
         default: return never<JSX.Element>(order);
     }
 }
-
-type Effect = "gold"|"touch"
 
 function Explain(props: {left?: string, value: Explained}): JSX.Element {
     const e = props.value;
@@ -194,6 +200,77 @@ still give them new orders before that.
 
 ` + Help.undercoverTip, {order:{ ...undercover, difficulty: { value: Number.POSITIVE_INFINITY, reasons: [] }}}),
         ]),
+
+        // GATHER INFO =======================================================
+        new OrderNode(
+            "Gather information...", `
+#name# will gather additional information about #location#.
+
+#name# will pray to you every night, providing :touch: and letting you 
+give them different orders before they are done.`,
+            location === undefined
+            ? {disabled:`!!Cannot gather information outdoors.!!`}
+            : [
+                new OrderNode(
+                    "Listen to rumors", `
+#name# will listen in on whispers, rumors and gossip, while nodding politely
+and occasionally expressing socially acceptable levels of surprise.
+
+Costs no :gold: or :exposure:, but cannot provide information beyond the 
+*Basic* level.`,
+                    location.information >= 1 
+                    ? {disabled:"!!Cannot provide information beyond the *Basic* level.!!"}
+                    : checkResources(gatherInfoOrder(agent.agent, "street"))),
+                new OrderNode(
+                    "Visit taverns", `
+#name# will visit taverns, inns and merry places, paying for rounds and asking
+the right questions. 
+
+Strangers tend to share less information with agents with a high :exposure:. 
+
+Slightly increases :exposure: and cannot provide information beyond the 
+*Moderate* level.`,
+                    location.information >= 3
+                    ? {disabled:"!!Cannot provide information beyond the *Moderate* level.!!"}
+                    : checkResources(gatherInfoOrder(agent.agent, "tavern"))
+                ),
+                new OrderNode(
+                    "Visit the criminal underworld", `
+#name# will visit bad neighborhoods and houses of ill repute to tap into 
+the criminal grapevine. Agents with a criminal background will have an 
+easier time entering the right places and asking the right people.
+
+Strangers tend to share less information with agents with a high :exposure:.
+
+Carries a moderate risk of death and increases :exposure:, but has
+no limit on the level of information that can be gathered.`,
+                    checkResources(gatherInfoOrder(agent.agent, "underworld"))
+                ),
+                new OrderNode(
+                    "Ask in high society", `
+#name# will visit the social gatherings, tea parties and evening balls of 
+high society, bringing thoughtful gifts and feigning interest in the 
+goings-on of #location# for legitimate reasons. 
+
+No limit on the level of information that can be gathered. 
+
+Only nobles, mages and merchants of sufficient standing can attend 
+events in high society.`,
+                    (agent.occupation === "Noble" && agent.levels.Noble >= 1 ||
+                     agent.occupation === "Mage" && agent.levels.Mage >= 3 ||
+                     agent.occupation === "Merchant" && agent.levels.Merchant >= 4)
+                    ? checkResources(gatherInfoOrder(agent.agent, "gentry"))
+                    : {disabled:`!!Must be a Noble Lv.1, Mage Lv.3, Merchant Lv.4 or higher.!!`}
+                ),
+                new OrderNode(
+                    "Bribe officials", `
+#name# will drop a fat pouch of gold in the lap of a greedy administrator,
+officer or representative, along with the appropriate questions.
+
+Very costly in :gold:, and increases :exposure: significantly, but has no
+limit on the level of information that can be gathered.`,
+                    checkResources(gatherInfoOrder(agent.agent, "bribe")))
+            ]),
 
         // RECRUITMENT =======================================================
         new OrderNode(

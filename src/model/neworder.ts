@@ -1,11 +1,15 @@
 import { Occupation, presenceByLocationKind, recruitCost } from "./occupation";
 import type { Location } from './locations';
 import type { Agent } from './agents';
-import type { Order } from './orders';
+import type { Order, GatherInfoMode } from './orders';
 import { explain, Reason, Explained } from './explainable';
 import { Route } from './routes';
 import { Cell } from './grid';
 import { zero } from './resources';
+
+function exposureOf(agent: Agent, base: number) {
+    return explain([{why: "Deceit", contrib: -agent.stats.deceit.value/100}], base, 0);
+}
 
 // Produces a "recruit-agent" order, or an impossibility message
 export function recruitOrder(occupation: Occupation, agent: Agent, location: Location): Order|string {
@@ -29,23 +33,20 @@ export function recruitOrder(occupation: Occupation, agent: Agent, location: Loc
         });
     
     difficultyMult.push({
-        why: "Skill",
-        contrib: -agent.stats.recruit.value/100
+        why: "Contacts",
+        contrib: -agent.stats.contacts.value/100
     });
 
-    const exposureMult: Reason[] = [{why: "Deceit", contrib: -agent.stats.deceit.value/100} ]
-
     if (agent.occupation == occupation) 
-        difficultyMult.push({why: "Same occupation", contrib: -agent.stats.recruit.value/100});
+        difficultyMult.push({why: "Same occupation", contrib: -agent.stats.contacts.value/100});
     
     const difficulty = explain(difficultyMult, 7, 1)
-    const exposure = explain(exposureMult, 2, 0);
-
+    
     return {
         kind: "recruit-agent",
         occupation,
         difficulty,
-        exposure,
+        exposure: exposureOf(agent, 2),
         cost: recruitCost[occupation],
         progress: 0
     }
@@ -59,7 +60,7 @@ export function travelOrder(agent: Agent, route: Route): Order|string {
     let difficulty : Explained = explain([{why: "Sail", contrib: route.distance}])
     if (!route.sail) {
         const mult : Reason[] = [
-            {why: "Skill", contrib: -agent.stats.outdoors.value/100}
+            {why: "Outdoors", contrib: -agent.stats.outdoors.value/100}
         ];
         difficulty = explain(mult, route.distance, 1)
     }
@@ -81,5 +82,63 @@ export function travelOrder(agent: Agent, route: Route): Order|string {
         progress: 0,
         cost: route.sail ? { gold: 2 * route.distance, touch: 0 } : zero,
         path
+    }
+}
+
+// Produces a "gather info" order 
+export function gatherInfoOrder(agent: Agent, mode: GatherInfoMode): Order|string {
+    switch (mode) {
+        case "street":
+            return {
+                kind: "gather-info",    
+                difficulty: explain(
+                    [{why: "Contacts", contrib: -agent.stats.contacts.value/100}], 7, 1),
+                cost: zero,
+                mode,
+                progress: 0,
+                exposure: { value: 0, reasons: [] }
+            };
+        case "tavern":
+            return {
+                kind: "gather-info",
+                difficulty: explain(
+                    [{why: "Exposure", contrib: agent.exposure/100}], 7, 1),
+                cost: {gold: 5, touch: 0},
+                mode,
+                progress: 0,
+                exposure: exposureOf(agent, 2)
+            };
+        case "underworld":
+            return {
+                kind: "gather-info",
+                difficulty: explain([
+                        {why: "Exposure", contrib: agent.exposure/100},
+                        (agent.levels.Criminal == 0 ? undefined : 
+                            {   why: "Criminal Lv." + agent.levels.Criminal, 
+                                contrib: -0.5 - 0.05 * agent.levels.Criminal })
+                    ], 14, 1),
+                cost: {gold: 5, touch: 0},
+                mode,
+                progress: 0,
+                exposure: exposureOf(agent, 3)
+            };
+        case "gentry":
+            return {
+                kind: "gather-info",
+                difficulty: explain([{why: "Authority", contrib: -agent.stats.authority.value/100}], 5, 1),
+                cost: {gold: 50, touch: 0},
+                mode,
+                progress: 0,
+                exposure: exposureOf(agent, 1)
+            };
+        case "bribe":
+            return {
+                kind: "gather-info",
+                difficulty: explain([{why: "Authority", contrib: -agent.stats.authority.value/100}], 3, 1),
+                cost: {gold: 100, touch: 0},
+                mode,
+                progress: 0,
+                exposure: exposureOf(agent, 40)
+            };
     }
 }
