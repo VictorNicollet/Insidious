@@ -1,14 +1,14 @@
 import { Location } from "./locations"
 import { Agent } from "./agents"
-import type { PersonName, LocationName } from './names';
-import { WorldMap } from './map';
-import type { Cell, Grid } from './grid';
+import type { PersonName } from './names';
+import type { WorldMap } from './map';
+import type { Cell } from './grid';
 import type { ByOccupation, Occupation } from './occupation';
 import type { Resources, ResourcesOf } from './resources';
 import { countResourceDelta, executeOrder } from './execute';
 import { Explained, Reason, explain, dedup } from './explainable';
 import { Routes } from './routes';
-import { Message } from './message';
+import type { Message } from './message';
 import { Sagas, ActiveSaga } from './saga';
 import { Population } from './population';
 
@@ -34,8 +34,8 @@ export class World {
         locations : {population:number,cell:Cell}[],
         public readonly map : WorldMap
     ) {
-        this._locations = locations.map(l => 
-            new Location(this, l.cell, l.population));
+        this._locations = locations.map((l, id) => 
+            new Location(id, this, l.cell, l.population));
         this._agents = [];
         this._listeners = [];
         this.seenLocations = [];

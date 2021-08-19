@@ -21,9 +21,12 @@ export class Location {
     public readonly name : LocationName
     
     constructor(
+        // Position of this location in the "all locations" array
+        // inside the World.
+        public readonly id : number,
         public readonly world : World,
         public readonly cell: Cell,    
-        // Population count, integer.
+        // Population count, integer, cached from the population system
         public population : number
     ) {
         const ck = world.map.cells[cell];
