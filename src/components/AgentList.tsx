@@ -48,13 +48,14 @@ export function InnerAgentList(props: {
                     agent.order.progress >= agent.order.difficulty.value ? <span className="no-orders">Needs orders</span> :
                     agent.order.kind == "recruit-agent" ? "Recruiting" :
                     agent.order.kind == "undercover" ? "Undercover" : 
+                    agent.order.kind == "gather-info" ? "Gathering information" :
                     "No orders"
                 return <li key={agent.id} 
                     onClick={() => selectors.agent(agent)}>
                     <div className="portrait small"/>
                     <div className="name">
                         {agent.name.full}
-                        <span className="job">{agent.occupation}</span>
+                        <span className="job">{agent.occupation} Lv.{agent.levels[agent.occupation]}</span>
                     </div>
                     {where
                         ? <div className="info">{orders} &middot; {where}</div>
