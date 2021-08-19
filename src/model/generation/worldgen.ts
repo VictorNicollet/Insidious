@@ -1,6 +1,6 @@
 import { World } from "../world"
 import { Location, ByLocationKind } from "../locations"
-import { randomLocation, randomPerson } from './namegen';
+import {  randomPerson } from './namegen';
 import { Cell, grid32 } from 'model/grid';
 import * as Map from 'model/map';
 import { RandomBag } from './randombag';
@@ -223,7 +223,7 @@ function popFromBaseline(popBaseline: number) {
         + 5 * Math.random() 
         + 5 * Math.random()
         + 10 ) / 5;
-    return Math.pow(10, exponent);
+    return Math.floor(Math.pow(10, exponent));
 }
 
 const occupationBagsByLocation : ByLocationKind<RandomBag<Occupation>> = 
@@ -250,8 +250,7 @@ function initialOccupationAndLevels(
 
 export function generate() : World {
     
-    const world = new World(grid32);
-    const map = world.map;
+    const map = new Map.WorldMap(grid32);
 
     // Generate all future locations on the map
     const futureLocations : { population: number, cell: Cell }[] = [];
@@ -268,9 +267,8 @@ export function generate() : World {
     // Generate tiles compatible with locations
     generateTiles(map, futureLocations);
 
-    // Create the locations themselves, naming them.
-    for (let {population,cell} of futureLocations)
-        world.newLocation(cell, population);
+    // Create the world with the initial locations
+    const world = new World(futureLocations, map);
 
     // Generate an agent in the last location
     const locs = world.locations();

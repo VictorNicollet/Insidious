@@ -83,8 +83,7 @@ export class WorldMap {
     //   - 1+N if currently seen by N agents
     public readonly vision: Uint32Array
     constructor(
-        public readonly grid : Grid,
-        public readonly world : World
+        public readonly grid : Grid
     ) {
         const cells : CellKind[] = []
         while (cells.length < grid.count) cells.push(ocean);

@@ -1,5 +1,6 @@
 import type { Grid } from "../model/grid"
 import type { CellKind, WorldMap } from '../model/map'
+import { World } from 'model/world';
 
 export type MapView = {
     readonly grid : Grid
@@ -13,11 +14,11 @@ export type MapView = {
     readonly vision : Uint32Array
 }
 
-export function map(m: WorldMap): MapView {
+export function map(w: World, m: WorldMap): MapView {
 
     const locations : (number|undefined)[] = [];
     while (locations.length < m.grid.count) locations.push(undefined);
-    let worldLocations = m.world.seenLocations;
+    let worldLocations = w.seenLocations;
     for (let i = 0; i < worldLocations.length; ++i)
         locations[worldLocations[i].cell] = i;
 

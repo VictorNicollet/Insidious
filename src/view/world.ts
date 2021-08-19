@@ -51,7 +51,7 @@ export function world(w: World): WorldView {
         world: w,
         locations: locations.map(location),
         agents,
-        map: map(w.map),
+        map: map(w, w.map),
         initial: locations[0].cell,
         routes: w.routes(),
         message: w.firstMessage(),

@@ -10,15 +10,19 @@ import { Explained, Reason, explain, dedup } from './explainable';
 import { Routes } from './routes';
 import { Message } from './message';
 import { Sagas, ActiveSaga } from './saga';
+import { Population } from './population';
 
 export class World {
-    private readonly _locations : Location[]
+    private readonly _locations: readonly Location[]
     private readonly _agents : Agent[]
     private readonly _listeners : (() => void)[]
     private readonly _sagas : Sagas
-    public readonly map : WorldMap
+    public readonly population : Population
     public readonly seenLocations : Location[]
     public readonly resources: Resources
+
+    // Current turn number
+    private turn : number
 
     // Pathfinding cache, cleared every time map visibility changes.
     private _routes : Routes|undefined
@@ -26,16 +30,21 @@ export class World {
     // A *stack* of mssages to be displayed on the next render.
     private readonly messages : Message[]
 
-    constructor(grid: Grid) {
-        this._locations = [];
+    constructor(
+        locations : {population:number,cell:Cell}[],
+        public readonly map : WorldMap
+    ) {
+        this._locations = locations.map(l => 
+            new Location(this, l.cell, l.population));
         this._agents = [];
         this._listeners = [];
         this.seenLocations = [];
         this.messages = [];
-        this.map = new WorldMap(grid, this);
         this._routes = undefined
         this.resources = { gold: 0, touch: 0 }
         this._sagas = new Sagas(this);
+        this.population = new Population(this._locations);
+        this.turn = 0
     }
 
     // Add a new message, to be displayed on the next render.
@@ -55,13 +64,6 @@ export class World {
     // The first message, undefined if none.
     public firstMessage() : Message|undefined {
         return this.messages[0];
-    }
-
-    public newLocation(
-        coords: Cell,
-        population: number)
-    {
-        this._locations.push(new Location(this, coords, population));
     }
 
     public locations() : readonly Location[] { return this._locations; }
@@ -111,7 +113,7 @@ export class World {
     // Return all available routes, re-computing them if necessary.
     public routes(): Routes  {
         if (this._routes === undefined)
-            this._routes = new Routes(this.map);
+            this._routes = new Routes(this, this.map);
         return this._routes;
     }
 
@@ -167,9 +169,13 @@ export class World {
         // Run through all sagas.
         this._sagas.run();
 
+        // Increment turn number and execute weekly changes
+        if (++this.turn % 7 == 0)
+            this.population.weekly();
+
         // All done, notify the view that it should be re-rendered because
         // the world changed.
-        this.refresh()
+        this.refresh();
     }
 
     public addSaga(saga: ActiveSaga) {

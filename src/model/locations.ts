@@ -23,8 +23,7 @@ export class Location {
     constructor(
         public readonly world : World,
         public readonly cell: Cell,    
-        // Population count, fractional in order to support
-        // slow growth over several turns (only display the floor)
+        // Population count, integer.
         public population : number
     ) {
         const ck = world.map.cells[cell];

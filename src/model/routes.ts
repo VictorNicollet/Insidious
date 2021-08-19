@@ -1,5 +1,6 @@
 import { Cell } from "./grid";
 import { WorldMap, ocean } from './map';
+import { World } from './world';
 
 export type Route = {
     readonly from: Cell 
@@ -27,7 +28,7 @@ export class RouteSet {
     // For each location, a route to that location, or undefined.
     public readonly routes : readonly (Route|undefined)[]
 
-    constructor(map: WorldMap, from: Cell, sail: boolean) {
+    constructor(world: World, map: WorldMap, from: Cell, sail: boolean) {
         this.from = from;
         const parent = this.parent = new Int32Array(map.grid.count);
         const routes : (Route|undefined)[] = []
@@ -44,8 +45,8 @@ export class RouteSet {
         // 0 if cell is not a location, 1+index of that location otherwise.
         const locationOf = new Int32Array(map.grid.count);
         
-        for (let l = 0; l < map.world.seenLocations.length; ++l) {
-            locationOf[map.world.seenLocations[l].cell] = l + 1;
+        for (let l = 0; l < world.seenLocations.length; ++l) {
+            locationOf[world.seenLocations[l].cell] = l + 1;
             routes.push(undefined)
         }
 
@@ -115,7 +116,10 @@ export class RouteSet {
 export class Routes {
     private readonly _sail : (RouteSet|undefined)[]
     private readonly _walk : (RouteSet|undefined)[]
-    constructor(private readonly map: WorldMap) {
+    constructor(
+        private readonly world: World,
+        private readonly map: WorldMap
+    ) {
         this._sail = [];
         while (this._sail.length < map.grid.count) this._sail.push(undefined);
         this._walk = []
@@ -124,23 +128,23 @@ export class Routes {
 
     // Find a sail trajectory from a location to another
     public sail(from: number, to: number): Route|undefined {
-        const set = this._sail[from] || new RouteSet(this.map, from, true);
+        const set = this._sail[from] || new RouteSet(this.world, this.map, from, true);
         this._sail[from] = set;
         return set.routes[to];
     }
 
     // Find a walk trajectory from a location to another
     public walk(from: number, to: number): Route|undefined {
-        const set = this._walk[from] || new RouteSet(this.map, from, false);
+        const set = this._walk[from] || new RouteSet(this.world, this.map, from, false);
         this._walk[from] = set;
         return set.routes[to];
     }
 
     // All routes starting from a certain location
     public allFrom(from: number): Route[] {
-        const sailSet = this._sail[from] || new RouteSet(this.map, from, true);
+        const sailSet = this._sail[from] || new RouteSet(this.world, this.map, from, true);
         this._sail[from] = sailSet;
-        const walkSet = this._walk[from] || new RouteSet(this.map, from, false);
+        const walkSet = this._walk[from] || new RouteSet(this.world, this.map, from, false);
         this._walk[from] = walkSet;
         return [...sailSet.routes.filter(s => !!s), 
                 ...walkSet.routes.filter(s => !!s) ]
