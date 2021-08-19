@@ -90,7 +90,7 @@ function Order(props: {
                 {props.effects.map((e, i) => 
                     <span key={i}>&nbsp;<span class={e[0]}/>{e[1]}</span>)}
                 {props.order.exposure.value > 0 ? <span>
-                    <span class="exposure"/><b>{integer(Math.round(props.order.exposure.value * props.order.difficulty.value))}</b>
+                    <span class="exposure"/><b>{integer(Math.round(props.order.exposure.value * Math.ceil(props.order.difficulty.value)))}</b>
                 </span> : undefined}
                 <span>
                     &nbsp;<span class="turns"/><b>{integer(props.order.difficulty.value)}</b>
