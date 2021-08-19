@@ -12,7 +12,10 @@ function countDailyResourcesForOrder(
     resources: ResourcesOf<Reason[]>
 ) {
     const stats = agent.stats;
+    
     resources.touch.push({ why: "Agents", contrib: stats.conduit.value });
+    if (order.progress >= order.difficulty.value) return;
+
     switch (order.kind) {
         case "undercover": 
             resources.gold.push(
@@ -43,6 +46,17 @@ export function executeOrder(agent: Agent): Order {
     // Nothing to do if order is already done.
     const {progress: accumulated, difficulty} = order;
     if (accumulated >= difficulty.value) return order;
+
+    // Keep track of exposure
+    if (order.exposure.value < 0) {
+        // Decreases in exposure cannot go under the authority stat
+        if (agent.exposure >= agent.stats.authority.value)
+            agent.exposure = Math.max(
+                agent.stats.authority.value, 
+                agent.exposure + order.exposure.value)
+    } else {
+        agent.exposure += order.exposure.value;
+    }
 
     // Increase the accumulated progress.
     const newAccumulated = Math.min(accumulated + 1, difficulty.value);
