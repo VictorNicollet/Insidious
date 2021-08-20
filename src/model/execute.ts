@@ -1,10 +1,33 @@
 import type { Agent } from './agents';
 import type { ResourcesOf } from './resources';
 import type { Reason } from './explainable';
+import type { Location } from './locations';
 import { never } from 'never';
-import { Order } from './orders';
+import { Order, GatherInfoMode } from './orders';
 import { randomPerson } from './generation/namegen';
 import { byOccupation } from './occupation';
+import * as Firsts from 'text/firsts';
+import { withExcellent } from './message';
+
+// Invoked when gathering information about a location succeeds
+// in increasing the information level by 1.
+function onGatherInfoDone(
+    agent: Agent, 
+    location: Location, 
+    mode: GatherInfoMode
+) {
+    const world = agent.world;
+
+    if (!world.flags.firstGatherInfo) {
+        world.flags.firstGatherInfo = true;
+        world.newMessage(withExcellent(
+            Firsts.gatherInfo(mode).toHTML({
+                location: location.name.short,
+                lockind: location.kind,
+                aspect: world.god.aspect
+            })));
+    }
+}
 
 function countResourceDeltaForOrder(
     agent: Agent, 
@@ -106,10 +129,12 @@ export function executeOrder(agent: Agent): Order {
             if (isDone) {
                 const max = order.mode == "street" ? 1 : 
                             order.mode == "tavern" ? 3 : 6;
-                const oldInfo = agent.location.information;
-                const newInfo = Math.min(max, agent.location.information + 1);
+                const location = agent.location!;
+                const oldInfo = location.information;
+                const newInfo = Math.min(max, location.information + 1);
                 if (oldInfo >= newInfo) break;
-                agent.location.information = newInfo;
+                location.information = newInfo;
+                onGatherInfoDone(agent, location, order.mode);
             }
             break;           
         default: never(order);

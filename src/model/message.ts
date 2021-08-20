@@ -15,3 +15,7 @@ export type MessageButton = {
 export function withProceed(contents: readonly JSX.Element[]) {
     return {contents, buttons: [{label: "Proceed", click:() => {}}]}
 }
+
+export function withExcellent(contents: readonly JSX.Element[]) {
+    return {contents, buttons: [{label: "Excellent", click:() => {}}]}
+}
