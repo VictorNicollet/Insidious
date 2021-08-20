@@ -1,5 +1,4 @@
 import type { Grid, Cell } from './grid'
-import type { World } from './world'
 
 export const allCells : CellKind[] = []
 export const tinyLocationCells : CellKind[] = []
@@ -103,7 +102,7 @@ export class WorldMap {
 
         if (distance <= 1) {
             if (seen[cell] == 0) { ++discovered; seen[cell] = 1; }
-            if (distance == 0) return;
+            if (distance == 0) return discovered;
             for (let adj of grid.adjacent(cell)) 
                 if (seen[cell] == 0) { ++discovered; seen[cell] = 1; }
         }

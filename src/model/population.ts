@@ -2,7 +2,7 @@
 
 import { Location, ByLocationKind } from './locations'
 import { ByOccupation, presenceByLocationKind, occupations } from './occupation'
-import { objmap } from 'objmap'
+import { objmap } from '../objmap'
 
 // WEALTH ====================================================================
 

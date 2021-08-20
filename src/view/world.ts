@@ -2,13 +2,13 @@ import { location, LocationView } from "./locations"
 import { agent, AgentView } from "./agents"
 import { map, MapView } from "./map"
 import type { World } from '../model/world'
-import type { Cell } from 'model/grid'
-import type { ResourcesOf } from 'model/resources'
-import type { Explained } from 'model/explainable'
-import type { Routes } from 'model/routes'
-import { Message } from 'model/message'
+import type { Cell } from '../model/grid'
+import type { ResourcesOf } from '../model/resources'
+import type { Explained } from '../model/explainable'
+import type { Routes } from '../model/routes'
+import { Message } from '../model/message'
 import { PlanView, plan } from './plans'
-import { IdxArray, index } from 'idindexed'
+import { IdxArray, index } from '../idindexed'
 
 export type WorldView = {
     readonly locations: readonly LocationView[]

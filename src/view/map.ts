@@ -1,6 +1,6 @@
 import type { Grid } from "../model/grid"
 import type { CellKind, WorldMap } from '../model/map'
-import { World } from 'model/world';
+import { World } from '../model/world';
 
 export type MapView = {
     readonly grid : Grid

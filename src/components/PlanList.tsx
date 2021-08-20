@@ -3,7 +3,7 @@ import { useState } from "preact/hooks"
 import * as B from "./Box"
 import * as P from './Pagination'
 import { useSelectors } from './Context'
-import type { PlanView } from 'view/plans'
+import type { PlanView } from '../view/plans'
 
 // The height, in pixels, of an element in the agents list
 const ITEMSIZE = 50;

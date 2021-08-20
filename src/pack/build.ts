@@ -1,3 +1,4 @@
+//@ts-nocheck
 import * as fs from "fs"
 import * as sharp from "sharp"
 import * as BufferBuilder from "buffer-builder"

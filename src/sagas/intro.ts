@@ -1,18 +1,18 @@
-import { ActiveSaga, SetNextStep, SagaStep } from "model/saga"
-import { withProceed } from "model/message"
-import type { World } from "model/world";
-import * as Intro from "text/intro"
+import { ActiveSaga, SetNextStep, SagaStep } from "../model/saga"
+import { withProceed } from "../model/message"
+import type { World } from "../model/world";
+import * as Intro from "../text/intro"
+import type { Agent } from "../model/agents";
+import type { Location } from "../model/locations";
 
-export function saga() { return new ActiveSaga(intro); }
+export function saga(agent: Agent, loc: Location) { return new ActiveSaga(w => intro(w, agent, loc)); }
 
-function intro(w: World) {
+function intro(w: World, agent: Agent, loc: Location) {
     
-    const agent = w.agents()[0];
-    const last = agent.location;
     const context = {
         god: w.god.name,
         agent: agent.name.short,
-        location: last.name.short,
+        location: loc.name.short,
         occupation: agent.occupation.toLocaleLowerCase(),
         aspect: w.god.aspect
     };

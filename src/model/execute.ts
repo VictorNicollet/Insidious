@@ -1,14 +1,11 @@
 import type { Agent } from './agents';
 import type { ResourcesOf } from './resources';
 import type { Reason } from './explainable';
-import type { Location } from './locations';
-import { never } from 'never';
-import { Order, GatherInfoMode } from './orders';
+import { never } from '../never';
+import { Order } from './orders';
 import { randomPerson } from './generation/namegen';
 import { byOccupation } from './occupation';
-import * as Firsts from 'text/firsts';
-import { withExcellent } from './message';
-import * as GatherInfo from 'events/gatherinfo';
+import * as GatherInfo from '../events/gatherinfo';
 
 function countResourceDeltaForOrder(
     agent: Agent, 
@@ -101,7 +98,7 @@ export function executeOrder(agent: Agent): Order {
                 levels[order.occupation] = Math.max(1, agent.levels[agent.occupation]-1);
                 agent.world.newAgent(
                     randomPerson(),
-                    agent.location,
+                    order.location,
                     order.occupation,
                     levels);
             }

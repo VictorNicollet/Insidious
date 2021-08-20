@@ -5,6 +5,11 @@
     "jsx": "react",
     "jsxFactory": "h",
     "baseUrl": ".",
+    "strict": true,
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "noEmitOnError": true,
     "importHelpers": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true

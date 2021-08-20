@@ -1,17 +1,17 @@
 import { h, JSX, Fragment } from "preact"
-import { AgentView } from 'view/agents'
-import { Order, undercover, daysRemaining } from 'model/orders'
-import { never } from 'never';
+import { AgentView } from '../view/agents'
+import { Order, undercover, daysRemaining } from '../model/orders'
+import { never } from '../never';
 import { decimal, integer } from './numbers';
 import { useState, useMemo, useCallback } from 'preact/hooks';
 import { Tooltip } from './Tooltip';
-import { occupations } from 'model/occupation';
-import * as Help from 'text/help';
-import { Explained } from 'model/explainable';
+import { occupations } from '../model/occupation';
+import * as Help from '../text/help';
+import { Explained } from '../model/explainable';
 import { useWorld } from './Context';
-import { WorldView } from 'view/world';
-import { recruitOrder, travelOrder, gatherInfoOrder } from 'model/neworder';
-import { zero } from 'model/resources';
+import { WorldView } from '../view/world';
+import { recruitOrder, travelOrder, gatherInfoOrder } from '../model/neworder';
+import { zero } from '../model/resources';
 
 function DescribeOrder(props: {order: Order}): JSX.Element {
     const world = useWorld();
@@ -285,7 +285,7 @@ give them different orders before they are done.`,
             : occupations.map(occupation => new OrderNode(
                 "Recruit a " + occupation,
                 Help.occupationTooltip[occupation],
-                checkResources(recruitOrder(occupation, agent.agent, location))))
+                checkResources(recruitOrder(occupation, agent.agent, agent.agent.location))))
         ),
 
         // TRAVELING =========================================================
@@ -318,7 +318,8 @@ or a bandit attack.
 Both the difficulty and the risks are reduced by the agent's *outdoors* skill.
 `), 
                     checkResources(travelOrder(agent.agent, route)));
-            }).sort((o1, o2) => o1.order.difficulty.value - o2.order.difficulty.value))
+            }).sort((o1, o2) => (o1.order ? o1.order.difficulty.value : 0) - 
+                                (o2.order ? o2.order.difficulty.value : 0)))
     ];
 }
 
@@ -352,7 +353,7 @@ export function AgentOrders(props: {
         makeOrderTree(props.agent, world),
         [props.agent, world]);
 
-    for (let d of descent) nodes = nodes[d].children;
+    for (let d of descent) nodes = (nodes[d].children || []);
 
     const setOrder = useCallback((order: Order) => {
         const agent = props.agent.agent;

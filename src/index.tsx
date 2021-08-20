@@ -1,7 +1,7 @@
-import { generate } from 'model/generation/worldgen';
+import { generate } from './model/generation/worldgen';
 import { h, render } from "preact"
-import { Screen } from 'components/Screen';
-import { loadAndUnpack } from 'pack/unpack';
+import { Screen } from './components/Screen';
+import { loadAndUnpack } from './pack/unpack';
 
 async function loadAndRun() {
 

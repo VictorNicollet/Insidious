@@ -12,14 +12,17 @@ function exposureOf(agent: Agent, base: number) {
 }
 
 // Produces a "recruit-agent" order, or an impossibility message
-export function recruitOrder(occupation: Occupation, agent: Agent, location: Location): Order|string {
+export function recruitOrder(occupation: Occupation, agent: Agent, location: Location|undefined): Order|string {
+    
+    if (location === undefined)
+        return `!!Cannot recruit agents outdoors.!!`
+
     const ease = presenceByLocationKind[location.kind][occupation];
     const cellKind = location.world.map.cells[location.cell];
 
-    if (ease === 0) {
+    if (ease === 0) 
         return `!!Cannot recruit a ${occupation} ${cellKind.inThis()}.!!`
-    }
-
+    
     const difficultyMult : Reason[] = [];
 
     if (ease != 3)
@@ -46,6 +49,7 @@ export function recruitOrder(occupation: Occupation, agent: Agent, location: Loc
         kind: "recruit-agent",
         occupation,
         difficulty,
+        location,
         exposure: exposureOf(agent, 2),
         cost: recruitCost[occupation],
         progress: 0

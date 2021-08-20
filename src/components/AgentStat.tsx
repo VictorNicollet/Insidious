@@ -1,11 +1,11 @@
 import { h, JSX } from "preact"
-import { StatsOf, Stats, maxStats, resources, skills } from "model/stats";
+import { StatsOf, Stats, maxStats, resources, skills } from "../model/stats";
 import { decimal } from './numbers';
 import { useState } from 'preact/hooks';
 import { Tooltip } from './Tooltip';
-import type { AgentView } from 'view/agents';
-import type { Explained } from 'model/explainable';
-import { statTip } from 'text/help';
+import type { AgentView } from '../view/agents';
+import type { Explained } from '../model/explainable';
+import { statTip } from '../text/help';
 
 const statName : StatsOf<string> = {
     contacts:    "Recruitment",

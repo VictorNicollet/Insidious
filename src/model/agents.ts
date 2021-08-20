@@ -5,7 +5,7 @@ import type { Cell } from './grid'
 import { Occupation, ByOccupation, lvlxp } from './occupation'
 import { Stats, computeStats } from './stats'
 import { Order, done } from "./orders"
-import { objmap } from 'objmap'
+import { objmap } from '../objmap'
 
 export class Agent {
     public stats : Stats
@@ -56,7 +56,7 @@ export class Agent {
 
         // Is the new cell a location ? 
         if (map.cells[cell].isLocation) {
-            const location = this.world.seenLocations.find(l => l.cell == cell);
+            const location = this.world.seenLocations.find(l => l.cell == cell)!;
             this.location = location;
             this.world.visitLocation(location);
         } else {

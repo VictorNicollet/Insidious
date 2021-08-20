@@ -4,7 +4,7 @@ import { useWorld } from './Context';
 import { Tooltip } from './Tooltip';
 import { useState } from 'preact/hooks';
 import { decimal, signedDecimal, integer } from './numbers';
-import { Explained } from 'model/explainable';
+import { Explained } from '../model/explainable';
 
 function Resource(props: {
     kind: string

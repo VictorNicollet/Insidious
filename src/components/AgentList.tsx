@@ -2,7 +2,7 @@ import { h, JSX } from "preact"
 import { useState } from "preact/hooks"
 import * as B from "./Box"
 import * as P from './Pagination'
-import { AgentView } from 'view/agents'
+import { AgentView } from '../view/agents'
 import { useWorld, useSelectors } from './Context'
 
 // The height, in pixels, of an element in the agents list
@@ -38,12 +38,11 @@ export function InnerAgentList(props: {
         <ul className="gui-agents" style={{height: 50*pagesize}}>
             {shown.length == 0 ? <li className="empty">{props.empty}</li> : undefined}
             {shown.map(agent => {
+                const loc = world.map.locations[agent.cell];
                 const where = props.noLocation ? undefined : 
-                    world.map.locations[agent.cell] === undefined
+                    loc === undefined
                     ? <span>Outdoors</span>
-                    : <span className="named-entity">
-                        {world.locations[world.map.locations[agent.cell]].name.short}
-                    </span>;
+                    : <span className="named-entity">{world.locations[loc].name.short}</span>;
                 const orders = 
                     agent.order.progress >= agent.order.difficulty.value ? <span className="no-orders">Needs orders</span> :
                     agent.order.kind == "recruit-agent" ? "Recruiting" :

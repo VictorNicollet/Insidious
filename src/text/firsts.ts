@@ -1,6 +1,6 @@
 import { format } from './format'
-import { ByGatherInfoMode, GatherInfoMode } from 'model/orders'
-import { LocationKind } from 'model/locations'
+import { ByGatherInfoMode, GatherInfoMode } from '../model/orders'
+import { LocationKind } from '../model/locations'
 
 const byMode : ByGatherInfoMode<string> = {
     street: "Patiently listening to rumors",

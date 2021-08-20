@@ -1,3 +1,5 @@
+import { notUndefined } from '../notundefined';
+
 // An explainable numeric value.
 export type Explained = {
     // The final value. 
@@ -23,7 +25,7 @@ export type Reason = {
 
 // Produce an explained value using a sum of resons.
 export function explain(optReasons: readonly (Reason|undefined)[], multiplier?: number, minimum?: number): Explained {
-    const reasons = optReasons.filter(r => r !== undefined);
+    const reasons = notUndefined(optReasons)
     let value = 0;
     for (let reason of reasons) value += reason.contrib;
     if (typeof multiplier === "undefined") 

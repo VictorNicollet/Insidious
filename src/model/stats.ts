@@ -1,5 +1,5 @@
 import type { Agent } from "./agents"
-import type { ByOccupation } from './occupation';
+import { ByOccupation, occupations } from './occupation';
 import { Explained, Reason, explain } from './explainable';
 
 // Numerical statistics of an agent, computed from the 
@@ -123,7 +123,7 @@ const authorityByOccupation : ByOccupation<number> = {
 // The rules to compute all the stats based on an agent.
 const rules: StatsOf<(reasons: Reason[], agent: Agent) => void> = {
     idleIncome: function(reasons: Reason[], agent: Agent) {
-        for (let occupation in weeklyIdleIncomeByOccupation) {
+        for (let occupation of occupations) {
             const [initial, byLevel] = weeklyIdleIncomeByOccupation[occupation];
             const level = agent.levels[occupation];
             const value = initial + byLevel * level;
@@ -135,7 +135,7 @@ const rules: StatsOf<(reasons: Reason[], agent: Agent) => void> = {
     },
     conduit: function(reasons: Reason[], agent: Agent) {
         reasons.push({ why: "Base", contrib: 0.4 })
-        for (let occupation in conduitByOccupation) {
+        for (let occupation of occupations) {
             const byLevel = conduitByOccupation[occupation];
             const level = agent.levels[occupation];
             if (level > 0) 
@@ -143,7 +143,7 @@ const rules: StatsOf<(reasons: Reason[], agent: Agent) => void> = {
         }
     }, 
     contacts: function(reasons: Reason[], agent: Agent) {
-        for (let occupation in agentRecruitPowerByOccupation) {
+        for (let occupation of occupations) {
             const [ifMain, ifSecondary] = agentRecruitPowerByOccupation[occupation];
             const level = agent.levels[occupation];
             const value = (agent.occupation == occupation ? ifMain : ifSecondary) * level;
@@ -152,7 +152,7 @@ const rules: StatsOf<(reasons: Reason[], agent: Agent) => void> = {
         }
     },
     outdoors: function(reasons: Reason[], agent: Agent) {
-        for (let occupation in outdoorsByOccupation) {
+        for (let occupation of occupations) {
             const [base, byLevel] = outdoorsByOccupation[occupation];
             const level = agent.levels[occupation];
             const value = Math.max(0, base + level * byLevel);    
@@ -166,7 +166,7 @@ const rules: StatsOf<(reasons: Reason[], agent: Agent) => void> = {
             })
     },
     deceit: function(reasons: Reason[], agent: Agent) {
-        for (let occupation in deceitByOccupation) {
+        for (let occupation of occupations) {
             const [ifMain, ifSecondary] = deceitByOccupation[occupation];
             const level = agent.levels[occupation];
             const value = (agent.occupation == occupation ? ifMain : ifSecondary) * level;
@@ -182,7 +182,7 @@ const rules: StatsOf<(reasons: Reason[], agent: Agent) => void> = {
         })
     },
     combat: function(reasons: Reason[], agent: Agent) {
-        for (let occupation in combatByOccupation) {
+        for (let occupation of occupations) {
             const [base, byLevel] = combatByOccupation[occupation];
             const level = agent.levels[occupation];
             const value = Math.max(0, base + level * byLevel);    
@@ -202,7 +202,7 @@ export const skills : StatKey[] = allStats.filter(c => c != "idleIncome" && c !=
 export const maxStats : StatsOf<number> = {
     idleIncome: 50,
     conduit:    5,
-    contacts:    100,
+    contacts:   100,
     outdoors:   100,
     combat:     100,
     deceit:     100,
@@ -212,7 +212,7 @@ export const maxStats : StatsOf<number> = {
 // Compute the current stats for an agent
 export function computeStats(agent: Agent): Stats {
     const result : {[key: string]: Explained} = {};
-    for (let key in rules) {
+    for (let key of allStats) {
         const reasons : Reason[] = []
         rules[key](reasons, agent);
         result[key] = explain(reasons);

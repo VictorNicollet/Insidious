@@ -1,12 +1,12 @@
 import { World } from "../world"
 import { Location, ByLocationKind } from "../locations"
 import {  randomPerson } from './namegen';
-import { Cell, grid32 } from 'model/grid';
-import * as Map from 'model/map';
+import { Cell, grid32 } from '../grid';
+import * as Map from '../map';
 import { RandomBag } from './randombag';
-import { Occupation, occupations, byOccupation, ByOccupation, presenceByLocationKind } from 'model/occupation';
-import { objmap } from 'objmap';
-import * as Intro from "sagas/intro"
+import { Occupation, occupations, byOccupation, ByOccupation, presenceByLocationKind } from '../occupation';
+import { objmap } from '../../objmap';
+import * as Intro from "../../sagas/intro"
 
 // Produces a set of random location coordinates such that
 //  1. locations form a connected graph with edges of distance=3
@@ -91,8 +91,8 @@ function randomCoords(map: Map.WorldMap, max: number): Cell[] {
                    grid.cell(grid.side-1, n))
     }
 
-    while (flood.length > 0) {
-        const next = flood.pop();
+    let next : Cell|undefined;
+    while ((next = flood.pop()) !== undefined) {
         const old = eliminated[next];
         if (old == 42 || old == 43) continue; // Already visited
         if (old == 1) continue; // Is a picked location
@@ -279,7 +279,7 @@ export function generate() : World {
     const agent = world.newAgent(randomPerson(), last, occupation, levels);
     
     // Initial saga !
-    const intro = Intro.saga()
+    const intro = Intro.saga(agent, last)
     intro.run(world);
     world.addSaga(intro);
 

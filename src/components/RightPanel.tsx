@@ -3,7 +3,7 @@ import { useCallback } from 'preact/hooks';
 import { LocationDetails } from './LocationDetails';
 import { AgentDetails } from './AgentDetails';
 import type { Selection } from './Screen'
-import { never } from 'never';
+import { never } from '../never';
 
 export type RightPanelProps = {
     screenH: number

@@ -1,10 +1,10 @@
 import { h, JSX } from "preact"
-import { Map, pick, cellPos } from 'components/Map'
-import type { Cell } from 'model/grid';
+import { Map, pick, cellPos } from './Map'
+import type { Cell } from '../model/grid';
 import { useState, useCallback, useMemo } from 'preact/hooks';
 import { useWorld } from './Context';
 import type { Selection } from './Screen';
-import type { AgentView } from 'view/agents';
+import type { AgentView } from '../view/agents';
 
 export type MapScrollerProps = {
     // Dimensions of the screen

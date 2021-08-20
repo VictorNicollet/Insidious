@@ -1,6 +1,7 @@
 import { Cell } from "./grid";
 import { WorldMap, ocean } from './map';
 import { World } from './world';
+import { notUndefined } from '../notundefined';
 
 export type Route = {
     readonly from: Cell 
@@ -53,10 +54,9 @@ export class RouteSet {
         let distance = 0;
 
         while (distance < queuesByDistance.length) {
-            while (queuesByDistance[distance].length > 0) {
+            let next : Cell|undefined
+            while ((next = queuesByDistance[distance].pop()) !== undefined) {
                 
-                const next = queuesByDistance[distance].pop();
-
                 // Maybe a relaxation caused this node to be explored
                 // earlier, without removing it from this queue ?
                 if (distanceOf[next] != distance) continue;
@@ -146,7 +146,7 @@ export class Routes {
         this._sail[from] = sailSet;
         const walkSet = this._walk[from] || new RouteSet(this.world, this.map, from, false);
         this._walk[from] = walkSet;
-        return [...sailSet.routes.filter(s => !!s), 
-                ...walkSet.routes.filter(s => !!s) ]
+        return [...notUndefined(sailSet.routes),
+                ...notUndefined(walkSet.routes) ]
     }
 }

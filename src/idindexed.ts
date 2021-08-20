@@ -4,8 +4,8 @@ export type IdxArray<T extends {id: number}> = ReadonlyArray<T> & { idx: (id: nu
 
 export function index<T extends {id: number}>(array: T[]): IdxArray<T> {
     const indexed = (array as any) as IdxArray<T>;
-    const byId = {};
-    for (let t of indexed) byId[t.id] = t;
-    indexed.idx = function(id: number): T|undefined { return byId[id] }
+    const byId : { [key: string]: T }= {};
+    for (let t of indexed) byId[t.id.toFixed()] = t;
+    indexed.idx = function(id: number): T|undefined { return byId[id.toFixed()] }
     return indexed;
 }

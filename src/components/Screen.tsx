@@ -1,17 +1,17 @@
 import { h, JSX } from "preact"
 import { MapScroller } from './MapScroller';
 import { useLeftPanel } from './LeftPanel';
-import * as WorldView from 'view/world';
+import * as WorldView from '../view/world';
 import { Navbar } from './Navbar';
 import { useState, useEffect, useCallback } from 'preact/hooks';
 import { RightPanel } from './RightPanel';
-import { LocationView } from 'view/locations';
-import { AgentView } from 'view/agents';
+import { LocationView } from '../view/locations';
+import { AgentView } from '../view/agents';
 import { Context } from './Context';
-import { World } from 'model/world';
+import { World } from '../model/world';
 import { Notifications } from './Notification';
 import { Message as MessageBox } from './Message';
-import { PlanView } from 'view/plans';
+import { PlanView } from '../view/plans';
 
 export type Selection = {
     selected: "agent"

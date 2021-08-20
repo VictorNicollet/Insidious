@@ -1,10 +1,10 @@
-import type { Agent } from 'model/agents';
-import type { Location } from 'model/locations';
-import { GatherInfoMode } from 'model/orders';
-import * as Firsts from 'text/firsts';
-import { withExcellent, withProceed, withDisappointing } from 'model/message';
-import { RandomBag } from 'model/generation/randombag';
-import { format } from 'text/format';
+import type { Agent } from '../model/agents';
+import type { Location } from '../model/locations';
+import { GatherInfoMode } from '../model/orders';
+import * as Firsts from '../text/firsts';
+import { withExcellent, withProceed, withDisappointing } from '../model/message';
+import { RandomBag } from '../model/generation/randombag';
+import { format } from '../text/format';
 
 const agentAttackedWon = format<{agent: string}>(`
 #agent# reports that they were ambushed by two thugs in a deserted alley, 
@@ -86,4 +86,5 @@ export function succeeds(
     const foundSomething = Math.random() < 0.5;
     if (!foundSomething) return true;
 
+    return true;
 }

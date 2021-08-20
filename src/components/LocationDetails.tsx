@@ -4,6 +4,7 @@ import { population } from './numbers'
 import { InnerAgentList } from './AgentList'
 import { useMemo } from 'preact/hooks'
 import { useWorld } from './Context'
+import { notUndefined } from '../notundefined'
 
 // Size of the top-of-box info region
 const INFOHEIGHT = 48 /* table */ + 17 /* h4 */;
@@ -32,7 +33,7 @@ export function LocationDetails(props: {
     const innerHeight = B.innerHeight(props.height);
 
     const agents = useMemo(
-        () => location.agents.map(i => world.agents.idx(i)).filter(i => !!i),
+        () => notUndefined(location.agents.map(i => world.agents.idx(i))),
         [location, world]);
         
     return <B.Box title={location.name.short} close={props.close}>

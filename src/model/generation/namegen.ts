@@ -330,6 +330,7 @@ function locationOfKind(kind: LocationKind): LocationName {
                 const cut = collapse(mangle);
                 if (cut != mangle)
                     return { short: cut, long: cut, adjective: demonym(cut) };
+                break;
             default: 
                 console.log("Mismatch: %s %s", pickedPrefix, pickedSuffix);
         }

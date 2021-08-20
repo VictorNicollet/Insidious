@@ -1,9 +1,9 @@
 import type { PersonName } from '../model/names';
 import type { Agent } from "../model/agents"
-import type { Occupation, ByOccupation } from 'model/occupation';
-import type { Stats } from 'model/stats';
-import { Order } from 'model/orders';
-import type { TxtContext } from 'text/format';
+import type { Occupation, ByOccupation } from '../model/occupation';
+import type { Stats } from '../model/stats';
+import { Order } from '../model/orders';
+import type { TxtContext } from '../text/format';
 
 export type AgentView = {
     readonly id: number
@@ -34,7 +34,7 @@ export function agent(a: Agent, id: number): AgentView {
         ctx: {
             name: a.name.short,
             occupation: a.occupation,
-            location: a.location ? a.location.name.short : "Outdoors",
+            location: a.location ? a.location.name.short : "Outdoors"
         }
     }
 }

@@ -3,7 +3,7 @@ import { useState } from "preact/hooks"
 import * as B from "./Box"
 import * as P from './Pagination'
 import * as Numbers from './numbers'
-import { LocationView } from 'view/locations'
+import { LocationView } from '../view/locations'
 import * as M from './Map'
 import { AgentCount } from './AgentCount'
 import { useSelectors } from './Context'

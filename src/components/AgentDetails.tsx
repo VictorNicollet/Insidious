@@ -4,7 +4,7 @@ import { useWorld, useSelectors } from './Context';
 import { AgentStats } from './AgentStat';
 import { useState } from 'preact/hooks';
 import { AgentOrders } from './AgentOrders';
-import * as Help from "text/help"
+import * as Help from "../text/help"
 import { Tooltip } from './Tooltip';
 import { integer } from './numbers';
 
@@ -40,16 +40,20 @@ export function AgentDetails(props: {
 }): JSX.Element {
     
     const world = useWorld();
-    const agent = world.agents.idx(props.agent);
+
+    // We assert that the agent exists, because it wouldn't have stayed selected
+    // if it did not.
+    const agent = world.agents.idx(props.agent)!;
 
     const selectors = useSelectors();
     const [tab, setTab] = useState<Tabs>("Orders")
 
-    const where = world.map.locations[agent.cell] === undefined
+    const loc = world.map.locations[agent.cell]
+    const where = loc === undefined
         ? <span>Outdoors</span>
         : <span className="named-entity" 
-            onClick={() => selectors.location(world.locations[world.map.locations[agent.cell]])}>
-            {world.locations[world.map.locations[agent.cell]].name.short}
+            onClick={() => selectors.location(world.locations[loc])}>
+            {world.locations[loc].name.short}
         </span>;
 
     return <B.Box<Tabs> title={agent.name.full} 

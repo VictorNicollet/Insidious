@@ -1,4 +1,4 @@
-import type { Plan } from 'model/plans';
+import type { Plan } from '../model/plans';
 
 export type PlanView = {
     id: number

@@ -1,4 +1,4 @@
-import { h, JSX } from "preact"
+import { h, JSX, Fragment } from "preact"
 import { useWorld, useSelectors } from './Context'
 import { useMemo } from 'preact/hooks';
 
@@ -7,7 +7,7 @@ type Notif = {
     readonly onClick: () => void
 }
 
-export function Notifications(props:{}): JSX.Element|undefined {
+export function Notifications(props:{}): JSX.Element {
     
     const world = useWorld();
     const sel = useSelectors();
@@ -40,5 +40,5 @@ export function Notifications(props:{}): JSX.Element|undefined {
                 </div>)}
         </div>
     
-    return undefined;
+    return <Fragment/>;
 }

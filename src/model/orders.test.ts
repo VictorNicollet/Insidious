@@ -8,6 +8,7 @@ test("No progress: 12 = 12", () =>
         kind: "undercover",
         difficulty: { value: 12, reasons: [] },
         exposure: { value: 1, reasons: [] },
+        cost: {gold: 0, touch: 0},
         progress: 0
     })).toBe(12));
 
@@ -16,5 +17,6 @@ test("Remainder: 12-4 = 8", () =>
         kind: "undercover",
         difficulty: { value: 12, reasons: [] },
         exposure: { value: 3, reasons: [] },
+        cost: {gold: 0, touch: 0},
         progress: 4
     })).toBe(8));

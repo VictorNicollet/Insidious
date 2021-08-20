@@ -1,7 +1,7 @@
 import { LocationName } from '../model/names';
 import { Cell } from '../model/grid';
 import { Location } from '../model/locations';
-import { CellKind } from 'model/map';
+import { CellKind } from '../model/map';
 
 export type LocationView = {
     readonly id : number

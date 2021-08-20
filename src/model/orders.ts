@@ -2,6 +2,7 @@ import type { Occupation } from './occupation'
 import type { Explained } from './explainable'
 import { Cell } from './grid'
 import { ResourcesOf } from './resources'
+import { Location } from './locations'
 
 // An order to stay undercover and act as one's outward occupation
 export type UndercoverOrder = {
@@ -13,6 +14,8 @@ export type RecruitAgentOrder = {
     readonly kind: "recruit-agent"
     // The occupation that should be recruited
     readonly occupation: Occupation
+    // The location where the recruitment happens
+    readonly location : Location
 }
 
 // An order to travel along a path

@@ -1,5 +1,5 @@
 import { h, JSX } from "preact"
-import { Message } from "model/message";
+import { Message } from "../model/message";
 import { useWorld } from './Context';
 import { useCallback } from 'preact/hooks';
 import { ModalBox } from './Box';

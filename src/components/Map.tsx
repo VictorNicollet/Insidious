@@ -1,6 +1,6 @@
 import { h, JSX } from "preact"
-import type { Cell, Grid } from 'model/grid';
-import type { WorldView } from 'view/world';
+import type { Cell, Grid } from '../model/grid';
+import type { WorldView } from '../view/world';
 import { AgentCount } from './AgentCount';
 import { useWorld } from './Context';
 import { useMemo } from 'preact/hooks';
@@ -76,8 +76,9 @@ export function MapCell(props: {
     const {cells, locations, grid} = world.map;
 
     const {aspect, hasVariants} = cells[props.cell];
-    const location = props.naked || typeof locations[props.cell] == "undefined"
-        ? undefined : world.locations[locations[props.cell]];
+    const locid = locations[props.cell];
+    const location = props.naked || typeof locid == "undefined"
+        ? undefined : world.locations[locid];
     
     const path = useMemo<JSX.Element|undefined>(() => {
         const [bX, bY] = grid.uncell(props.pathBefore ? props.pathBefore : props.cell);

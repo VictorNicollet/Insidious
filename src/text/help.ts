@@ -1,6 +1,6 @@
-import type { ByOccupation } from 'model/occupation';
+import type { ByOccupation } from '../model/occupation';
 import type { TxtFormat } from './format';
-import type { StatsOf } from 'model/stats';
+import type { StatsOf } from '../model/stats';
 
 export const occupationTooltip : ByOccupation<TxtFormat> = {
     Noble: `

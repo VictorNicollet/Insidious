@@ -1,9 +1,9 @@
 import { useContext } from "preact/hooks";
 import { h, createContext, ComponentChildren } from 'preact';
-import type { WorldView } from 'view/world';
-import type { LocationView } from 'view/locations';
-import type { AgentView } from 'view/agents';
-import type { PlanView } from 'view/plans';
+import type { WorldView } from '../view/world';
+import type { LocationView } from '../view/locations';
+import type { AgentView } from '../view/agents';
+import type { PlanView } from '../view/plans';
 
 
 type Selectors = {

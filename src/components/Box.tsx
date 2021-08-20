@@ -1,9 +1,9 @@
 import { h, ComponentChildren, JSX } from "preact"
 
-export function Tabs(props: {
-    tabs: readonly string[]
-    tab?: string
-    onTab: (tab: string) => void
+export function Tabs<Tab extends string>(props: {
+    tabs: readonly Tab[]
+    tab?: Tab
+    onTab: (tab: Tab) => void
 }): JSX.Element {
 
     return <div className="gui-box-tabs">
@@ -42,7 +42,7 @@ export function Box<Tab extends string>(props: {
         </div>
         <div className="gui-box-body">{props.children}</div>
         {props.tabs !== undefined && props.onTab !== undefined && 
-            <Tabs tabs={props.tabs} onTab={props.onTab} tab={props.tab} />}
+            <Tabs<Tab> tabs={props.tabs} onTab={props.onTab} tab={props.tab} />}
     </div>
 }
 

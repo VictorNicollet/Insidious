@@ -20,6 +20,8 @@
   },
   "dependencies": {
     "buffer-builder": "^0.2.0",
+    "fuse-box-typechecker": "^3.1.1",
+    "merge": "^1.2.1",
     "preact": "^10.5.14",
     "sharp": "^0.28.3"
   }

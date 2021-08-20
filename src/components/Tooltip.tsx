@@ -1,5 +1,5 @@
 import { h, JSX } from "preact"
-import { TxtContext, TxtFormat, toHTML } from 'text/format'
+import { TxtContext, TxtFormat, toHTML } from '../text/format'
 
 export function Tooltip<T extends TxtContext>(props: {
     tip: TxtFormat
