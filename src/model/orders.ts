@@ -24,12 +24,15 @@ export type TravelOrder = {
     readonly path : readonly [number, Cell][]
 }
 
-export type GatherInfoMode = 
-      "street" 
-    | "tavern" 
-    | "underworld" 
-    | "gentry" 
-    | "bribe"
+export type ByGatherInfoMode<T> = {
+    street: T
+    tavern: T
+    underworld: T
+    gentry: T
+    bribe: T
+}
+
+export type GatherInfoMode = keyof(ByGatherInfoMode<string>)
 
 export type GatherInfoOrder = {
     readonly kind : "gather-info"
