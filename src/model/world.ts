@@ -11,6 +11,7 @@ import { Routes } from './routes';
 import type { Message } from './message';
 import { Sagas, ActiveSaga } from './saga';
 import { Population } from './population';
+import { WorldFlags, worldFlags } from './flags';
 
 export class World {
     private readonly _locations: readonly Location[]
@@ -20,6 +21,8 @@ export class World {
     public readonly population : Population
     public readonly seenLocations : Location[]
     public readonly resources: Resources
+    public readonly flags: WorldFlags
+    public readonly god: {name: string, aspect: string}
 
     // Current turn number
     private turn : number
@@ -45,6 +48,8 @@ export class World {
         this._sagas = new Sagas(this);
         this.population = new Population(this._locations);
         this.turn = 0
+        this.flags = worldFlags
+        this.god = {name: "Azathoth", aspect: "madness"}
     }
 
     // Add a new message, to be displayed on the next render.

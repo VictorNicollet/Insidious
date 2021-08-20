@@ -10,11 +10,11 @@ function intro(w: World) {
     const agent = w.agents()[0];
     const last = agent.location;
     const context = {
-        god: "PLAYERNAME",
+        god: w.god.name,
         agent: agent.name.short,
         location: last.name.short,
         occupation: agent.occupation.toLocaleLowerCase(),
-        aspect: "blood"
+        aspect: w.god.aspect
     };
 
     return function(w: World, setNext: SetNextStep) {    
