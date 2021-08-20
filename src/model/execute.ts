@@ -8,26 +8,7 @@ import { randomPerson } from './generation/namegen';
 import { byOccupation } from './occupation';
 import * as Firsts from 'text/firsts';
 import { withExcellent } from './message';
-
-// Invoked when gathering information about a location succeeds
-// in increasing the information level by 1.
-function onGatherInfoDone(
-    agent: Agent, 
-    location: Location, 
-    mode: GatherInfoMode
-) {
-    const world = agent.world;
-
-    if (!world.flags.firstGatherInfo) {
-        world.flags.firstGatherInfo = true;
-        world.newMessage(withExcellent(
-            Firsts.gatherInfo(mode).toHTML({
-                location: location.name.short,
-                lockind: location.kind,
-                aspect: world.god.aspect
-            })));
-    }
-}
+import * as GatherInfo from 'events/gatherinfo';
 
 function countResourceDeltaForOrder(
     agent: Agent, 
@@ -133,8 +114,8 @@ export function executeOrder(agent: Agent): Order {
                 const oldInfo = location.information;
                 const newInfo = Math.min(max, location.information + 1);
                 if (oldInfo >= newInfo) break;
-                location.information = newInfo;
-                onGatherInfoDone(agent, location, order.mode);
+                if (GatherInfo.succeeds(agent, location, order.mode))
+                    location.information = newInfo;
             }
             break;           
         default: never(order);

@@ -63,4 +63,13 @@ export class Agent {
             this.location = undefined;
         }
     }
+
+    // Does the agent survive 'count' attacks with power 'attack' ?
+    public survives(attack: number, count: number) {
+        let accumulated = 0;
+        for (let i = 0; i < count; ++i) {
+            if (Math.random() > this.stats.combat.value / 100) accumulated += attack;
+        }
+        return accumulated < 10;
+    } 
 }

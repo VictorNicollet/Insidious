@@ -19,3 +19,7 @@ export function withProceed(contents: readonly JSX.Element[]) {
 export function withExcellent(contents: readonly JSX.Element[]) {
     return {contents, buttons: [{label: "Excellent", click:() => {}}]}
 }
+
+export function withDisappointing(contents: readonly JSX.Element[]) {
+    return {contents, buttons: [{label: "Disappointing", click:() => {}}]}
+}
