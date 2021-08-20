@@ -23,6 +23,7 @@ function unstyle(html: string) {
 // 
 //  - Icons :foo: are converted to their HTML representation.
 //  - Context calls #foo# are replaced by the result of props.ctx.foo()
+//    (use #foo# to insert a *bold* value, ##foo# for a normal value).
 //  - Inserts %N are replaced by props.inserts[N]
 //
 // The purpose of this function is to describe the content of tooltips
@@ -35,10 +36,12 @@ export function toHTML(
 ): JSX.Element[] {
     
     // Replace all inserts. 
-    return tip.replace(/#[a-z]+#/g, match => {
-        const call = match.substr(1, match.length - 2);
+    return tip.replace(/##?[a-z]+#/ig, match => {
+        const isBold = match.charAt(1) != '#';
+        const call = match.substr(isBold ? 1 : 2, match.length - 2);
         const prop = ctx[call];
-        return "*" + (typeof prop == "string" ? prop : prop()) + "*";
+        const value = typeof prop == "string" ? prop : prop();
+        return isBold ? '*'+value+'*' : value;
     })
 
     // Don't leak any unescaped HTML, including from inserts 
@@ -51,9 +54,10 @@ export function toHTML(
     // output contains HTML)
     //
     // For example :gold: becomes <span class=gold/><b>gold</b>
-    .replace(/:[a-z]+:/g, match => {
-        const icon = match.substr(1, match.length - 2);
-        return "<span class=\"" + icon + "\"></span><b>" + icon + "</b>";
+    .replace(/:[a-z]+(=[a-z0-9]+)?:/ig, match => {
+        const icon = /(?<=:)[a-z]+/i.exec(match);
+        const text = /[a-z0-9]+(?=:)/i.exec(match);
+        return "<span class=\"" + icon + "\"></span><b>" + text + "</b>";
     })
 
     // Change *** to <hr/>
