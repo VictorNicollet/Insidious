@@ -40,7 +40,7 @@ export function AgentDetails(props: {
 }): JSX.Element {
     
     const world = useWorld();
-    const agent = world.agents[props.agent];
+    const agent = world.agents.idx(props.agent);
 
     const selectors = useSelectors();
     const [tab, setTab] = useState<Tabs>("Orders")

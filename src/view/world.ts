@@ -8,11 +8,12 @@ import type { Explained } from 'model/explainable'
 import type { Routes } from 'model/routes'
 import { Message } from 'model/message'
 import { PlanView, plan } from './plans'
+import { IdxArray, index } from 'idindexed'
 
 export type WorldView = {
     readonly locations: readonly LocationView[]
-    readonly agents: readonly AgentView[]
-    readonly plans: readonly PlanView[]
+    readonly agents: IdxArray<AgentView>
+    readonly plans: IdxArray<PlanView>
     readonly map: MapView
     readonly initial: Cell
     readonly resources: ResourcesOf<{ current: number, daily: Explained }>
@@ -28,7 +29,7 @@ export type WorldView = {
 
 export function world(w: World): WorldView {
     const locations = w.seenLocations
-    const agents = w.agents().map(agent)
+    const agents = index(w.agents().map(agent))
 
     // We subtract the 'once' delta from the available resources, to 
     // take into account the cost of orders that are given but not yet
@@ -56,7 +57,7 @@ export function world(w: World): WorldView {
         map: map(w, w.map),
         initial: locations[0].cell,
         routes: w.routes(),
-        plans: w.plans().map(plan),
+        plans: index(w.plans().map(plan)),
         message: w.firstMessage(),
         needOrders: agents.filter(a => a.order.progress >= a.order.difficulty.value),
         resources

@@ -54,9 +54,10 @@ export function Screen(props: { world: World }): JSX.Element {
 
     const [selUnsafe, setSelected] = useState<Selection>({selected: "none"});
 
-    // Agents can disappear, so unselect them when they do.
+    // Agents and plans can disappear, so unselect them when they do.
     const selected : Selection = 
-        selUnsafe.selected == "agent" && world.agents.length <= selUnsafe.id
+        selUnsafe.selected == "agent" && !world.agents.idx(selUnsafe.id) ||
+        selUnsafe.selected == "plan" && !world.plans.idx(selUnsafe.id)
         ? {selected:"none"}
         : selUnsafe;
 

@@ -32,7 +32,7 @@ export function LocationDetails(props: {
     const innerHeight = B.innerHeight(props.height);
 
     const agents = useMemo(
-        () => location.agents.map(i => world.agents[i]),
+        () => location.agents.map(i => world.agents.idx(i)).filter(i => !!i),
         [location, world]);
         
     return <B.Box title={location.name.short} close={props.close}>

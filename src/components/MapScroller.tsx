@@ -53,7 +53,7 @@ export function MapScroller(props: MapScrollerProps): JSX.Element {
     // active selection ?
     const [cell, path] = useMemo<[Cell|undefined, readonly Cell[]|undefined]>(() => 
         selected.selected === "agent"    
-        ? agentCellAndPath(world.agents[selected.id]) :
+        ? agentCellAndPath(world.agents.idx(selected.id)!) :
         selected.selected === "location" 
         ? [world.locations[selected.id].cell,undefined] :
             [undefined,undefined], 
