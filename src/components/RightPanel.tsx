@@ -41,10 +41,12 @@ export function RightPanel(props: RightPanelProps): JSX.Element {
             <AgentDetails agent={selected.id}
                 height={height}
                 close={close}/> :
-         selected.selected === "location" ? 
+        selected.selected === "location" ? 
             <LocationDetails location={selected.id} 
                 height={height}
                 close={close} /> :
+        selected.selected === "plan" ? 
+            <div>Plan</div> : 
         never(selected)}
     </div>;
 }

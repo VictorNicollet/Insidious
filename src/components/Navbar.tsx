@@ -66,6 +66,7 @@ export function Navbar(props: {
     return <div className="gui-navbar">
         <button className="link" onClick={() => left("locations")}>Locations</button>
         <button className="link" onClick={() => left("agents")}>Agents</button>
+        <button className="link" onClick={() => left("plans")}>Plans</button>
         <button className="link" onClick={() => left("cult")}>Cult</button>
         <button className="link" onClick={() => left("rituals")}>Rituals</button>
         <button className="link" onClick={() => left("artifacts")}>Artifacts</button>

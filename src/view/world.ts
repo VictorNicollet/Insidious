@@ -7,10 +7,12 @@ import type { ResourcesOf } from 'model/resources'
 import type { Explained } from 'model/explainable'
 import type { Routes } from 'model/routes'
 import { Message } from 'model/message'
+import { PlanView, plan } from './plans'
 
 export type WorldView = {
     readonly locations: readonly LocationView[]
     readonly agents: readonly AgentView[]
+    readonly plans: readonly PlanView[]
     readonly map: MapView
     readonly initial: Cell
     readonly resources: ResourcesOf<{ current: number, daily: Explained }>
@@ -54,6 +56,7 @@ export function world(w: World): WorldView {
         map: map(w, w.map),
         initial: locations[0].cell,
         routes: w.routes(),
+        plans: w.plans().map(plan),
         message: w.firstMessage(),
         needOrders: agents.filter(a => a.order.progress >= a.order.difficulty.value),
         resources

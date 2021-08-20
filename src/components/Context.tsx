@@ -1,13 +1,15 @@
 import { useContext } from "preact/hooks";
 import { h, createContext, ComponentChildren } from 'preact';
-import { WorldView } from 'view/world';
-import { LocationView } from 'view/locations';
-import { AgentView } from 'view/agents';
+import type { WorldView } from 'view/world';
+import type { LocationView } from 'view/locations';
+import type { AgentView } from 'view/agents';
+import type { PlanView } from 'view/plans';
 
 
 type Selectors = {
     location: (location: LocationView) => void
     agent: (agent: AgentView) => void
+    plan: (plan: PlanView) => void
 }
 
 type Context = {
@@ -32,5 +34,5 @@ export function useWorld(): WorldView {
 // Access the selectors from the context
 export function useSelectors(): Selectors {
     const sel = useContext(context);
-    return {location: sel.location, agent: sel.agent};
+    return {location: sel.location, agent: sel.agent, plan: sel.plan};
 }

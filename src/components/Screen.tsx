@@ -11,12 +11,16 @@ import { Context } from './Context';
 import { World } from 'model/world';
 import { Notifications } from './Notification';
 import { Message as MessageBox } from './Message';
+import { PlanView } from 'view/plans';
 
 export type Selection = {
     selected: "agent"
     id: number
 } | {
     selected: "location"
+    id: number
+} | {
+    selected: "plan"
     id: number
 } | {
     selected: "none"
@@ -68,8 +72,15 @@ export function Screen(props: { world: World }): JSX.Element {
         setSelected({selected: "agent", id: agent.id})
     }, [setSelected])
 
+    const selectPlan = useCallback((plan: PlanView) => {
+        setSelected({selected: "plan", id: plan.id})
+    }, [setSelected])
+
     return <div>
-        <Context world={world} agent={selectAgent} location={selectLocation}>
+        <Context world={world} 
+                 agent={selectAgent} 
+                 location={selectLocation} 
+                 plan={selectPlan}>
             <MapScroller 
                 screenH={screenH}
                 screenW={screenW}

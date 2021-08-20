@@ -3,10 +3,12 @@ import { LocationList } from './LocationList'
 import { useState, useMemo, useRef, useEffect, StateUpdater, useCallback } from 'preact/hooks';
 import { AgentList } from './AgentList';
 import { useWorld } from './Context';
+import { PlanList } from './PlanList';
 
 export type LeftPanelShown = 
     "locations" | 
-    "agents" | 
+    "agents" |
+    "plans" |
     "cult" | 
     "rituals" | 
     "artifacts" | 
@@ -61,6 +63,10 @@ export function useLeftPanel(): LeftPanel {
                     ? <AgentList agents={world.agents}
                                  height={height} 
                                  close={close} />
+                    : shown == "plans"
+                    ? <PlanList plans={world.plans}
+                                height={height}
+                                close={close} />
                     : shown == "cult"
                     ? undefined
                     : shown == "rituals"

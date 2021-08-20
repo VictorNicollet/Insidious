@@ -12,10 +12,12 @@ import type { Message } from './message';
 import { Sagas, ActiveSaga } from './saga';
 import { Population } from './population';
 import { WorldFlags, worldFlags } from './flags';
+import { Plan } from './plans';
 
 export class World {
     private readonly _locations: readonly Location[]
     private readonly _agents : Agent[]
+    private readonly _plans : Plan[]
     private readonly _listeners : (() => void)[]
     private readonly _sagas : Sagas
     public readonly population : Population
@@ -41,6 +43,7 @@ export class World {
             new Location(id, this, l.cell, l.population));
         this._agents = [];
         this._listeners = [];
+        this._plans = [];
         this.seenLocations = [];
         this.messages = [];
         this._routes = undefined
@@ -95,6 +98,8 @@ export class World {
     }
  
     public agents() : readonly Agent[] { return this._agents; }
+
+    public plans() : readonly Plan[] { return this._plans; }
 
     public visitLocation(location: Location) { 
         // View 2 around the location
