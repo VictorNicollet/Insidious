@@ -12,7 +12,7 @@ export function Message(props: {message: Message}): JSX.Element {
         world.world.refresh();
     }, [world.world]);
 
-    return <ModalBox close={close}>
+    return <ModalBox close={() => {}}>
         {props.message.contents}
         <div style={{textAlign: "center",marginTop:10}}>
             {props.message.buttons.map(b => 
