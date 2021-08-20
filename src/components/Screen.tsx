@@ -48,7 +48,13 @@ export function Screen(props: { world: World }): JSX.Element {
 
     // Selected element management ===========================================
 
-    const [selected, setSelected] = useState<Selection>({selected: "none"});
+    const [selUnsafe, setSelected] = useState<Selection>({selected: "none"});
+
+    // Agents can disappear, so unselect them when they do.
+    const selected : Selection = 
+        selUnsafe.selected == "agent" && world.agents.length <= selUnsafe.id
+        ? {selected:"none"}
+        : selUnsafe;
 
     // Sub-components ========================================================
 

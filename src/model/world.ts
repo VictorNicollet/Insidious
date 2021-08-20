@@ -86,6 +86,13 @@ export class World {
         this.map.addViewer(location.cell);
         return person;
     }
+
+    public removeAgent(agent: Agent) {
+        const idx = this._agents.indexOf(agent);
+        if (idx < 0) return;
+        this._agents[idx] = this._agents[this._agents.length - 1];
+        this._agents.pop();
+    }
  
     public agents() : readonly Agent[] { return this._agents; }
 
