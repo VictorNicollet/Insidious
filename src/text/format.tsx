@@ -38,7 +38,7 @@ export function toHTML(
     // Replace all inserts. 
     return tip.replace(/##?[a-z]+#/ig, match => {
         const isBold = match.charAt(1) != '#';
-        const call = match.substr(isBold ? 1 : 2, match.length - 2);
+        const call = match.substring(isBold ? 1 : 2, match.length - 1);
         const prop = ctx[call];
         const value = typeof prop == "string" ? prop : prop();
         return isBold ? '*'+value+'*' : value;
