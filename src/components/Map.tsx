@@ -59,6 +59,7 @@ function PathSvg(props: {
 // A cell in the grid.
 export function MapCell(props: {
     cell: Cell
+    show?: boolean
     fog?: boolean
     selected?: boolean
     top: number
@@ -92,8 +93,9 @@ export function MapCell(props: {
     return <div className={"hex " + aspect + 
                            (hasVariants ? variant(props.cell) : "") +
                            (props.fog ? " fog" : "") + 
-                           (props.selected ? " selected" : "") }  
-             style={{left:props.left, top:props.top}}>
+                           (props.selected ? " selected" : "") +
+                           (props.show === false ? " hide" : "")}  
+            style={{left:props.left, top:props.top}}>
         {path}
         {props.portraits.map((p,i) => 
             <div key={p} className={"portrait " + p}/>)}
@@ -141,9 +143,9 @@ export function Map(props: {
     for (let y = 0; y < grid.side; ++y) {
         for (let x = 0; x < grid.side; ++x) {
             const cell = grid.cell(x,y);
-            if (!vision[cell]) continue;
             tiles.push(<MapCell 
                 key={cell} 
+                show={!!vision[cell]}
                 fog={vision[cell] < 2}
                 cell={cell} 
                 pathAfter={pathAfter(cell)}

@@ -619,6 +619,13 @@ button.go.right:disabled {
     position: absolute;
     width: 128px;
     height: 192px;
+    margin-top: 0px;
+    transition: margin-top 0.5s ease-out, opacity 0.5s ease-out; 
+}
+
+.hex.hide::before {
+    opacity: 0;
+    margin-top: 200px;
 }
 
 .hex::before {
@@ -627,133 +634,168 @@ button.go.right:disabled {
     height: 192px;
     position: absolute;
     content: "";
+    transition-property: filter, margin-top, opacity;
+    transition-duration: 0.2s, 0.5s, 0.5s;
+    transition-timing-function: linear, ease-out, ease-out;
 }
 
 .hex.plains0::before {
+    transition-delay: 0.1s;
     background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Terrain Hexes/Tiles/hexWoodlands00.png")
 }
 
 .hex.plains1::before {
+    transition-delay: 0.15s;
     background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Terrain Hexes/Tiles/hexWoodlands01.png")
 }
 
 .hex.plains2::before {
+    transition-delay: 0.2s;
     background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Terrain Hexes/Tiles/hexWoodlands02.png")
 }
 
 .hex.plains3::before {
+    transition-delay: 0.25s;
     background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Terrain Hexes/Tiles/hexWoodlands03.png")
 }
 
 .hex.farm0::before {
+    transition-delay: 0.1s;
     background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Medieval-Fantasy Hex Locations/Tiles/hexPlainsFarm00.png")
 }
 
 .hex.farm1::before {
+    transition-delay: 0.15s;
     background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Medieval-Fantasy Hex Locations/Tiles/hexPlainsFarm01.png")
 }
 
 .hex.farm2::before {
+    transition-delay: 0.2s;
     background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Medieval-Fantasy Hex Locations/Tiles/hexPlainsFarm02.png")
 }
 
 .hex.farm3::before {
+    transition-delay: 0.25s;
     background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Medieval-Fantasy Hex Locations/Tiles/hexPlainsFarm03.png")
 }
 
 .hex.mountain0::before {
+    transition-delay: 0.05s;
     background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Terrain Hexes/Tiles/hexMountain00.png")
 }
 
 .hex.mountain1::before {
+    transition-delay: 0.1s;
     background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Terrain Hexes/Tiles/hexMountain01.png")
 }
 
 .hex.mountain2::before {
+    transition-delay: 0.15s;
     background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Terrain Hexes/Tiles/hexMountain02.png")
 }
 
 .hex.mountain3::before {
+    transition-delay: 0.2s;
     background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Terrain Hexes/Tiles/hexMountain03.png")
 }
 
 .hex.forest0::before {
+    transition-delay: 0.1s;
     background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Terrain Hexes/Tiles/hexForestBroadleaf00.png")
 }
 
 .hex.forest1::before {
+    transition-delay: 0.15s;
     background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Terrain Hexes/Tiles/hexForestBroadleaf01.png")
 }
 
 .hex.forest2::before {
+    transition-delay: 0.2s;
     background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Terrain Hexes/Tiles/hexForestBroadleaf02.png")
 }
 
 .hex.forest3::before {
+    transition-delay: 0.25s;
     background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Terrain Hexes/Tiles/hexForestBroadleaf03.png")
 }
 
 .hex.ocean0::before {
+    transition-delay: 0.1s;
     background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Terrain Hexes/Tiles/hexOcean00.png")
 }
 
 .hex.ocean1::before {
+    transition-delay: 0.15s;
     background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Terrain Hexes/Tiles/hexOcean01.png")
 }
 
 .hex.ocean2::before {
+    transition-delay: 0.2s;
     background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Terrain Hexes/Tiles/hexOcean02.png")
 }
 
 .hex.ocean3::before {
+    transition-delay: 0.25s;
     background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Terrain Hexes/Tiles/hexOcean03.png")
 }
 
 .hex.marsh0::before {
+    transition-delay: 0.2s;
     background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Terrain Hexes/Tiles/hexMarsh00.png")
 }
 
 .hex.marsh1::before {
+    transition-delay: 0.25s;
     background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Terrain Hexes/Tiles/hexMarsh01.png")
 }
 
 .hex.marsh2::before {
+    transition-delay: 0.3s;
     background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Terrain Hexes/Tiles/hexMarsh02.png")
 }
 
 .hex.marsh3::before {
+    transition-delay: 0.35s;
     background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Terrain Hexes/Tiles/hexMarsh03.png")
 }
 
 .hex.hills0::before {
+    transition-delay: 0.1s;
     background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Terrain Hexes/Tiles/hexHills00.png")
 }
 
 .hex.hills1::before {
+    transition-delay: 0.15s;
     background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Terrain Hexes/Tiles/hexHills01.png")
 }
 
 .hex.hills2::before {
+    transition-delay: 0.2s;
     background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Terrain Hexes/Tiles/hexHills02.png")
 }
 
 .hex.hills3::before {
+    transition-delay: 0.25s;
     background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Terrain Hexes/Tiles/hexHills03.png")
 }
 
 .hex.moor0::before {
+    transition-delay: 0.1s;
     background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Terrain Hexes/Tiles/hexScrublands00.png")
 }
 
 .hex.moor1::before {
+    transition-delay: 0.2s;
     background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Terrain Hexes/Tiles/hexScrublands01.png")
 }
 
 .hex.moor2::before {
+    transition-delay: 0.3s;
     background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Terrain Hexes/Tiles/hexScrublands02.png")
 }
 
 .hex.moor3::before {
+    transition-delay: 0.4s;
     background-image: url(/* 0 0 256 384 50 */ "../../BigAssets/Terrain Hexes/Tiles/hexScrublands03.png")
 }
 
