@@ -3,20 +3,48 @@
     <head>
         <meta charset="utf-8"/>
         <title>Insidious</title>
-        <style>body { 
-            background: rgb(9,9,8);
-            background: linear-gradient(0deg, rgba(9,9,8,1) 0%, rgba(34,30,28,1) 35%, rgba(56,51,48,1) 100%);
-            height: 100vh;
-            margin: 0;
-            padding: 0;
-            overflow: hidden;
-         } </style>
-         <style>
+        <style>
+@font-face {
+  font-family: "Merienda";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("data:application/font-woff;base64,d09GMgABAAAAAAS0AA8AAAAAB+wAAARgAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGhYbaBwYBmAAZBEICoUkhE4LFAABNgIkAyQEIAWEDAcgDAcbgAbIxId/L/tzM6mS1rPQbCqlsEaFfbN4SJ6B4BmfUvyPq3HX+AKeAF6v7r/bdZ3UUhNgoIFl10lRE0oTuGcVnrMfgK0vRj8IAF/IEQZEIO/gNsDBhgSQqf6lGXiD/Wq5JaKTwwuvEh5yYMGINW8w2EtiEnBYttQJkTwfyYMMScegDT1ce2Gyt1uYVHIOPABGZtyQ6qIu0oNUMtrJqIfFU3WzFPZoRa4tcwn2muYmFEMIC2Yb/78NdbaROIU2ZsG4LGEAhFbhoW8xKyw/WCtYNMcCEfjpWwE1GMI4ZrGIZdN80c48Mb80HzWvNi83LzYvMM8f05zdS0BMEwFM4yMHJ7ZPECBJJBdLNojG2Yf3nyaBYQG+kZw1JuLzK+kH9MhruuT6mEhhWqyhKYZhuAzJpoF+QB2v6URVZZ1IBq9kqGqyCkOXDMl2M688CfqBeqBXJtLRm3kF9PANi1Sld8ZewMnvEckgEieroEdu4GQifSw5X9Wo3TB45XtdVlWq8YqhG4oGalftj3CyLhkuBar98zfou1qORlVZl57nlT230GeVt6Xn3nrrLZ1IhqLRZzg56nbpqUkFVKWO13QiuVSVk4lkSGHKm6AqKK8YBpFsN//9c3NzyfMPvqOl1g5bL4vAmba0OksSrjonvqq7vlU8I+wqr3b/m17YHRHuqiq98yXv8mOx/fU2x/rg8eahgetve3c3Qi7jJuvfzx8fwXlsQuvK0Y83moP4xFUxIPkwHnnM/xF7jvXrtkB7jvXrNtjuE6N+mLjqi2f2lx8rjYz+IqM0pvi0L68uaj3Xw+20xvJXB5beJNqn+Sph7ozLCsbw4q3J9s5Od/qxMzNGshr7H/7nFzpw0rU0NBPbLY66Y37PbVk/5Z/Jh7vCrdaB4r0y/gqoqQmoSMlpKzhr3n1vX0Xvb2HBf3TWf912WWlQ+ONxocXRVZMdN9SVOS4KDay+uvZFPFzqbA+M/PO+4LKXRVfJAc51ZH77ssyFm7KEF0beL/6nKCz2/bRaMap1JevJ7jhnC3YIsLv0k2RXRW9A/m/evOWHd8U3Hn764mjCFP+/jf2XzQdOo7mE6Sxs7FFqimYz++9ejfiQWgXeJ250MWNIIyUYYRbgYMZRQn5HMtMDZwneB+/Ay3R6IbmK64h6Y+Q0Odg9nngJX2QiQSDeERn44znRglqsLbK/RQ8cRI/oiTikv+uPdABjWMIS5pCLJCRhEYNYwDjmsARGxOJrUxAxiwWMIglNqEQ9GjBsbBvGDIbQj0S0ojKKZUxJ+xfQi2T0YhVLcJJQw2uzmIGAFIhIRjJSUIEhLBNnhzCLVsxiqD6w3w9jA3YsYwYzGEcuhNbwSql1LEttV5E0WIZZzGG9Xox0VEAMBhFbOpWCxHpWJUDo1aLQC5RSmCtadWIilubLPiuyMxjGEspSbF2zqxjHEsYg9JIW+6ZasQ8xqpwT9KezEf2YxrC0PLr/zuibf535IFJhdz9CzJP3sGcCAA==") format("woff2");
+}
 
+body {
+    background: #000;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
 
+#logo  {
+    color: #FFF;
+    font-size: 78px;
+    text-align: center;
+    line-height: 100vh;
+    height: 100vh;
+    animation-name: logo;
+    animation-duration: 60s;
+    animation-iteration-count: infinite;
+}
+
+@keyframes logo {
+    0% { filter: blur(100px); color: #BBB }
+    10% { filter: blur(10px); color: #BBB }
+    15% { filter: blur(4px); color: #FFF }
+    16% { filter: blur(4px); color: #FFF }
+    17% { filter: blur(10px); color: #BBB }
+    20% { filter: blur(10px); color: #BBB }
+    50% { filter: blur(3px); color: #FFF }
+    90%  { filter: blur(10px); color: #BBB }
+    100% { filter: blur(100px); color: #BBB }
+}
          </style>
     </head>
     <body>
-        <script src="/insidious.js"></script>
+        <div id="logo" style="font-family: Merienda">Insidious</div>
+<!--        <script src="/insidious.js"></script> -->
     </body>
 </html>
