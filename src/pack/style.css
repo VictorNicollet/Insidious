@@ -1110,7 +1110,7 @@ button.red {
     font-size: 15px;
     text-shadow: black 0 -1px 0;
     background: none;
-    border-image: url("../../BigAssets/Citadel RPG GUI/Sliced/Standalone Content Buttons/small_button_n.png") 16 8 / 16px 8px;
+    border-image: url("../../BigAssets/Citadel RPG GUI/Sliced/Standalone Content Buttons/small_button_n.png") 16 8 fill / 16px 8px;
     text-align: center;
     height: 32px;
     line-height: 32px;
