@@ -377,7 +377,7 @@ export function AgentOrders(props: {
                 <button className="red" onClick={() => setDespiteAlready(true)}>
                     Change
                 </button>
-            </div> : <div>
+            </div> : <div style={{marginTop:-8}}>
             {/* Display the orders list */}
                 {descent.length == 0 ? 
                     undefined : 

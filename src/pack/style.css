@@ -458,11 +458,9 @@ button.go.right:disabled {
 /* .gui-order */
 
 .gui-order {
-    border: 1px solid;
-    border-color: #AAA #555 #555 #666;
-    padding: 6px;
-    margin: 3px 0 9px;
-    border-radius: 4px;
+    border: none;
+    border-bottom: 1px solid #302727;
+    padding: 9px 6px;
     background: none;
     display: block;
     width: 100%;
@@ -473,15 +471,12 @@ button.go.right:disabled {
 }
 
 .gui-order:hover {
-    background: #222;
-    box-shadow: white 0 0 2px;
+    background: linear-gradient(90deg, rgba(255, 255, 255,0.1) 0%, rgba(255,255,255,0) 100%)
 }
 
 .gui-order:disabled, .gui-order:disabled:hover {
-    border-color: #333;
     color: #888;
     background: none;
-    box-shadow: none;
 }
 
 .gui-order .effects {
