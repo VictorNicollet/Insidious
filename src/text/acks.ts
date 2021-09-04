@@ -7,7 +7,9 @@ const custom = new RandomBag<TxtFormat>([
     "I will make it so.",
     "I shall not disappoint you.",
     "Of course, my ##title#.",
-    "Yes, ##aspect# for ##name#!"
+    "Yes, ##aspect# for ##name#!",
+    "For ##name#!",
+    "For ##name# who ##verb#."
 ])
 
 const article = new RandomBag<string>(["the", "my", "our"])
@@ -27,7 +29,9 @@ const iwant = new RandomBag<string>([
 export const acks = new RandomBag<() => TxtFormat>([
     function() { return custom.pick() },
     function() {
-        return `For ${article.pick()} ${epithet.pick()} ${kind.pick()}${exclaim.pick()}`
+        const k = kind.pick();
+        const a = k == "##one#" ? "the" : article.pick();
+        return `For ${a} ${epithet.pick()} ${k}${exclaim.pick()}`
     },
     function() {
         return `${iwant.pick()} ##aspect#${exclaim.pick()}`
