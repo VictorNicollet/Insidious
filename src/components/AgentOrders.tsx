@@ -136,6 +136,11 @@ class OrderNode {
             this.order = childrenOrOrder.order;
             this.disabled = childrenOrOrder.disabled;
         }
+
+        // Don't allow more than 12 children, since they will not fit the window
+        if (this.children && this.children.length > 12) {
+            this.children = this.children.slice(0, 12)
+        }
     }
 }
 
