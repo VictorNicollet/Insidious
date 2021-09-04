@@ -12,6 +12,8 @@ import { useWorld } from './Context';
 import { WorldView } from '../view/world';
 import { recruitOrder, travelOrder, gatherInfoOrder } from '../model/neworder';
 import { zero } from '../model/resources';
+import { toHTML } from 'text/format';
+import { acks } from 'text/acks'
 
 function DescribeOrder(props: {order: Order}): JSX.Element {
     const world = useWorld();
@@ -363,6 +365,10 @@ export function AgentOrders(props: {
         setDespiteAlready(false)
     }, [props.agent, setDescent]);
 
+    const acquiesce : JSX.Element[] = useMemo(() => 
+        toHTML(acks.pick()(), props.agent.agent.world.god, []), 
+        [props.agent]);
+
     return <div className="gui-give-orders">
         <table className="gui-info-table">
             <tr><th>Current orders</th><DescribeOrder order={order}/></tr>
@@ -373,7 +379,7 @@ export function AgentOrders(props: {
         {order.progress < order.difficulty.value && !despiteAlready 
             /* Display "already has orders" message */
             ? <div className="already">
-                And so it shall be done.
+                {acquiesce}
                 <button className="red" onClick={() => setDespiteAlready(true)}>
                     Change
                 </button>
