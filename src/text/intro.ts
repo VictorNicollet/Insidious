@@ -44,3 +44,21 @@ violently to your plans of improving their situation.
 You must work in secret. Insidiously. #agent# should try to find 
 like-minded mortals, and recruit them as your *agents* throughout 
 the kingdom.`);
+
+export const third = format<{
+    agent: string
+    aspect: string
+}>(`
+#agent#'s voice brought you to this world. Perhaps, if more voices called
+for your presence, you could grasp this realm fully, to give it the 
+#aspect# it needs. 
+
+Thousands of voices, tens of thousands. A cult to beseech you. Not all 
+mortals will be as understanding as #agent#, or as faithful, or even 
+willing, but that matters not, as long as you can hear their voices. 
+
+Through strength, deceit or persuasion, your agents should recruit
+cultists to clamor your name. 
+
+/text-align:center/You have a new *plan* to take over this world.
+`);

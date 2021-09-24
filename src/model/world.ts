@@ -199,4 +199,8 @@ export class World {
     public addSaga(saga: ActiveSaga) {
         this._sagas.add(saga);
     }
+
+    public addPlan(plan: Plan) {
+        this._plans.push(plan);
+    }
 }
