@@ -66,8 +66,8 @@ export function Navbar(props: {
     return <div className="gui-navbar">
         <button className="link" onClick={() => left("locations")}>Locations</button>
         <button className="link" onClick={() => left("agents")}>Agents</button>
+        <button className="link" onClick={() => left("cult")}>Cult</button>
         {world.plans.length ? <button className="link" onClick={() => left("plans")}>Plans</button> : undefined}
-        {false ? <button className="link" onClick={() => left("cult")}>Cult</button> : undefined}
         {false ? <button className="link" onClick={() => left("rituals")}>Rituals</button> : undefined}
         {false ? <button className="link" onClick={() => left("artifacts")}>Artifacts</button> : undefined}
         {/* float:right appear in reverse order */}

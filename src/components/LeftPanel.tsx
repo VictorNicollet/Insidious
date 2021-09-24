@@ -4,6 +4,7 @@ import { useState, useMemo, useRef, useEffect, StateUpdater, useCallback } from 
 import { AgentList } from './AgentList';
 import { useWorld } from './Context';
 import { PlanList } from './PlanList';
+import { CultManager } from "./CultManager";
 
 export type LeftPanelShown = 
     "locations" | 
@@ -47,33 +48,41 @@ export function useLeftPanel(): LeftPanel {
 
             const height = props.screenH - MARGINTOP - MARGINBOT;
                         
+            const [width, inner] = 
+                shown == "locations" 
+                    ? [340, <LocationList 
+                        locations={world.locations}
+                        height={height} 
+                        close={close} />]
+                    : shown == "agents" 
+                    ? [340, <AgentList 
+                        agents={world.agents}
+                        height={height} 
+                        close={close} />]
+                    : shown == "plans"
+                    ? [340, <PlanList 
+                        plans={world.plans}
+                        height={height}
+                        close={close} />]
+                    : shown == "cult"
+                    ? [500, <CultManager 
+                        height={height}
+                        close={close} />]
+                    : shown == "rituals"
+                    ? [340, undefined]
+                    : shown == "artifacts"
+                    ? [340, undefined]
+                    : [340, undefined];
+
             return <div style={{
                 position: "fixed",
                 left: 10,
                 top: MARGINTOP,
                 bottom: MARGINBOT,
-                width: 340,
+                width,
                 zIndex: 100
             }}>
-                {shown == "locations" 
-                    ? <LocationList locations={world.locations}
-                                    height={height} 
-                                    close={close} />
-                    : shown == "agents" 
-                    ? <AgentList agents={world.agents}
-                                 height={height} 
-                                 close={close} />
-                    : shown == "plans"
-                    ? <PlanList plans={world.plans}
-                                height={height}
-                                close={close} />
-                    : shown == "cult"
-                    ? undefined
-                    : shown == "rituals"
-                    ? undefined
-                    : shown == "artifacts"
-                    ? undefined
-                    : undefined}
+                {inner}
             </div>
         }) as LeftPanel;
 

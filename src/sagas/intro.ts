@@ -4,7 +4,7 @@ import type { World } from "../model/world";
 import * as Intro from "../text/intro"
 import type { Agent } from "../model/agents";
 import type { Location } from "../model/locations";
-import { createPlan, Plan, PlanStep } from "model/plans";
+import { createPlan, PlanStep } from "model/plans";
 
 export function saga(agent: Agent, loc: Location) { return new ActiveSaga(w => intro(w, agent, loc)); }
 
