@@ -1,4 +1,4 @@
-import { RandomBag } from "model/generation/randombag";
+import { RandomBag } from "../model/generation/randombag";
 import { TxtFormat } from './format';
 
 const custom = new RandomBag<TxtFormat>([

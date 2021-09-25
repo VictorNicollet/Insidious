@@ -12,8 +12,8 @@ import { useWorld } from './Context';
 import { WorldView } from '../view/world';
 import { recruitOrder, travelOrder, gatherInfoOrder } from '../model/neworder';
 import { zero } from '../model/resources';
-import { toHTML } from 'text/format';
-import { acks } from 'text/acks'
+import { toHTML } from '../text/format';
+import { acks } from '../text/acks'
 
 function DescribeOrder(props: {order: Order}): JSX.Element {
     const world = useWorld();
