@@ -97,12 +97,13 @@ export function MapCell(props: {
                            (props.show === false ? " hide" : "")}  
             style={{left:props.left, top:props.top}}>
         {path}
-        {props.portraits.map((p,i) => 
-            <div key={p} className={"portrait " + p}/>)}
-        {location && <span className="name">
-                        <AgentCount count={location.agents.length}/>
-                        {location.name.short}
-                     </span>}
+        {location 
+            ? <span className="name">
+                <AgentCount count={location.agents.length}/>
+                {location.name.short}
+            </span>
+            : props.portraits.map((p,i) => 
+                <div key={p} className={"portrait " + p}/>)}
     </div>
 }
 
