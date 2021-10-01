@@ -100,3 +100,17 @@ test("double(minimum)", () => {
         multiplier: 1
     })
 })
+
+test("dedup", () => 
+    expect(E.dedup([
+        { why: "A", contrib: 1 },
+        { why: "C", contrib: 3 },
+        { why: "B", contrib: 2 },
+        { why: "A", contrib: 4 },
+        { why: "C", contrib: 5 },
+        { why: "A", contrib: 6 }
+    ])).toEqual([
+        { why: "A", contrib: 1 + 4 + 6 },
+        { why: "C", contrib: 3 + 5 },
+        { why: "B", contrib: 2 }
+    ]))
