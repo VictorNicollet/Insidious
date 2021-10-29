@@ -220,6 +220,30 @@
     transform: translateY(-50%);
 }
 
+/* .gui-form */
+
+.gui-form label {
+    display: block;
+    margin: 16px 0;
+    font-weight: bold;
+}
+
+.gui-form label input {
+    display: block;
+    margin-top: 4px;
+    width: 100%;
+    border: solid 1px #DCC;
+    border-radius: 4px;
+    background: #40383838;
+    color: #DCC;
+    padding: 4px 8px;
+    font-size: 16px;
+}
+
+.gui-form .gui-form-buttons {
+    text-align: right;
+}
+
 /* .gui-agents */
 
 ul.gui-agents {

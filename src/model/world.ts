@@ -14,6 +14,7 @@ import { Population } from './population';
 import { WorldFlags, worldFlags } from './flags';
 import { Plan } from './plans';
 import { God, sample } from './god'
+import { Cult } from "./cult";
 
 export class World {
     private readonly _locations: readonly Location[]
@@ -21,6 +22,7 @@ export class World {
     private readonly _plans : Plan[]
     private readonly _listeners : (() => void)[]
     private readonly _sagas : Sagas
+    private _cult : Cult|undefined
     public readonly population : Population
     public readonly seenLocations : Location[]
     public readonly resources: Resources
@@ -97,7 +99,13 @@ export class World {
         this._agents[idx] = this._agents[this._agents.length - 1];
         this._agents.pop();
     }
+
+    public createCult(name: string) {
+        this._cult = new Cult(this, name);
+    }
  
+    public get cult() : Cult|undefined { return this._cult; }
+
     public agents() : readonly Agent[] { return this._agents; }
 
     public plans() : readonly Plan[] { return this._plans; }

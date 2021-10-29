@@ -9,12 +9,14 @@ import type { Routes } from '../model/routes'
 import { Message } from '../model/message'
 import { PlanView, plan } from './plans'
 import { IdxArray, index } from '../idindexed'
+import { CultView, cult } from "./cult"
 
 export type WorldView = {
     readonly locations: readonly LocationView[]
     readonly agents: IdxArray<AgentView>
     readonly plans: IdxArray<PlanView>
     readonly map: MapView
+    readonly cult: CultView|undefined
     readonly initial: Cell
     readonly resources: ResourcesOf<{ current: number, daily: Explained }>
     readonly routes : Routes
@@ -55,6 +57,7 @@ export function world(w: World): WorldView {
         locations: locations.map(location),
         agents,
         map: map(w, w.map),
+        cult: cult(w),
         initial: locations[0].cell,
         routes: w.routes(),
         plans: index(w.plans().map(plan)),
