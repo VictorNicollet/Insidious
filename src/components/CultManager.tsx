@@ -3,6 +3,7 @@ import { CultView } from "../view/cult";
 import { WorldView } from "../view/world";
 import { create } from "../text/cult"
 import * as B from "./Box"
+import * as Cheats from "../cheats"
 import { useWorld } from "./Context"
 import { useState } from "preact/hooks";
 
@@ -61,6 +62,7 @@ export function CultManager(props: {
 
     return <B.Box title={title} decorate={true} close={props.close}>
         {cult ? <Cult cult={cult}/> : 
-         w.agents.length < 3 ? <NeedAgents/> : <CreateCult/>}
+         (Cheats.createCult || w.agents.length >= 3) ? <CreateCult/> : 
+         <NeedAgents/>}
     </B.Box>
 }
