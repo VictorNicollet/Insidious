@@ -1,7 +1,9 @@
 import { h, JSX, Fragment } from "preact"
+import { create } from "../text/cult"
 import * as B from "./Box"
 import { useWorld } from "./Context"
 
+// Display 'you need at least N agents to start a cult'
 function NeedAgents() {
        
     const w = useWorld();
@@ -19,16 +21,21 @@ function NeedAgents() {
     </div>
 }
 
+// Display cult creation modal.
+function CreateCult() {
+    const w = useWorld();
+    return <div>
+        {create.toHTML({aspect: w.world.god.aspect})}
+    </div>
+}
+
 export function CultManager(props: {
     height: number
     close: () => void
 }) {
     const w = useWorld();
 
-
     return <B.Box title={"Cult of " + w.world.god.name} decorate={true} close={props.close}>
-
-        <NeedAgents/> 
-
+        {w.agents.length < 3 ? <NeedAgents/> : <CreateCult/>}
     </B.Box>
 }
