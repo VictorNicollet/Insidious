@@ -1,0 +1,2 @@
+export type Sounds = {"music01":HTMLAudioElement,"music02":HTMLAudioElement,"music03":HTMLAudioElement}
+export function sound(url: () => string): Sounds { return {"music01":new Audio(url()),"music02":new Audio(url()),"music03":new Audio(url())}}

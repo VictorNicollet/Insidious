@@ -1,4 +1,7 @@
 import { style } from "./style"
+import { Sounds, sound } from "./sound"
+
+let loadedSounds : Sounds|undefined = undefined
 
 // Unpacks the style and assets packed with build.ts
 export async function loadAndUnpack() {
@@ -12,8 +15,7 @@ export async function loadAndUnpack() {
     let offset = (count + 1) * 4;
     let i = 0;
 
-    const css = style(mime => {
-
+    function url(mime: string): string {
         const blob = new Blob(
             [ new Uint8Array(buffer, offset, sizes[i]) ],
             {type: mime})
@@ -21,10 +23,18 @@ export async function loadAndUnpack() {
         offset += sizes[i];
         i++;
 
-        return JSON.stringify(URL.createObjectURL(blob));
-    });
+        return URL.createObjectURL(blob);
+    }
+
+    const css = style((mime: string) => JSON.stringify(url(mime)));
 
     const styleElement = document.createElement("style");
     styleElement.appendChild(document.createTextNode(css));
     document.head.appendChild(styleElement);
+
+    loadedSounds = sound(() => url("audio/mpeg"));
+}
+
+export function withSound(callback: (sounds: Sounds) => void) {
+    if (loadedSounds) callback(loadedSounds)
 }

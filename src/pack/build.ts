@@ -3,10 +3,12 @@ import * as fs from "fs"
 import * as sharp from "sharp"
 import * as BufferBuilder from "buffer-builder"
 
+const replacements : Promise<Buffer>[] = []
+
+// The styles !
+
 const rawStyle = fs.readFileSync("./src/pack/style.css");
 const style = rawStyle.toString('utf-8').replace(/\s+/g, " ");
-
-const replacements : Promise<Buffer>[] = []
 
 const styleWithHoles = style.replace(/url\([^)]*\)/g, function(url) {
     const [, sx, sy, sw, sh, sscale, simg] = 
@@ -60,7 +62,46 @@ fs.writeFileSync("./src/pack/style.ts",
     "return " + JSON.stringify(smallStyleWithHoles) + ".replace(/##(.*?)##/g, match => 'url(' + url(match[1]) + ')')" +
     "}");
 
-async function finish(style: string) {
+// The sounds !
+
+(function(values: { [name: string]: string }) {
+
+    const list : string[] = [];
+    for (let name in values) {
+        list.push(name);
+
+        const path = values[name];
+        
+        async function theBuffer() {
+            const buffer = fs.readFileSync(path);
+            console.log("%s KB : %s", (buffer.length / 1024).toFixed(), path);
+            return buffer;
+        }
+
+        replacements.push(theBuffer())
+    }
+
+    fs.writeFileSync("./src/pack/sound.ts", 
+        "export type Sounds = {" + 
+            list.map(function(key) { 
+                return JSON.stringify(key) + ":HTMLAudioElement"
+            }).join(",") +
+        "}\n" + 
+        "export function sound(url: () => string): Sounds { return {" + 
+            list.map(function(key) {
+                return JSON.stringify(key) + ":new Audio(url())"
+            }).join(",") + 
+        "}}")
+
+})({
+    music01: "./BigAssets/PurplePlanet/Respawn.mp3",
+    music02: "./BigAssets/PurplePlanet/Expectancy.mp3",
+    music03: "./BigAssets/PurplePlanet/TheChase.mp3"
+});
+
+// Generate the asset pack.
+
+async function finish() {
     
     const blobs : Buffer[] = [];
     for (let promise of replacements) blobs.push(await promise);
