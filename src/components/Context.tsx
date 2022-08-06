@@ -16,7 +16,7 @@ type Context = {
     world: WorldView
 } & Selectors
 
-const context = createContext<Context>(undefined as Context)
+const context = createContext<Context>(undefined as unknown as Context)
 
 // Instantiate the context, so that all child components can access
 // the provided values.
