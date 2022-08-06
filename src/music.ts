@@ -13,13 +13,28 @@ export function playMusic() {
     });
 
     let current = -1;
-    function playNext() {
+    async function playNext() {
         current = (current + 1) % tracks.length;
-        tracks[current].play();
+        try
+        {
+            await tracks[current].play();
+            return true;
+        }
+        catch 
+        {
+            return false;
+        }
     }
 
     for (const track of tracks)
         track.addEventListener("ended", playNext);
 
-    playNext();
+    // Some browsers prevent sounds from playing until the 
+    // first interaction with the page, so react to clicks
+    // instead. 
+    async function tryStartPlay() {
+        if (!await playNext()) setTimeout(tryStartPlay, 1000);
+    }
+
+    tryStartPlay();
 }
