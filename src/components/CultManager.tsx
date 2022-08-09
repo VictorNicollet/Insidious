@@ -38,6 +38,7 @@ function defaultCultName(w: WorldView) {
 function CreateCult() {
     const w = useWorld();
     const [name, setName] = useState(defaultCultName(w));
+    const valid = /[^ ]/.test(name);
     return <div>
         {create.toHTML({aspect: w.world.god.aspect})}
         <div className="gui-form">
@@ -46,7 +47,10 @@ function CreateCult() {
                 <input value={name} onChange={e => setName(e.currentTarget.value)}/>
             </label>
             <div className="gui-form-buttons">
-                <button className="red">Found a cult</button>
+                <button className="red" disabled={!valid} 
+                        onClick={() => valid && w.world.createCult(name)}>
+                    Found a cult
+                </button>
             </div>
         </div>
     </div>

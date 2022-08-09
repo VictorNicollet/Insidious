@@ -185,6 +185,7 @@ export class World {
     public createCult(name: string) {
         this._cult = new Cult(name);
         (this._cult as {world: World}).world = this;
+        this.refresh();
     }
  
     public get cult() : Cult|undefined { return this._cult; }
