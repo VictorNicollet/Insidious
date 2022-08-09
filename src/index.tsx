@@ -3,7 +3,7 @@ import { h, render } from "preact"
 import { Screen } from './components/Screen';
 import { loadAndUnpack } from './pack/unpack';
 import { playMusic } from './music';
-import { loadFromLocalStore } from 'localStoreSave';
+import { loadFromLocalStore } from './localStoreSave';
 import { World } from './model/world';
 
 async function loadAndRun() {

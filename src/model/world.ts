@@ -16,7 +16,7 @@ import { pack_plan, Plan } from './plans';
 import { God, pack_god, sample } from './god'
 import { Cult, pack_cult } from "./cult";
 import * as S from "./serialize";
-import { saveToLocalStore } from "localStoreSave";
+import { saveToLocalStore } from "../localStoreSave";
 
 export class World {
     
