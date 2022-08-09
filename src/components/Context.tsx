@@ -10,6 +10,7 @@ type Selectors = {
     location: (location: LocationView) => void
     agent: (agent: AgentView) => void
     plan: (plan: PlanView) => void
+    cult: (page: "recruitment") => void
 }
 
 type Context = {
@@ -34,5 +35,5 @@ export function useWorld(): WorldView {
 // Access the selectors from the context
 export function useSelectors(): Selectors {
     const sel = useContext(context);
-    return {location: sel.location, agent: sel.agent, plan: sel.plan};
+    return {location: sel.location, agent: sel.agent, plan: sel.plan, cult: sel.cult};
 }

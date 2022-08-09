@@ -599,6 +599,25 @@ button.go.right:disabled {
     top: 57px;
 }
 
+.tooltip.right {
+    left: auto;
+    right: 0;
+}
+
+.tooltip.right > div {
+    left: 41px;
+    top: -7px;
+    width: 400px;
+}
+
+.tooltip.right > div::after {
+    border-left: none;
+    border-right: 10px solid rgba(0, 0,0, 0.7);
+    left: -10px;
+    right: auto;
+    top: 21px;
+}
+
 .tooltip p {
     margin: 0;
 }
@@ -1143,3 +1162,32 @@ button.red:disabled, button.red:disabled:hover {
     border-image: url("../../BigAssets/Citadel RPG GUI/Sliced/Standalone Content Buttons/small_button_d.png") 16 8 fill / 16px 8px;
 }
 
+/* .cult */
+
+.gui-cult-policies {
+    padding: 0;
+    margin: 0;
+}
+
+.gui-cult-policies li {
+    list-style-type: none;
+    position: relative;
+    height: 50px;
+    padding: 4px 4px 4px 52px;
+    cursor: pointer;
+}
+
+.gui-cult-policies li:hover {
+    background: linear-gradient(90deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 35%, rgba(255,255,255,0) 100%);
+}
+
+ul.gui-cult-policies .current {
+    height: 18px;
+}
+
+ul.gui-cult-policies .policy {
+    font-size: 14px;
+    color: #877;
+    margin-top: 4px;
+    display: block;
+}

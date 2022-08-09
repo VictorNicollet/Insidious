@@ -47,6 +47,8 @@ export function RightPanel(props: RightPanelProps): JSX.Element {
                 close={close} /> :
         selected.selected === "plan" ? 
             <div>Plan</div> : 
+        selected.selected === "cult" ?
+            <div>{selected.page}</div> :
         never(selected)}
     </div>;
 }

@@ -23,6 +23,9 @@ export type Selection = {
     selected: "plan"
     id: number
 } | {
+    selected: "cult"
+    page: "recruitment"
+} | {
     selected: "none"
 }
 
@@ -77,11 +80,16 @@ export function Screen(props: { world: World }): JSX.Element {
         setSelected({selected: "plan", id: plan.id})
     }, [setSelected])
 
+    const selectCult = useCallback((page: "recruitment") => {
+        setSelected({selected: "cult", page })
+    }, [setSelected])
+
     return <div>
         <Context world={world} 
                  agent={selectAgent} 
                  location={selectLocation} 
-                 plan={selectPlan}>
+                 plan={selectPlan}
+                 cult={selectCult}>
             <MapScroller 
                 screenH={screenH}
                 screenW={screenW}

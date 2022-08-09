@@ -1,15 +1,46 @@
-import { h, JSX, Fragment } from "preact"
+import { h, Fragment } from "preact"
 import { CultView } from "../view/cult";
 import { WorldView } from "../view/world";
 import { create } from "../text/cult"
 import * as B from "./Box"
 import * as Cheats from "../cheats"
-import { useWorld } from "./Context"
+import { useSelectors, useWorld } from "./Context"
 import { useState } from "preact/hooks";
+import { Tooltip } from "./Tooltip";
+import { TxtFormat } from "../text/format";
+
+type CultPolicies = "recruitment"
+
+function CultPolicy(props: {
+    policy: CultPolicies
+    name: string
+    current: string
+    tip: TxtFormat
+}) {
+    
+    const selectors = useSelectors();
+    const [tip, setTip] = useState(false);
+    
+    return <li onClick={() => selectors.cult("recruitment")}
+        onMouseEnter={() => setTip(true)}
+        onMouseLeave={() => setTip(false)}>
+        {tip && <Tooltip pos={"right"} tip={props.tip} ctx={{}} inserts={[]}/>}
+        <span className="policy">{props.name}</span>
+        <span className="current">{props.current}</span>
+    </li>
+}
 
 // The actual cult display
 function Cult(props: {cult: CultView}) {
-    return <Fragment></Fragment>;
+    
+    return <div>
+        <ul className="gui-cult-policies">
+            <CultPolicy policy="recruitment"
+                name="Recruitment Policy"
+                tip="The *recruitment policy* determines how new members are allowed to join the cult."
+                current={props.cult.recruitment.name}/>
+        </ul>
+    </div>;
 }
 
 // Display 'you need at least N agents to start a cult'
