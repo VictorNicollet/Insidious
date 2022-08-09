@@ -1138,3 +1138,8 @@ button.red {
 button.red:hover {
     border-image-source: url("../../BigAssets/Citadel RPG GUI/Sliced/Standalone Content Buttons/small_button_h.png");
 }
+
+button.red:disabled, button.red:disabled:hover {
+    border-image: url("../../BigAssets/Citadel RPG GUI/Sliced/Standalone Content Buttons/small_button_d.png") 16 8 fill / 16px 8px;
+}
+

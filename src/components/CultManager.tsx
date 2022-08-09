@@ -44,7 +44,7 @@ function CreateCult() {
         <div className="gui-form">
             <label>
                 Cult name 
-                <input value={name} onChange={e => setName(e.currentTarget.value)}/>
+                <input value={name} onInput={e => setName(e.currentTarget.value)}/>
             </label>
             <div className="gui-form-buttons">
                 <button className="red" disabled={!valid} 
