@@ -1,4 +1,5 @@
 import type { Location } from './locations'
+import { array, boolean, enm, float, int7, obj, option, Pack, string } from './serialize'
 import type { World } from './world'
 
 // A plan, of the nefarious kind
@@ -40,6 +41,13 @@ export type PlanRequirementValue =
     | "touch"
       // Amount of the "gold" resource
     | "gold"
+
+const pack_planRequirementValue = enm<PlanRequirementValue>([
+    "agents",
+    "cult-proportion",
+    "touch",
+    "gold"
+]);
 
 // The effect of a plan step (in addition to advancing to the next stage).
 // Not all plan steps have an effect. 
@@ -89,4 +97,25 @@ export function createPlan(label: string, steps: readonly PlanStep[]) : Plan {
         steps,
         step: 0
     }
+}
+
+export function pack_plan(pack_loc: Pack<Location>) : Pack<Plan> {
+    return obj<Plan>({
+        id: int7,
+        label: string,
+        step: int7,
+        steps: array(obj<PlanStep>({
+            kind: enm<"requirements">(["requirements"]),
+            reqs: array(obj<PlanRequirement>({
+                current: int7,
+                location: option(pack_loc),
+                satisfied: boolean,
+                target: float,
+                what: pack_planRequirementValue
+            })),
+            effect: option(obj<PlanStepEffect>({
+                kind: enm<"win">(["win"])
+            }))
+        }))
+    });
 }

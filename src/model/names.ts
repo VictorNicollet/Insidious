@@ -1,3 +1,5 @@
+import { Pack, obj, string, option } from './serialize'
+
 export type LocationName = {
     // 'Paris'
     readonly short : string
@@ -7,6 +9,12 @@ export type LocationName = {
     readonly adjective : string
 }
 
+export const pack_locationName : Pack<LocationName> = obj<LocationName>({
+    short: string,
+    long: string,
+    adjective: string,
+})
+
 export type PersonName = {
     // "John H. Smith" 
     readonly full : string
@@ -15,3 +23,9 @@ export type PersonName = {
     // "Earl Smith"
     readonly short : string
 }
+
+export const pack_personName : Pack<PersonName> = obj<PersonName>({
+    full: string,
+    title: option(string),
+    short: string,
+})

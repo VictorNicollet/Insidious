@@ -1,4 +1,5 @@
 import { notUndefined } from '../notundefined';
+import { array, float, obj, option, Pack, string } from './serialize';
 
 // An explainable numeric value.
 export type Explained = {
@@ -48,3 +49,14 @@ export function dedup(reasons: readonly Reason[]): readonly Reason[] {
     for (let why in byWhy) returned.push({ why, contrib: byWhy[why] })
     return returned;
 }
+
+export const pack_reason : Pack<Reason> = obj<Reason>({
+    why: string,
+    contrib: float
+})
+
+export const pack_explained : Pack<Explained> = obj<Explained>({
+    value: float,
+    multiplier: option(float),
+    reasons: array(pack_reason)
+})

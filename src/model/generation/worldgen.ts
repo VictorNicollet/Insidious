@@ -250,7 +250,7 @@ function initialOccupationAndLevels(
 
 export function generate() : World {
     
-    const map = new Map.WorldMap(grid32);
+    const map = Map.WorldMap.create(grid32);
 
     // Generate all future locations on the map
     const futureLocations : { population: number, cell: Cell }[] = [];
@@ -268,7 +268,7 @@ export function generate() : World {
     generateTiles(map, futureLocations);
 
     // Create the world with the initial locations
-    const world = new World(futureLocations, map);
+    const world = World.create(futureLocations, map);
 
     // Generate an agent in the last location
     const locs = world.locations();

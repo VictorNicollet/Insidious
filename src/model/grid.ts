@@ -1,3 +1,5 @@
+import { Pack, build, int7 } from './serialize'
+
 // Number of cells on each side of the grid.
 export const side = 32;
 
@@ -103,3 +105,7 @@ export class Grid {
 }
 
 export const grid32 = new Grid(32);
+
+export const pack_grid : Pack<Grid> = build<Grid>()
+    .pass('side', int7)
+    .call(side => side == 32 ? grid32 : new Grid(side));

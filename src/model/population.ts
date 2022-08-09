@@ -3,6 +3,7 @@
 import { Location, ByLocationKind } from './locations'
 import { ByOccupation, presenceByLocationKind, occupations } from './occupation'
 import { objmap } from '../objmap'
+import { build, float32array, option } from './serialize'
 
 // WEALTH ====================================================================
 
@@ -83,25 +84,30 @@ const wealthByCaste = new Float32Array([
 // both count and properties.
 export class Population {
     
-    // The number of people in each caste/wealth segment, for all locations
-    private readonly count : Float32Array
-    
-    // The optimism level (from -1 to 1) for each segment.
-    private readonly optimism : Float32Array
-    
-    constructor(private readonly locations: readonly Location[]) {
-        const count = locations.length * stride;
-        this.count = new Float32Array(count);
-        this.optimism = new Float32Array(count);
+    constructor(
+        // The number of people in each caste/wealth segment, for all locations
+        public readonly count : Float32Array,
+        // The optimism level (from -1 to 1) for each segment.
+        public readonly optimism : Float32Array,
+        // All locations in the world, used to update the location's population fields        
+        public readonly locations: readonly Location[])
+    {}
 
-        for (let seg = 0; seg < count; ++seg) {
-            const location = this.locations[Math.floor(seg/stride)];
+    static create(locations: readonly Location[]) {
+        const nb = locations.length * stride;
+        const count = new Float32Array(nb);
+        const optimism = new Float32Array(nb);
+
+        for (let seg = 0; seg < nb; ++seg) {
+            const location = locations[Math.floor(seg/stride)];
             const s = seg % stride;
             const caste = s - (s % 4);
             const casteMult  = casteByLocationKind[location.kind][caste];
             const wealthMult = wealthByCaste[s];
-            this.count[seg] = location.population * casteMult * wealthMult;
+            count[seg] = location.population * casteMult * wealthMult;
         }
+
+        return new Population(count, optimism, locations);
     }
 
     private print() {
@@ -163,4 +169,12 @@ export class Population {
             }
         }
     }
+}
+
+export function pack_population(locations: readonly Location[]) {
+    return build<Population>()
+        .pass("count", float32array)
+        .pass("optimism", float32array)
+        .call((count, optimism) => 
+            new Population(count, optimism, locations));    
 }

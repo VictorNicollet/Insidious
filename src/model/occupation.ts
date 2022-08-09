@@ -2,6 +2,7 @@
 
 import { ByLocationKind } from './locations';
 import { Resources, zero } from './resources';
+import { enm, Pack, obj } from './serialize';
 
 // (and levels) in more than one occupation.
 export type Occupation = keyof(ByOccupation<number>)
@@ -137,3 +138,18 @@ export const presenceByLocationKind : ByLocationKind<ByOccupation<number>> = {
         Noble: 0
     }
 }
+
+export function pack_byOccupation<T>(pack: Pack<T>): Pack<ByOccupation<T>> {
+    return obj<ByOccupation<T>>({
+        Merchant: pack,
+        Farmer: pack,
+        Smith: pack,
+        Hunter: pack,
+        Mercenary: pack,
+        Criminal: pack,
+        Mage: pack, 
+        Noble: pack
+    })
+}
+
+export const pack_occupation = enm<Occupation>(occupations);

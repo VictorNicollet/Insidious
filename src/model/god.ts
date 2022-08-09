@@ -1,3 +1,5 @@
+import { obj, Pack, string } from "./serialize"
+
 export type God = {
     readonly name: string
     readonly aspect: string
@@ -23,3 +25,16 @@ export const sample : God = {
     one: "one",
     title: "lord"
 }
+
+export const pack_god : Pack<God> = obj<God>({
+    name: string,
+    aspect: string,
+    color: string,
+    nature: string,
+    epithetA: string,
+    epithetB: string,
+    epithetC: string,
+    verb: string,
+    one: string,
+    title: string
+});

@@ -12,6 +12,7 @@
     "noEmitOnError": true,
     "importHelpers": true,
     "emitDecoratorMetadata": true,
+    "downlevelIteration": true,
     "experimentalDecorators": true
   }
 }

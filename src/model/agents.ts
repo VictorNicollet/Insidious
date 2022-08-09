@@ -1,29 +1,51 @@
 import type { World } from "./world"
-import type { PersonName } from './names'
+import { pack_personName, PersonName } from './names'
 import type { Location } from "./locations"
 import type { Cell } from './grid'
-import { Occupation, ByOccupation, lvlxp } from './occupation'
+import { Occupation, ByOccupation, lvlxp, pack_occupation, pack_byOccupation } from './occupation'
 import { Stats, computeStats } from './stats'
-import { Order, done } from "./orders"
+import { Order, done, pack_order } from "./orders"
 import { objmap } from '../objmap'
+import { build, int7, option, Pack } from "./serialize"
 
 export class Agent {
+    // Cached stats computed from the agent's other properties
     public stats : Stats
-    public order : Order
-    public exposure : number
-    private experience : ByOccupation<number>
+    public readonly world : World
     constructor(
-        public readonly world : World,
         public name: PersonName,
         public location: Location|undefined,
         public cell: Cell,
         public occupation: Occupation,
-        public levels: ByOccupation<number>
+        public levels: ByOccupation<number>,
+        public experience : ByOccupation<number>,
+        public exposure: number,
+        public order : Order,
     ) {
         this.stats = computeStats(this);
-        this.order = done;
-        this.exposure = 0;
-        this.experience = objmap(this.levels, lvl => lvlxp[lvl])
+
+        // We cheat by injecting the world reference later, when
+        // this instances is added to the world
+        // (because Locations and World are mutually recursive)
+        this.world = undefined as any
+    }
+
+    static create(
+        name: PersonName,
+        location: Location|undefined,
+        cell: Cell,
+        occupation: Occupation,
+        levels: ByOccupation<number>): Agent
+    {
+        return new Agent(
+            name,
+            location,
+            cell, 
+            occupation,
+            levels,
+            objmap(levels, lvl => lvlxp[lvl]),
+            0,
+            done);
     }
 
     // Add experience to the specified occupation of this agent.
@@ -72,4 +94,18 @@ export class Agent {
         }
         return accumulated < 10;
     } 
+}
+
+export function pack_agent(loc: Pack<Location>) : Pack<Agent> {
+    return build<Agent>()
+        .pass("name", pack_personName)
+        .pass("cell", int7)
+        .pass("location", option(loc))
+        .pass("occupation", pack_occupation)
+        .pass("levels", pack_byOccupation(int7))
+        .pass("experience", pack_byOccupation(int7))
+        .pass("exposure", int7)
+        .pass("order", pack_order(loc))
+        .call((name, cell, location, occupation, levels, experience, exposure, order) => 
+            new Agent(name, location, cell, occupation, levels, experience, exposure, order));
 }

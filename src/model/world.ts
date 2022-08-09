@@ -1,61 +1,143 @@
-import { Location } from "./locations"
-import { Agent } from "./agents"
+import { Location, pack_location, pack_locationRef } from "./locations"
+import { Agent, pack_agent } from "./agents"
 import type { PersonName } from './names';
-import type { WorldMap } from './map';
+import { pack_worldMap, WorldMap } from './map';
 import type { Cell } from './grid';
 import type { ByOccupation, Occupation } from './occupation';
-import type { Resources, ResourcesOf } from './resources';
+import { pack_resourcesOf, Resources, ResourcesOf } from './resources';
 import { countResourceDelta, executeOrder } from './execute';
 import { Explained, Reason, explain, dedup } from './explainable';
 import { Routes } from './routes';
 import type { Message } from './message';
 import { Sagas, ActiveSaga } from './saga';
-import { Population } from './population';
-import { WorldFlags, worldFlags } from './flags';
-import { Plan } from './plans';
-import { God, sample } from './god'
-import { Cult } from "./cult";
+import { pack_population, Population } from './population';
+import { pack_worldFlags, WorldFlags, worldFlags } from './flags';
+import { pack_plan, Plan } from './plans';
+import { God, pack_god, sample } from './god'
+import { Cult, pack_cult } from "./cult";
+import * as S from "./serialize";
+import { saveToLocalStore } from "localStoreSave";
 
 export class World {
-    private readonly _locations: readonly Location[]
-    private readonly _agents : Agent[]
-    private readonly _plans : Plan[]
+    
     private readonly _listeners : (() => void)[]
-    private readonly _sagas : Sagas
-    private _cult : Cult|undefined
-    public readonly population : Population
-    public readonly seenLocations : Location[]
-    public readonly resources: Resources
-    public readonly flags: WorldFlags
-    public readonly god: God
-
-    // Current turn number
-    private turn : number
 
     // Pathfinding cache, cleared every time map visibility changes.
     private _routes : Routes|undefined
 
-    // A *stack* of mssages to be displayed on the next render.
-    private readonly messages : Message[]
+
+    private readonly _sagas : Sagas
 
     constructor(
-        locations : {population:number,cell:Cell}[],
-        public readonly map : WorldMap
-    ) {
-        this._locations = locations.map((l, id) => 
-            new Location(id, this, l.cell, l.population));
-        this._agents = [];
+        private readonly _locations: readonly Location[],
+        public readonly seenLocations : Location[],
+        private readonly _agents : Agent[],
+        private readonly _plans : Plan[],
+        private _cult : Cult|undefined,
+        public readonly population : Population,
+        public readonly resources: Resources,
+        public readonly flags: WorldFlags,
+        public readonly god: God,
+
+        // Current turn number
+        private turn : number,
+
+        // A *stack* of mssages to be displayed on the next render.
+        private readonly messages : Message[],
+        public readonly map : WorldMap)
+    {
+        for (const location of this._locations) 
+            (location as {world: World}).world = this;
+
+        for (const agent of this._agents)
+            (agent as {world: World}).world = this;
+
         this._listeners = [];
-        this._plans = [];
-        this.seenLocations = [];
-        this.messages = [];
-        this._routes = undefined
-        this.resources = { gold: 0, touch: 0 }
+
         this._sagas = new Sagas(this);
-        this.population = new Population(this._locations);
-        this.turn = 0
-        this.flags = worldFlags
-        this.god = sample
+
+        this._routes = undefined
+
+        if (this._cult)
+            (this._cult as {world: World}).world = this;
+    }
+
+    static create(
+        locations : {population:number,cell:Cell}[],
+        map : WorldMap
+    ) {
+        const locs = locations.map((l, id) => 
+            Location.create(map.cells[l.cell], id, l.cell, l.population));
+
+        return new World(
+            locs,
+            [],
+            [],
+            [],
+            undefined,
+            Population.create(locs),
+            { gold: 0, touch: 0 },
+            worldFlags,
+            sample,
+            0,
+            [],
+            map);
+    }
+
+    // Deserialize from a binary save produced by save()
+    static load(reader: S.Reader): World {
+        
+        // Manual deserialization (because of dependencies between fields),
+        // the order here should match the one in save()
+
+        const map = pack_worldMap[1](reader);
+        const resources = pack_resourcesOf(S.float)[1](reader);
+        const flags = pack_worldFlags[1](reader);
+        const god = pack_god[1](reader);
+        const turn = S.int7[1](reader);
+        const locations = S.array(pack_location)[1](reader);
+
+        // Everything below needs to resolve locations based on their id.
+        const pack_loc = pack_locationRef(locations);
+
+        const agents = S.rwarray(pack_agent(pack_loc))[1](reader);
+        const plans = S.rwarray(pack_plan(pack_loc))[1](reader);
+        const seen = S.rwarray(pack_loc)[1](reader);
+        const cult = S.option(pack_cult)[1](reader);
+        const population = pack_population(locations)[1](reader);
+
+        return new World(
+            locations,
+            seen,
+            agents,
+            plans,
+            cult,
+            population,
+            resources,
+            flags,
+            god,
+            turn,
+            [],
+            map);
+    }
+
+    public save(writer: S.Writer) {
+
+        pack_worldMap[0](writer, this.map);
+        pack_resourcesOf(S.float)[0](writer, this.resources);
+        pack_worldFlags[0](writer, this.flags);
+        pack_god[0](writer, this.god);
+        S.int7[0](writer, this.turn);
+        S.array(pack_location)[0](writer, this._locations);
+
+        // Everything below needs to resolve locations based on their id.
+        const pack_loc = pack_locationRef(this._locations);
+
+        S.rwarray(pack_agent(pack_loc))[0](writer, this._agents);
+        S.rwarray(pack_plan(pack_loc))[0](writer, this._plans);
+        S.array(pack_loc)[0](writer, this.seenLocations);
+        S.option(pack_cult)[0](writer, this._cult);
+        pack_population(this._locations)[0](writer, this.population);
     }
 
     // Add a new message, to be displayed on the next render.
@@ -85,12 +167,12 @@ export class World {
         occupation: Occupation, 
         levels: ByOccupation<number>) : Agent
     {
-        const person = new Agent(
-            this, name, location, location.cell, occupation, levels);
-        this._agents.push(person);
+        const agent = Agent.create(name, location, location.cell, occupation, levels);
+        (agent as {world: World}).world = this;
+        this._agents.push(agent);
         this.visitLocation(location);
         this.map.addViewer(location.cell);
-        return person;
+        return agent;
     }
 
     public removeAgent(agent: Agent) {
@@ -101,7 +183,8 @@ export class World {
     }
 
     public createCult(name: string) {
-        this._cult = new Cult(this, name);
+        this._cult = new Cult(name);
+        (this._cult as {world: World}).world = this;
     }
  
     public get cult() : Cult|undefined { return this._cult; }
@@ -196,8 +279,12 @@ export class World {
         this._sagas.run();
 
         // Increment turn number and execute weekly changes
-        if (++this.turn % 7 == 0)
+        if (++this.turn % 7 == 0) {
             this.population.weekly();
+
+            // Let's save! 
+            saveToLocalStore("save", writer => this.save(writer));
+        }
 
         // All done, notify the view that it should be re-rendered because
         // the world changed.

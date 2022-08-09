@@ -1,4 +1,5 @@
-import type { Grid, Cell } from './grid'
+import { Pack, build, int7, rwarray, uint16array } from './serialize'
+import { Grid, Cell, pack_grid } from './grid'
 
 export const allCells : CellKind[] = []
 export const tinyLocationCells : CellKind[] = []
@@ -42,6 +43,10 @@ export class CellKind {
     }
 }
 
+export const pack_cellKind : Pack<CellKind> = build<CellKind>()
+    .pass("id", int7)
+    .call((id) => allCells[id]);
+
 export const none         = new CellKind("",                1, "",    "[bug]",            false)
 export const ocean        = new CellKind("ocean",           1, "the", "ocean",            true)
 export const plains       = new CellKind("plains",          2, "the", "plains",           true)
@@ -75,19 +80,20 @@ export const fortA        = new CellKind("fortress",        1, "a",   "Fortress"
 export const fortB        = new CellKind("dwarven-fort",    1, "a",   "Fortress",         false, 1, "l")
 
 export class WorldMap { 
-    public readonly cells: CellKind[]
-    // For every cell: 
-    //   - 0 if never seen
-    //   - 1 if already seen, currently in fog of war
-    //   - 1+N if currently seen by N agents
-    public readonly vision: Uint32Array
     constructor(
-        public readonly grid : Grid
-    ) {
+        public readonly grid : Grid,
+        public readonly cells: CellKind[],
+        // For every cell: 
+        //   - 0 if never seen
+        //   - 1 if already seen, currently in fog of war
+        //   - 1+N if currently seen by N agents
+        public readonly vision : Uint16Array
+    ) {}
+
+    static create(grid: Grid): WorldMap {
         const cells : CellKind[] = []
         while (cells.length < grid.count) cells.push(ocean);
-        this.cells = cells;
-        this.vision = new Uint32Array(grid.count);
+        return new WorldMap(grid, cells, new Uint16Array(grid.count));
     }
 
     // Mark a cell, and surrounding cells in a radius of 1,
@@ -141,3 +147,9 @@ export class WorldMap {
             vision[adj]--;
     }
 }
+
+export const pack_worldMap : Pack<WorldMap> = build<WorldMap>()
+    .pass("grid", pack_grid)
+    .pass("cells", rwarray(pack_cellKind))
+    .pass("vision", uint16array)
+    .call((grid, cells, vision) => new WorldMap(grid, cells, vision));
