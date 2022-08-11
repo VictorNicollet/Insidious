@@ -22,8 +22,8 @@ function CultPolicy(props: {
     const [tip, setTip] = useState(false);
     
     return <li onClick={() => selectors.cult("recruitment")}
-        onMouseEnter={() => setTip(true)}
-        onMouseLeave={() => setTip(false)}>
+               onPointerEnter={() => setTip(true)}
+               onPointerLeave={() => setTip(false)}>
         {tip && <Tooltip pos={"right"} tip={props.tip} ctx={{}} inserts={[]}/>}
         <span className="policy">{props.name}</span>
         <span className="current">{props.current}</span>

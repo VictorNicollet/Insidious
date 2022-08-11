@@ -89,8 +89,8 @@ function Order(props: {
     return <button className="gui-order" 
                    disabled={!!props.disabled} 
                    onClick={props.onClick}
-                   onMouseEnter={() => setTip(true)}
-                   onMouseLeave={() => setTip(false)}>
+                   onPointerEnter={() => setTip(true)}
+                   onPointerLeave={() => setTip(false)}>
         {!tip ? undefined : 
             <Tooltip tip={tooltip} ctx={props.agent.ctx} inserts={inserts}/>}
         {props.label}
