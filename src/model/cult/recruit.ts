@@ -46,7 +46,28 @@ export type Recruitment = {
 // time.
 const added : Recruitment[] = [];
 function add(r: Omit<Recruitment, 'id'>) {
-    added.push({...r, id: added.length});
+
+    let desc = r.description.format + "\n\n***";
+
+    function percentChange(good:boolean, value: number, what: string) {
+        const txtvalue = (value >= 0 ? "+" : "") + (value * 100).toFixed(0) + "%";
+        const colored = value >= 0 == good ? "^^" + txtvalue + "^^" : "!!" + txtvalue + "!!";
+        return colored + " " + what;
+    }
+    
+    if (r.priestEffect != 0)
+        desc += "\n\n/.effect/" + percentChange(true, r.priestEffect, "recruitment by *priests*");
+
+    if (r.memberEffect != 0)
+        desc += "\n\n/.effect/" + percentChange(true, r.memberEffect, "recruitment by cult members");
+
+    if (r.exposureEffect != 0)
+        desc += "\n\n/.effect/" + percentChange(true, r.exposureEffect, "recruitment through cult :exposure:");
+
+    if (r.exposureGainEffect != 0)
+        desc += "\n\n/.effect/" + percentChange(false, r.exposureGainEffect, "cult :exposure: gain");
+    
+    added.push({...r, id: added.length, description: format(desc) });
 }
 
 add({

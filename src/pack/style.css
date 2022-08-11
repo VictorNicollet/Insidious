@@ -646,6 +646,13 @@ button.go.right:disabled {
     top: auto;
 }
 
+/* format styling */
+
+p.effect, .gui-box-body p.effect {
+    margin-top: 0.5em;
+    padding-left: 1em;
+}
+
 /* .map */
 
 .map {
