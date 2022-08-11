@@ -9,7 +9,12 @@ export type TxtFormatEx<T extends TxtContext> = {
 }
 
 function style(html: string) {
-    const match = /^\/([^\/]*)\//.exec(html);
+    const match = /^\/([^.][^\/]*)\//.exec(html);
+    return match ? match[1] : "";
+}
+
+function className(html: string) {
+    const match = /^\/\.([^\/]*)\//.exec(html);
     return match ? match[1] : "";
 }
 
@@ -72,12 +77,17 @@ export function toHTML(
     .replace(/!!.*!!/g, match => {
         return "<span style='color:#E77'>" + match.substr(2, match.length - 4) + '</span>';
     })
+    
+    // Change ^^foo^^ to a green font
+    .replace(/\^\^.*\^\^/g, match => {
+        return "<span style='color:#7E7'>" + match.substr(2, match.length - 4) + '</span>';
+    })
 
     // Cut the content into paragraphs based on empty lines. 
     .split(/\n\s*\n/g).filter(s => s).map(html => 
         /^%\d+\s*$/.test(html) 
             ? inserts[Number(html.substring(1))]
-            : <p style={style(html)} dangerouslySetInnerHTML={{__html:unstyle(html)}}/>);
+            : <p style={style(html)} className={className(html)} dangerouslySetInnerHTML={{__html:unstyle(html)}}/>);
 }
 
 // Create a type-tagged format.
