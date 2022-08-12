@@ -19,6 +19,11 @@ export class Cult {
     static create(name: string) {
         return new Cult(name, R.modes[0])
     }
+
+    public setRecruitment(r: R.Recruitment) {
+        this.recruitment = r;
+        this.world.refresh();
+    }
 }
 
 export const pack_cult : Pack<Cult> = build<Cult>()

@@ -1,4 +1,4 @@
-import { h, JSX, Fragment, ComponentChildren } from "preact"
+import { h, Fragment } from "preact"
 import * as B from "./Box"
 import * as R from "../model/cult/recruit"
 import { useState } from "preact/hooks";
@@ -20,7 +20,7 @@ function CultRecruitment(props: {
     return <B.Box title="Recruitment Policy">
         {R.modes.map(mode => 
             <button className="gui-order"
-                    //onClick={() => select(mode)}
+                    onClick={() => { cult.cult.setRecruitment(mode); props.close() }}
                     onPointerEnter={() => setTip(mode.id)}
                     onPointerLeave={() => setTip(old => old === mode.id ? -1 : old)}>
                 {tip !== mode.id ? undefined : 
