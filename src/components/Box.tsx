@@ -48,7 +48,7 @@ export function Box<Tab extends string>(props: {
 
 // The pixels "wasted" on non-content data above and below
 // the inner region of the box.
-const WASTED_HEIGHT = 185;
+const WASTED_HEIGHT = 200;
 
 export function innerHeight(outerHeight: number) {
     return outerHeight - WASTED_HEIGHT;

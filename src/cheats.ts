@@ -2,4 +2,4 @@
 // points in the game, in order to debug them.
 
 // If true, don't require several agents to create a cult.
-export const createCult = true;
+export const createCult = false;

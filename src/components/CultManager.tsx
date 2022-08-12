@@ -31,10 +31,10 @@ function CultPolicy(props: {
 }
 
 // The actual cult display
-function Cult(props: {cult: CultView}) {
+function Cult(props: {cult: CultView, height: number}) {
     
     return <div>
-        <ul className="gui-cult-policies">
+        <ul className="gui-cult-policies" style={{height:props.height}}>
             <CultPolicy policy="recruitment"
                 name="Recruitment Policy"
                 tip="The *recruitment policy* determines how new members are allowed to join the cult."
@@ -44,13 +44,13 @@ function Cult(props: {cult: CultView}) {
 }
 
 // Display 'you need at least N agents to start a cult'
-function NeedAgents() {
+function NeedAgents(props: {height: number}) {
        
     const w = useWorld();
     const a = w.agents;
 
-    return <div style={{textAlign: "center", marginTop: 30, marginBottom: 30}}>
-        <p>
+    return <div style={{textAlign: "center", height: props.height}}>
+        <p style={{marginTop: 30}}>
             You need at least 3 agents to start a cult.
         </p>
         <p>
@@ -66,11 +66,11 @@ function defaultCultName(w: WorldView) {
 }
 
 // Display cult creation modal.
-function CreateCult() {
+function CreateCult(props:{height: number}) {
     const w = useWorld();
     const [name, setName] = useState(defaultCultName(w));
     const valid = /[^ ]/.test(name);
-    return <div>
+    return <div style={{height: props.height}}>
         {create.toHTML({aspect: w.world.god.aspect})}
         <div className="gui-form">
             <label>
@@ -95,9 +95,11 @@ export function CultManager(props: {
     const cult = w.cult;
     const title = cult ? cult.name : defaultCultName(w);
 
+    const innerHeight = B.innerHeight(props.height);
+
     return <B.Box title={title} decorate={true} close={props.close}>
-        {cult ? <Cult cult={cult}/> : 
-         (Cheats.createCult || w.agents.length >= 3) ? <CreateCult/> : 
-         <NeedAgents/>}
+        {cult ? <Cult cult={cult} height={innerHeight}/> : 
+         (Cheats.createCult || w.agents.length >= 3) ? <CreateCult height={innerHeight}/> : 
+         <NeedAgents height={innerHeight}/>}
     </B.Box>
 }
