@@ -146,3 +146,14 @@ export function gatherInfoOrder(agent: Agent, mode: GatherInfoMode): Order|strin
             };
     }
 }
+
+export function workAsPriestOrder(agent: Agent, location: Location): Order {
+    return {
+        kind: "priest-work",
+        difficulty: { value: Number.POSITIVE_INFINITY, reasons: [] },
+        location,
+        exposure: exposureOf(agent, 2),
+        cost: {gold: 0, touch: 0},
+        progress: 0
+    }
+}

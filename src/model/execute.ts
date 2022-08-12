@@ -33,6 +33,8 @@ function countResourceDeltaForOrder(
             return;
         case "gather-info":
             return;
+        case "priest-work":
+            return;
         default: 
             never(order);
     }
@@ -78,6 +80,8 @@ export function executeOrder(agent: Agent): Order {
     switch (order.kind) {
         case "undercover": 
             agent.earnExperience(agent.occupation, 1);
+            break;
+        case "priest-work":
             break;
         case "travel": 
             for (let i = 0; i < order.path.length; ++i) {

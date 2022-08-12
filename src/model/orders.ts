@@ -32,6 +32,12 @@ export type RecruitAgentOrder = {
     readonly location : Location
 } & Common
 
+export type WorkAsPriestOrder = {
+    readonly kind : "priest-work"
+    // Where the priest works
+    readonly location : Location
+} & Common
+
 // An order to travel along a path
 export type TravelOrder = {
     readonly kind : "travel"
@@ -67,7 +73,8 @@ export type Order =
     ( UndercoverOrder 
     | TravelOrder
     | GatherInfoOrder
-    | RecruitAgentOrder )
+    | RecruitAgentOrder 
+    | WorkAsPriestOrder)
 
 // The default "stay undercover" order.
 export const undercover : Order = {
@@ -109,6 +116,10 @@ export function pack_order(pack_loc: Pack<Location>) : Pack<Order> {
         .or<"gather-info", Omit<GatherInfoOrder, "kind">>("gather-info", {
             ...common,
             mode: pack_gatherInfoMode
+        })
+        .or<"priest-work", Omit<WorkAsPriestOrder, "kind">>("priest-work", {
+            ...common,
+            location: pack_loc
         })
         .pack();
 }

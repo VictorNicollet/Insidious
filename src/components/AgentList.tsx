@@ -48,6 +48,8 @@ export function InnerAgentList(props: {
                     agent.order.kind == "recruit-agent" ? "Recruiting" :
                     agent.order.kind == "undercover" ? "Undercover" : 
                     agent.order.kind == "gather-info" ? "Gathering information" :
+                    agent.order.kind == "travel" ? "Traveling" :
+                    agent.order.kind == "priest-work" ? "Priest" : 
                     "No orders"
                 return <li key={agent.id} 
                     onClick={() => selectors.agent(agent)}>

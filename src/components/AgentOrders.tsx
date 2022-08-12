@@ -10,7 +10,7 @@ import * as Help from '../text/help';
 import { Explained } from '../model/explainable';
 import { useWorld } from './Context';
 import { WorldView } from '../view/world';
-import { recruitOrder, travelOrder, gatherInfoOrder } from '../model/neworder';
+import { recruitOrder, travelOrder, gatherInfoOrder, workAsPriestOrder } from '../model/neworder';
 import { zero } from '../model/resources';
 import { toHTML } from '../text/format';
 import { acks } from '../text/acks'
@@ -39,6 +39,8 @@ function DescribeOrder(props: {order: Order}): JSX.Element {
             if (typeof location === "undefined")
                 return <td>{order.sail ? "Sail" : "Travel"}</td>
             return <td>{order.sail ? "Sail" : "Travel"} to {world.locations[location].name.short}</td>
+        case "priest-work": 
+            return <td>Priest</td>
         default: return never<JSX.Element>(order);
     }
 }
@@ -73,19 +75,28 @@ function Order(props: {
          props.order && props.order.kind != "undercover" 
             ? "\n\n***\n\n%0" : "");
     const days = props.order ? daysRemaining(props.order) : 0;
-    const inserts = !props.order ? [] : [
-        <Fragment>
-            <p style={{paddingLeft:40,textIndent:-40}}>
-                <span class="turns"/><b>{days}</b><Explain value={props.order.difficulty}/>
-            </p>
-            {props.order.exposure.value > 0 ? 
+    const inserts = !props.order ? [] : 
+        Number.isFinite(days) ? [
+            <Fragment>
                 <p style={{paddingLeft:40,textIndent:-40}}>
-                    <span class="exposure"/><b>{decimal(days * props.order.exposure.value)}</b>
-                    &nbsp;= <span class="turns"/><b>{days}</b>
-                    <Explain left={"×"} value={props.order.exposure}/>
-                </p> : undefined}
-        </Fragment>
-    ]
+                    <span class="turns"/><b>{days}</b><Explain value={props.order.difficulty}/>
+                </p>
+                {props.order.exposure.value > 0 ? 
+                    <p style={{paddingLeft:40,textIndent:-40}}>
+                        <span class="exposure"/><b>{decimal(days * props.order.exposure.value)}</b>
+                        &nbsp;= <span class="turns"/><b>{days}</b>
+                        <Explain left={"×"} value={props.order.exposure}/>
+                    </p> : undefined}
+            </Fragment>
+        ] : [
+            <Fragment>
+                {props.order.exposure.value > 0 ? 
+                    <p style={{paddingLeft:40,textIndent:-40}}>
+                        <span class="exposure"/><b>{decimal(props.order.exposure.value)}</b>/day
+                        <Explain value={props.order.exposure}/>
+                    </p> : undefined}
+            </Fragment>
+        ]
     return <button className="gui-order" 
                    disabled={!!props.disabled} 
                    onClick={props.onClick}
@@ -101,12 +112,16 @@ function Order(props: {
                 {props.order.cost.touch > 0 ? <Fragment>
                     {" "}<span class="touch"/><b>{integer(props.order.cost.touch)}</b>
                     </Fragment> : undefined}
-                {props.order.exposure.value > 0 ? <Fragment>
+                {props.order.exposure.value == 0 ? undefined : 
+                 Number.isFinite(props.order.difficulty.value) ? <Fragment>
                     {" "}<span class="exposure"/><b>{integer(Math.round(props.order.exposure.value * Math.ceil(props.order.difficulty.value)))}</b>
-                </Fragment> : undefined}
-                <Fragment>
+                </Fragment> : <Fragment>
+                    {" "}<span class="exposure"/><b>{integer(Math.round(props.order.exposure.value))}</b>{"/day"}
+                </Fragment>}
+                {Number.isFinite(props.order.difficulty.value) 
+                    ? <Fragment>
                     {" "}<span class="turns"/><b>{integer(props.order.difficulty.value)}</b>
-                </Fragment>
+                </Fragment> : undefined}
             </span>}
     </button>
 }
@@ -147,6 +162,7 @@ class OrderNode {
 function makeOrderTree(agent: AgentView, world: WorldView): OrderNode[] {
     
     const location = agent.agent.location;
+    const hasCult = !!world.cult;
     
     // If an order's initial cost is too high, prevent it from being selected.
     // Note that if the agent already has an active order with an initial cost that 
@@ -326,7 +342,17 @@ Both the difficulty and the risks are reduced by the agent's *outdoors* skill.
 `), 
                     checkResources(travelOrder(agent.agent, route)));
             }).sort((o1, o2) => (o1.order ? o1.order.difficulty.value : 0) - 
-                                (o2.order ? o2.order.difficulty.value : 0)))
+                                (o2.order ? o2.order.difficulty.value : 0))),
+
+        new OrderNode("Become a priest", `
+Leaving behind their former occupation, #name# will work as a priest of 
+your cult, recruiting new believers and guiding them to accomplish your 
+will.
+
+Agents continue working as priests until you give them a different order.`,
+            !hasCult ? {disabled:"!!You need to found a cult in order to have priests.!!"} :
+            !location ? {disabled:"!!Cannot work as a priest outdoors.!!"} :
+            checkResources(workAsPriestOrder(agent.agent, location))),
     ];
 }
 
