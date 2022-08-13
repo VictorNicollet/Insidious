@@ -1180,7 +1180,7 @@ button.red:disabled, button.red:disabled:hover {
     list-style-type: none;
     position: relative;
     height: 50px;
-    padding: 4px 4px 4px 52px;
+    padding: 4px 4px 4px 8px;
     cursor: pointer;
 }
 

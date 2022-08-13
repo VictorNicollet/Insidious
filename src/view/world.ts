@@ -57,7 +57,7 @@ export function world(w: World): WorldView {
         locations: locations.map(location),
         agents,
         map: map(w, w.map),
-        cult: cult(w),
+        cult: cult(w, agents),
         initial: locations[0].cell,
         routes: w.routes(),
         plans: index(w.plans().map(plan)),

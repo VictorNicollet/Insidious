@@ -1,7 +1,7 @@
-import { h, Fragment } from "preact"
+import { h, Fragment, JSX } from "preact"
 import { CultView } from "../view/cult";
 import { WorldView } from "../view/world";
-import { create } from "../text/cult"
+import { create, cultExposureTip, cultPopulationTip, cultPriestsTip } from "../text/cult"
 import * as B from "./Box"
 import * as Cheats from "../cheats"
 import { useSelectors, useWorld } from "./Context"
@@ -24,17 +24,59 @@ function CultPolicy(props: {
     return <li onClick={() => selectors.cult("recruitment")}
                onPointerEnter={() => setTip(true)}
                onPointerLeave={() => setTip(false)}>
-        {tip && <Tooltip pos={"right"} tip={props.tip} ctx={{}} inserts={[]}/>}
+        {tip && <Tooltip pos="right" tip={props.tip} ctx={{}} inserts={[]}/>}
         <span className="policy">{props.name}</span>
         <span className="current">{props.current}</span>
     </li>
 }
 
+function CultInfoLine(props: {
+    label: string,
+    value: JSX.Element|string,
+    tooltip?: JSX.Element
+}): JSX.Element {
+
+    const [tip, showTip] = useState(false);
+
+    return <tr onMouseEnter={() => showTip(true)}
+               onMouseLeave={() => showTip(false)}
+               style={{position:"relative"}}>
+        <th>{props.label}</th>
+        <td>
+            {tip ? props.tooltip : undefined}
+            {props.value}
+        </td>
+    </tr>
+
+}
+
 // The actual cult display
 function Cult(props: {cult: CultView, height: number}) {
     
+    // Subtract the height of the top information region from the 
+    // height left over for policies
+    const height = props.height - 88;
+
     return <div>
-        <ul className="gui-cult-policies" style={{height:props.height}}>
+        <table class="gui-info-table">
+            <CultInfoLine label="Members" 
+                value={props.cult.population.toFixed()}
+                tooltip={<Tooltip pos="right" tip={cultPopulationTip(props.cult.population)} 
+                            ctx={{}} inserts={[]}/>}
+                            />
+            <CultInfoLine label="Priests" 
+                value={props.cult.priests.length.toFixed()}
+                tooltip={<Tooltip pos="right" tip={cultPriestsTip} 
+                            ctx={{}} inserts={[]}/>}
+                            />
+            <CultInfoLine label="Exposure" 
+                value={<Fragment><span className="exposure"/><b>{props.cult.exposure.toFixed(0)}</b></Fragment>}
+                tooltip={<Tooltip pos="right" tip={cultExposureTip} 
+                            ctx={{}} inserts={[]}/>}
+                            />
+        </table>
+        <hr/>
+        <ul className="gui-cult-policies" style={{height}}>
             <CultPolicy policy="recruitment"
                 name="Recruitment Policy"
                 tip="The *recruitment policy* determines how new members are allowed to join the cult."
@@ -103,3 +145,4 @@ export function CultManager(props: {
          <NeedAgents height={innerHeight}/>}
     </B.Box>
 }
+
