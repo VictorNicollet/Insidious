@@ -4,20 +4,20 @@ import { build, int7, Pack } from "../serialize"
 import { format, TxtFormatEx } from "../../text/format"
 
 // and added to the total recruitment power for that location.
-const basePriestMult = 100
+export const basePriestMult = 100
 
 // The number of cult members in a location is multiplied by this 
 // number and added to the total recruitment power for that location. 
-const baseMemberMult = 10
+export const baseMemberMult = 10
 
 // The global cult exposure is multiplied by this number and
 // added to the total recruitment power for all locations. 
-const baseExposureMult = 1
+export const baseExposureMult = 1
 
 // The recruitment power cost to recruit a single additional member. 
 // Fractional payments are possible, resulting in a linear probability
 // of success. 
-const baseRecruit = 1000
+export const baseRecruit = 1000
 
 export type Recruitment = {
     // Unique identifier of this recruitment mode

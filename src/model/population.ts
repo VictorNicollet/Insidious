@@ -12,6 +12,8 @@ export const poor      = 1
 export const middle    = 2
 export const wealthy   = 3
 
+export const nbWealths = 4
+
 // CASTES ====================================================================
 
 export const laborers  = 0
@@ -22,8 +24,10 @@ export const bourgeois = 16
 export const mystics   = 20
 export const gentry    = 24
 
+export const nbCastes  = 7
+
 // Associate a caste with each occupation
-const casteOfOccupation : ByOccupation<number> = {
+export const casteOfOccupation : ByOccupation<number> = {
     Criminal: criminals,
     Farmer: laborers,
     Hunter: laborers,
@@ -65,7 +69,7 @@ const casteByLocationKind : ByLocationKind<Float32Array> = objmap(presenceByLoca
 
 const wealthByCaste = new Float32Array([
     // Laborers
-    0.9, 0.09, 0.1, 0,
+    0.9, 0.09, 0.01, 0,
     // Artisans
     0.4, 0.5, 0.09, 0.01,
     // Criminals
@@ -84,19 +88,28 @@ const wealthByCaste = new Float32Array([
 // both count and properties.
 export class Population {
     
+    public readonly cultTotal : number
+
     constructor(
         // The number of people in each caste/wealth segment, for all locations
         public readonly count : Float32Array,
         // The optimism level (from -1 to 1) for each segment.
         public readonly optimism : Float32Array,
+        // The proportion of cult members in each segment (0..1)
+        public readonly cult : Float32Array,
         // All locations in the world, used to update the location's population fields        
         public readonly locations: readonly Location[])
-    {}
+    {
+        this.cultTotal = 0;
+        for (let seg = 0; seg < this.cult.length; ++seg)
+            this.cultTotal += Math.floor(this.cult[seg] * this.count[seg]);
+    }
 
     static create(locations: readonly Location[]) {
         const nb = locations.length * stride;
         const count = new Float32Array(nb);
         const optimism = new Float32Array(nb);
+        const cult = new Float32Array(nb);
 
         for (let seg = 0; seg < nb; ++seg) {
             const location = locations[Math.floor(seg/stride)];
@@ -107,10 +120,27 @@ export class Population {
             count[seg] = location.population * casteMult * wealthMult;
         }
 
-        return new Population(count, optimism, locations);
+        return new Population(count, optimism, cult, locations);
     }
 
-    private print() {
+    public segname(seg: number) {
+        const loc = Math.floor(seg / stride);
+        const caste = Math.floor((seg % stride) / nbWealths);
+        const wealth = seg % nbWealths;
+
+        return this.locations[loc].name.short + " " +
+            (wealth == 0 ? "destitute" : 
+             wealth == 1 ? "poor" : 
+             wealth == 2 ? "middle" : "wealthy") + " " + 
+            (caste == laborers ? "laborers" : 
+             caste == artisans ? "artisans" : 
+             caste == criminals ? "criminals" : 
+             caste == fighters ? "fighters" : 
+             caste == bourgeois ? "bourgeois" : 
+             caste == mystics ? "mystics" : "gentry");
+    }
+
+    public print() {
         const c = this.count;
         for (let l = 0; l < this.locations.length; ++l) {
             const o = l * stride;
@@ -137,10 +167,11 @@ export class Population {
                 "middle": casteSum(middle),
                 "wealthy": casteSum(wealthy)
             }
-            console.log("%s (%s): %d = %o %o", 
+            console.log("%s (%s): %d (%d) = %o %o", 
                 this.locations[l].name.short, 
                 this.locations[l].kind, 
                 this.locations[l].population,
+                this.locations[l].cultpop,
                 byCaste,
                 byWealth);
         }
@@ -158,14 +189,22 @@ export class Population {
             count[seg] = current * fertility;
         }
 
-        // Count the population for each location
+    }
+
+    // Refresh the location-stored properties for a location
+    public refreshAll() {
+        const {count,cult} = this;
         let pop = 0;
+        let cultPop = 0;
         for (let seg = 0; seg < count.length; ++seg) {
             pop += Math.floor(count[seg])
+            cultPop += Math.floor(count[seg] * cult[seg]);
             if ((seg % stride) == stride - 1) {
                 const location = this.locations[Math.floor(seg/stride)];
                 location.population = pop;
+                location.cultpop = cultPop;
                 pop = 0;
+                cultPop = 0;
             }
         }
     }
@@ -175,6 +214,7 @@ export function pack_population(locations: readonly Location[]) {
     return build<Population>()
         .pass("count", float32array)
         .pass("optimism", float32array)
-        .call((count, optimism) => 
-            new Population(count, optimism, locations));    
+        .pass("cult", float32array)
+        .call((count, optimism, cult) => 
+            new Population(count, optimism, cult, locations));
 }

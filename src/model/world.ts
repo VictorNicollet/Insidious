@@ -279,6 +279,10 @@ export class World {
         // Run through all sagas.
         this._sagas.run();
 
+        // Update the cult state
+        if (this.cult)
+            this.cult.daily();
+
         // Increment turn number and execute weekly changes
         if (++this.turn % 7 == 0) {
             this.population.weekly();

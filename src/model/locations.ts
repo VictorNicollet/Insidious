@@ -38,6 +38,8 @@ export class Location {
         public readonly name : LocationName,
         // Population count, integer, cached from the population system
         public population : number,
+        // Cult member population, integer, cached from the population system
+        public cultpop : number,
         // Integer, the sum of 'gather information' scores of this location. 
         public information : number
     ) {
@@ -61,6 +63,7 @@ export class Location {
             cell, 
             randomLocation(locationKindOfCellKind(cellkind)),
             population,
+            0,
             0)
     }
 }
@@ -71,9 +74,10 @@ export const pack_location : Pack<Location> = build<Location>()
     .pass("cell", int7)
     .pass("name", pack_locationName)
     .pass("population", int7)
+    .pass("cultpop", int7)
     .pass("information", int7)
-    .call((cellkind, id, cell, name, population, information) => 
-        new Location(cellkind, id, cell, name, population, information));
+    .call((cellkind, id, cell, name, population, cultpop, information) => 
+        new Location(cellkind, id, cell, name, population, cultpop, information));
 
 export function pack_locationRef(locations: readonly Location[]) : Pack<Location> {
     return build<Location>()
