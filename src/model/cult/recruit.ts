@@ -1,8 +1,7 @@
-// The number of priests in a location is multiplied by this number
-
 import { build, int7, Pack } from "../serialize"
 import { format, TxtFormatEx } from "../../text/format"
 
+// The number of priests in a location is multiplied by this number
 // and added to the total recruitment power for that location.
 export const basePriestMult = 100
 
