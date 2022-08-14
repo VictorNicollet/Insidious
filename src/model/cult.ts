@@ -1,10 +1,9 @@
 import { Agent } from "./agents";
-import * as R from "./cult/recruit";
+import * as CR from "./cult/recruit";
+import * as CP from "./cult/pretense";
 import { build, float, Pack, string } from "./serialize"
 import * as P from "./population"
 import type { World } from "./world"
-import { cpuUsage } from "process";
-import { cult } from "view/cult";
 
 export class Cult {
     
@@ -12,7 +11,8 @@ export class Cult {
 
     constructor(
         public name : string,
-        public recruitment : R.Recruitment,
+        public pretense : CP.Pretense,
+        public recruitment : CR.Recruitment,
         public exposure : number
     ) {
         // We cheat by injecting the world reference later, when
@@ -22,11 +22,16 @@ export class Cult {
     }
 
     static create(name: string) {
-        return new Cult(name, R.modes[0], 0)
+        return new Cult(name, CP.pretenses[0], CR.modes[0], 0)
     }
 
-    public setRecruitment(r: R.Recruitment) {
+    public setRecruitment(r: CR.Recruitment) {
         this.recruitment = r;
+        this.world.refresh();
+    }
+
+    public setPretense(p: CP.Pretense) {
+        this.pretense = p;
         this.world.refresh();
     }
 
@@ -111,7 +116,7 @@ export class Cult {
                 for (const priest of priests) {
                     const priestRecruitPower = 
                         // Base recruitment power for priests
-                        R.basePriestMult *
+                        CR.basePriestMult *
                         // Priests use their contact skill for recruiting
                         (1 + priest.stats.contacts.value/100) *
                         // Apply all the recruitment effects from policies
@@ -130,7 +135,7 @@ export class Cult {
                     const cult = cultratio[seg] * population[seg];
                     const memberRecruitPower = 
                         // Base recruitment power for members
-                        R.baseMemberMult *
+                        CR.baseMemberMult *
                         // Each member contributes separately
                         cult *
                         // Apply all the recruitment effects from policies
@@ -164,10 +169,10 @@ export class Cult {
             // Roll the dice to pick the number of members to recruit.
             // =======================================================
 
-            const sureRecruited = Math.floor(totalRecruitingPower / R.baseRecruit);
+            const sureRecruited = Math.floor(totalRecruitingPower / CR.baseRecruit);
             const randomRecruited = 
-                ((totalRecruitingPower - R.baseRecruit * sureRecruited)
-                    > Math.random() * R.baseRecruit)
+                ((totalRecruitingPower - CR.baseRecruit * sureRecruited)
+                    > Math.random() * CR.baseRecruit)
                 ? 1 : 0;
             const totalRecruited = sureRecruited + randomRecruited;
 
@@ -213,6 +218,8 @@ export class Cult {
 
 export const pack_cult : Pack<Cult> = build<Cult>()
     .pass("name", string)
-    .pass("recruitment", R.pack_recruitment)
+    .pass("pretense", CP.pack_pretense)
+    .pass("recruitment", CR.pack_recruitment)
     .pass("exposure", float)
-    .call((name, recruitment, exposure) => new Cult(name, recruitment, exposure));
+    .call((name, pretense, recruitment, exposure) => 
+        new Cult(name, pretense, recruitment, exposure));

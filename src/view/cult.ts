@@ -2,10 +2,12 @@ import type { World } from "../model/world";
 import type { Cult } from "../model/cult";
 import type { Recruitment } from "../model/cult/recruit";
 import type { AgentView } from "./agents";
-import type { IdxArray } from "idindexed";
+import type { IdxArray } from "../idindexed";
+import type { Pretense } from "../model/cult/pretense";
 
 export type CultView = {
     readonly name : string
+    readonly pretense : Pretense
     readonly recruitment : Recruitment
     // Total number of cult members
     readonly population : number
@@ -29,6 +31,7 @@ export function cult(w: World, agents: IdxArray<AgentView>): CultView|undefined 
 
     return {
         name: cult.name,
+        pretense: cult.pretense,
         recruitment: cult.recruitment,
         exposure: cult.exposure,
         population: w.population.cultTotal,

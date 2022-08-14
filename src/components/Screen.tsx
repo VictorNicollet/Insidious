@@ -13,6 +13,8 @@ import { Notifications } from './Notification';
 import { Message as MessageBox } from './Message';
 import { PlanView } from '../view/plans';
 
+export type CultPages = "pretense"|"recruitment"
+
 export type Selection = {
     selected: "agent"
     id: number
@@ -24,7 +26,7 @@ export type Selection = {
     id: number
 } | {
     selected: "cult"
-    page: "recruitment"
+    page: CultPages
 } | {
     selected: "none"
 }
@@ -80,7 +82,7 @@ export function Screen(props: { world: World }): JSX.Element {
         setSelected({selected: "plan", id: plan.id})
     }, [setSelected])
 
-    const selectCult = useCallback((page: "recruitment") => {
+    const selectCult = useCallback((page: CultPages) => {
         setSelected({selected: "cult", page })
     }, [setSelected])
 

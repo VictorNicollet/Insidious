@@ -3,7 +3,7 @@
 import { Location, ByLocationKind } from './locations'
 import { ByOccupation, presenceByLocationKind, occupations } from './occupation'
 import { objmap } from '../objmap'
-import { build, float32array, option } from './serialize'
+import { build, float32array } from './serialize'
 
 // WEALTH ====================================================================
 
@@ -25,6 +25,15 @@ export const mystics   = 20
 export const gentry    = 24
 
 export const nbCastes  = 7
+
+export function casteName(caste: number) {
+    return caste == laborers ? "laborers" : 
+           caste == artisans ? "artisans" : 
+           caste == criminals ? "criminals" : 
+           caste == fighters ? "fighters" : 
+           caste == bourgeois ? "bourgeois" : 
+           caste == mystics ? "mystics" : "gentry";
+}
 
 // Associate a caste with each occupation
 export const casteOfOccupation : ByOccupation<number> = {
@@ -132,12 +141,7 @@ export class Population {
             (wealth == 0 ? "destitute" : 
              wealth == 1 ? "poor" : 
              wealth == 2 ? "middle" : "wealthy") + " " + 
-            (caste == laborers ? "laborers" : 
-             caste == artisans ? "artisans" : 
-             caste == criminals ? "criminals" : 
-             caste == fighters ? "fighters" : 
-             caste == bourgeois ? "bourgeois" : 
-             caste == mystics ? "mystics" : "gentry");
+            casteName(caste);
     }
 
     public print() {

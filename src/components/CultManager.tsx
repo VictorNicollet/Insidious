@@ -8,11 +8,10 @@ import { useSelectors, useWorld } from "./Context"
 import { useState } from "preact/hooks";
 import { Tooltip } from "./Tooltip";
 import { TxtFormat } from "../text/format";
-
-type CultPolicies = "recruitment"
+import { CultPages } from "./Screen";
 
 function CultPolicy(props: {
-    policy: CultPolicies
+    page: CultPages
     name: string
     current: string
     tip: TxtFormat
@@ -21,7 +20,7 @@ function CultPolicy(props: {
     const selectors = useSelectors();
     const [tip, setTip] = useState(false);
     
-    return <li onClick={() => selectors.cult("recruitment")}
+    return <li onClick={() => selectors.cult(props.page)}
                onPointerEnter={() => setTip(true)}
                onPointerLeave={() => setTip(false)}>
         {tip && <Tooltip pos="right" tip={props.tip} ctx={{}} inserts={[]}/>}
@@ -77,9 +76,13 @@ function Cult(props: {cult: CultView, height: number}) {
         </table>
         <hr/>
         <ul className="gui-cult-policies" style={{height}}>
-            <CultPolicy policy="recruitment"
+            <CultPolicy page="pretense"
+                name="Pretense"
+                tip="The *pretense* is the ostensible objective of the cult, as presented to the general population.\n\nClick to change it."
+                current={props.cult.pretense.name}/>
+            <CultPolicy page="recruitment"
                 name="Recruitment Policy"
-                tip="The *recruitment policy* determines how new members are allowed to join the cult."
+                tip="The *recruitment policy* determines how new members are allowed to join the cult.\n\nClick to change it."
                 current={props.cult.recruitment.name}/>
         </ul>
     </div>;
