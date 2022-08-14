@@ -72,12 +72,12 @@ function add(r: Omit<Recruitment, 'id'>) {
 
 add({
     name: "Chosen by Priests",
-    description: format<{cultname: string}>(
-        "Priests of the #cultname# identify those who are worthy of " +
-        "joining, and extend them an introduction." +
-        "\n\n" +
-        "Slow but safe recruitment mode, with the lowest :exposure: gain " + 
-        "and a reduced risk of *infiltration*."),
+    description: format<{cultname: string}>(`
+Priests of the #cultname# identify those who are worthy of
+joining, and privately extend them an introduction.
+
+Slow but safe recruitment mode, with the lowest :exposure: gain 
+and a reduced risk of *infiltration*.`),
     priestRequired:      true, 
     priestEffect:        0,
     memberEffect:       -1,
@@ -87,46 +87,53 @@ add({
 
 add({
     name: "Member Recommendations",
-    description: format<{cultname: string}>(
-        "Any member of the #cultname# may recommend new recruits, " +
-        "though priests must vet every referral."),
+    description: format<{cultname: string}>(`
+Any *member* or *priest* of the #cultname# may recommend new 
+recruits, though priests must vet every referral.
+
+No members will be recruited in cities where no priests
+are present.
+`),
     priestRequired:      true, 
     priestEffect:        0,
     memberEffect:        0,
-    exposureEffect:     -0.5,
-    exposureGainEffect: -0.25,
-})
-
-add({
-    name: "Word-of-mouth",
-    description: format<{cultname: string}>(
-        "Any member of the #cultname# may bring those they deem worthy " +
-        "into the cult, even without a priest's supervision."),
-    priestRequired:      false,
-    priestEffect:        0,
-    memberEffect:        0.5,
     exposureEffect:      0,
     exposureGainEffect:  0,
 })
 
 add({
+    name: "Word-of-mouth",
+    description: format<{cultname: string}>(`
+Any *member* of the #cultname# may bring those they deem worthy
+into the cult, even without supervision from a *priest*.
+
+This allows your cult to recruit to recruit new members even in
+locations where no priests are active.`),
+    priestRequired:      false,
+    priestEffect:        0,
+    memberEffect:        0.5,
+    exposureEffect:      0.5,
+    exposureGainEffect:  0.5,
+})
+
+add({
     name: "Active Outreach",
-    description: format<{cultname: string}>(
-        "Members and priests of the #cultname# call out for new members " +
-        "in public places. Anyone is free to join." + 
-        "\n\n" + 
-        "The most effective for quickly increasing the size of the cult, " + 
-        "but at the cost of brazenly accumulating :exposure:. The quality " + 
-        "and loyalty of new recruits is likely to be low."),
+    description: format<{cultname: string}>(`
+Members and priests of the #cultname# call out for new members 
+in public places. Anyone is free to join. 
+
+The most effective for quickly increasing the size of the cult,  
+but at the cost of brazenly accumulating :exposure:. The quality 
+and loyalty of new recruits is likely to be low.`),
     priestRequired:      false,
     priestEffect:        1,
     memberEffect:        1,
     exposureEffect:      1,
-    exposureGainEffect:  1,
+    exposureGainEffect:  2,
 })
 
 export const modes : readonly Recruitment[] = added;
 
 export const pack_recruitment : Pack<Recruitment> = build<Recruitment>()
-        .pass("id", int7)
-        .call(id => modes[id])
+    .pass("id", int7)
+    .call(id => modes[id])

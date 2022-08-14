@@ -77,6 +77,8 @@ export class Cult {
             // ============================================
 
             let hasCult = !!priests;
+            if (!hasCult && this.recruitment.priestRequired) continue;
+
             for (let i = 0; i < P.stride && !hasCult; ++i)
                 hasCult = cultratio[off + i] != 0;
 
