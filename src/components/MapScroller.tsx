@@ -12,7 +12,7 @@ export type MapScrollerProps = {
     screenW: number
     // What is currently selected, and how to change it. 
     selected: Selection
-    setSelected: (sel: Selection) => void
+    setSelected: (callback: (prev: Selection) => Selection) => void
 }
 
 type MapScrollerState = [number, number]
@@ -82,10 +82,14 @@ export function MapScroller(props: MapScrollerProps): JSX.Element {
             const [cx,cy] = cellPos(cell, grid);
             const sel = locByCell[cell];
             if (sel === undefined) {
-                setSelected({selected:"none"});
+                setSelected(() => ({selected:"none"}));
                 return [cx,cy];
             }
-            setSelected({selected:"location",id:sel});
+            setSelected(prev => ({
+                selected: "location",
+                id: sel,
+                page: prev.selected === "location" ? prev.page : "Agents"
+            }));
             return [cx,cy];
         });
     }, [screenW, screenH, setState, grid, locByCell, map.vision, selected, setSelected, locations])

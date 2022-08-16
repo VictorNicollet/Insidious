@@ -4,11 +4,11 @@ import type { WorldView } from '../view/world';
 import type { LocationView } from '../view/locations';
 import type { AgentView } from '../view/agents';
 import type { PlanView } from '../view/plans';
-import { CultPages } from "./Screen";
+import type { CultPages, LocationPages } from "./Screen";
 
 
 type Selectors = {
-    location: (location: LocationView) => void
+    location: (location: LocationView, page?: LocationPages) => void
     agent: (agent: AgentView) => void
     plan: (plan: PlanView) => void
     cult: (page: CultPages) => void

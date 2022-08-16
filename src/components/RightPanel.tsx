@@ -44,6 +44,7 @@ export function RightPanel(props: RightPanelProps): JSX.Element {
                 close={close}/> :
         selected.selected === "location" ? 
             <LocationDetails location={selected.id} 
+                page={selected.page}
                 height={height}
                 close={close} /> :
         selected.selected === "plan" ? 

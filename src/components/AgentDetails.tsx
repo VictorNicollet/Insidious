@@ -52,7 +52,7 @@ export function AgentDetails(props: {
     const where = loc === undefined
         ? <span>Outdoors</span>
         : <span className="named-entity" 
-            onClick={() => selectors.location(world.locations[loc])}>
+            onClick={() => selectors.location(world.locations[loc], "Agents")}>
             {world.locations[loc].name.short}
         </span>;
 

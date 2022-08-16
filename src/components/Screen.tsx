@@ -14,6 +14,7 @@ import { Message as MessageBox } from './Message';
 import { PlanView } from '../view/plans';
 
 export type CultPages = "pretense"|"recruitment"
+export type LocationPages = "Agents"|"Cult"
 
 export type Selection = {
     selected: "agent"
@@ -21,6 +22,7 @@ export type Selection = {
 } | {
     selected: "location"
     id: number
+    page: LocationPages
 } | {
     selected: "plan"
     id: number
@@ -70,8 +72,16 @@ export function Screen(props: { world: World }): JSX.Element {
 
     const LeftPanel = useLeftPanel();
 
-    const selectLocation = useCallback((location: LocationView) => {
-        setSelected({selected: "location", id: location.id})
+    const selectLocation = useCallback((location: LocationView, page?: LocationPages) => {
+        setSelected((prev: Selection) => ({
+            selected: "location", 
+            id: location.id, 
+            // Try to preserve already-opened page (e.g. navigating
+            // from "Cult" page of location A to "Cult" page of location B)
+            page: page ? page : 
+                prev.selected == "location" ? prev.page : 
+                "Agents"
+        }))
     }, [setSelected])
 
     const selectAgent = useCallback((agent: AgentView) => {

@@ -1,7 +1,8 @@
-import { LocationName } from '../model/names';
-import { Cell } from '../model/grid';
-import { Location } from '../model/locations';
-import { CellKind } from '../model/map';
+import type { LocationName } from '../model/names';
+import type { Cell } from '../model/grid';
+import type { Location } from '../model/locations';
+import type { CellKind } from '../model/map';
+import type { RecruitEffect } from '../model/cult/recruit';
 
 export type LocationView = {
     readonly id : number
@@ -9,6 +10,8 @@ export type LocationView = {
     readonly cell : Cell
     readonly cellKind : CellKind
     readonly population : number
+    readonly cultpop : number
+    readonly cultrecruit : RecruitEffect|undefined
     readonly information : number
     readonly agents : readonly number[]
 }
@@ -25,6 +28,8 @@ export function location(l: Location, id: number): LocationView {
         name: l.name,
         cell: l.cell,
         cellKind: l.world.map.cells[l.cell],
+        cultpop: l.cultpop,
+        cultrecruit: l.recruit,
         population: l.population,
         information: l.information,
         agents
