@@ -5,30 +5,12 @@ import { AgentStats } from './AgentStat';
 import { useState } from 'preact/hooks';
 import { AgentOrders } from './AgentOrders';
 import * as Help from "../text/help"
-import { Tooltip } from './Tooltip';
+import { Tooltip, TipInfoLine } from './Tooltip';
 import { integer } from './numbers';
 
 type Tabs = "Orders" | "Stats"
 const tabs: Tabs[] = ["Orders", "Stats"]
 
-function AgentInfoLine(props: {
-    label: string,
-    value: JSX.Element|string,
-    tooltip?: JSX.Element
-}): JSX.Element {
-
-    const [tip, showTip] = useState(false);
-
-    return <tr onMouseEnter={() => showTip(true)}
-               onMouseLeave={() => showTip(false)}>
-        <th>{props.label}</th>
-        <td>
-            {tip ? props.tooltip : undefined}
-            {props.value}
-        </td>
-    </tr>
-
-}
 
 export function AgentDetails(props: {
     // The agent to display
@@ -66,13 +48,13 @@ export function AgentDetails(props: {
             <div className="portrait"/>
             <div className="top">
                 <table class="gui-info-table">
-                    <AgentInfoLine label="Location" value={where}/>
-                    <AgentInfoLine label="Occupation"  
+                    <TipInfoLine label="Location" value={where}/>
+                    <TipInfoLine label="Occupation"  
                         value={agent.occupation + " Lv." + agent.levels[agent.occupation]}
                         tooltip={<Tooltip tip={Help.occupationTooltip[agent.occupation]}
                                     inserts={[]}
                                     ctx={{}}/>}/>
-                    <AgentInfoLine label="Exposure" 
+                    <TipInfoLine label="Exposure" 
                         value={<Fragment><span className="exposure"/><b>{integer(agent.exposure)}</b></Fragment>}
                         tooltip={<Tooltip tip={Help.exposureTip} inserts={[]} ctx={{}}/>}/>
                 </table>
