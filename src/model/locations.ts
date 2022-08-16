@@ -3,7 +3,8 @@ import { LocationName, pack_locationName } from "./names"
 import type { Cell } from "./grid"
 import * as M from './map'
 import { randomLocation } from './generation/namegen'
-import { Pack, build, int7, enm } from './serialize'
+import { Pack, build, int7 } from './serialize'
+import type { RecruitEffect } from "./cult/recruit"
 
 export type ByLocationKind<T> = {
     ruins: T
@@ -28,6 +29,9 @@ export class Location {
 
     public readonly kind : LocationKind
     public readonly world : World
+
+    // Recruitment stats, computed lazily when first accessed.
+    private _recruit : RecruitEffect|undefined
     
     constructor(
         public readonly cellkind: M.CellKind,
@@ -65,6 +69,14 @@ export class Location {
             population,
             0,
             0)
+    }
+
+    // Recruitment stats for this location
+    get recruit() : RecruitEffect|undefined {
+        if (this._recruit) return this._recruit;
+        const cult = this.world.cult;
+        if (!cult) return undefined;
+        return this._recruit = cult.recruitEffect(this);
     }
 }
 

@@ -1,5 +1,6 @@
 import { build, int7, Pack } from "../serialize"
 import { format, TxtFormatEx } from "../../text/format"
+import type { Explained } from "../explainable"
 
 // The number of priests in a location is multiplied by this number
 // and added to the total recruitment power for that location.
@@ -136,3 +137,16 @@ export const modes : readonly Recruitment[] = added;
 export const pack_recruitment : Pack<Recruitment> = build<Recruitment>()
     .pass("id", int7)
     .call(id => modes[id])
+
+// Complete description of the recruitment stats for a single location
+export type RecruitEffect = {
+    readonly totalPower : number
+    readonly priestPower : Explained    
+    readonly memberPower : Explained
+    readonly exposurePower : Explained
+    readonly difficulty : Explained
+    // If true, a priest is needed to recruit, but none was present
+    readonly needPriest : boolean
+    // Recruitment power for each caste in the location
+    readonly castePower : Float32Array
+}

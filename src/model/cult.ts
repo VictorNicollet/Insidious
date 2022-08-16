@@ -4,10 +4,20 @@ import * as CP from "./cult/pretense";
 import { build, float, Pack, string } from "./serialize"
 import * as P from "./population"
 import type { World } from "./world"
+import type { Location } from "./locations"
+import { Explained, explain } from "./explainable";
 
 export class Cult {
     
     public readonly world: World
+
+    public priestRecruitEffect : Explained
+    public memberRecruitEffect : Explained
+    public exposureRecruitEffect : Explained
+    
+    // Helper to contain the caste-specific recruitment power for 
+    // a single location.
+    private noncultcasteratio : Float32Array
 
     constructor(
         public name : string,
@@ -15,6 +25,13 @@ export class Cult {
         public recruitment : CR.Recruitment,
         public exposure : number
     ) {
+        this.noncultcasteratio = new Float32Array(P.nbCastes);
+        this.priestRecruitEffect = 
+            this.memberRecruitEffect = 
+            this.exposureRecruitEffect = explain([])
+
+        this.refreshEffects();
+
         // We cheat by injecting the world reference later, when
         // this instance is added to the world
         // (because Cult and World are mutually recursive)
@@ -27,70 +44,181 @@ export class Cult {
 
     public setRecruitment(r: CR.Recruitment) {
         this.recruitment = r;
+        this.refreshEffects();
         this.world.refresh();
     }
 
     public setPretense(p: CP.Pretense) {
         this.pretense = p;
+        this.refreshEffects();
         this.world.refresh();
+    }
+
+    private refreshEffects() {
+        let priestEffect = [];
+        let memberEffect = [];
+        let exposureEffect = [];
+
+        const r = this.recruitment;
+        if (r.priestEffect) 
+            priestEffect.push({why: r.name, contrib: r.priestEffect});
+        if (r.memberEffect)
+            memberEffect.push({why: r.name, contrib: r.memberEffect});
+        if (r.exposureEffect)
+            exposureEffect.push({why: r.name, contrib: r.exposureEffect});
+
+        this.priestRecruitEffect = explain(priestEffect);
+        this.memberRecruitEffect = explain(memberEffect);
+        this.exposureRecruitEffect = explain(exposureEffect);
+    }
+
+    public recruitEffect(location: Location) : CR.RecruitEffect {
+        const noncultcasteratio = this.noncultcasteratio;
+
+        const population = this.world.population.count;
+        const cultratio  = this.world.population.cult;
+
+        const totalpop     = location.population;
+        const totalcult    = location.cultpop;
+        const totalnoncult = totalpop - totalcult;
+        const priests      = this.world.agents().filter(agent => 
+            agent.order.kind === "priest-work" && 
+            agent.location && 
+            agent.location.id === location.id);
+
+        const off = location.id * P.stride;
+
+        // Compute caste distribution of non-cult population
+        // =================================================
+
+        for (let c = 0; c < P.nbCastes; ++c) {
+            let noncult = 0;
+            for (let w = 0; w < P.nbWealths; ++w) {
+                const seg = off + c * P.nbWealths + w;
+                noncult += (1 - cultratio[seg]) * population[seg];
+            }
+            noncultcasteratio[c] = noncult / totalnoncult;
+        }
+
+        // Compute recruitment power from priests
+        // ======================================
+
+        // The recruit power is computed caste-by-caste, but there
+        // is a generic component that contributes to all castes which
+        // is computed separately and added to the caste-specific value
+        // at the end.
+        const castePower = new Float32Array(P.nbCastes);
+        let genericRecruitingPower = 0;
+
+        const needPriest = this.recruitment.priestRequired && !priests.length;
+        let priestBasePower = 0;
+
+        for (const priest of priests) {
+
+            const caste = P.casteOfOccupation[priest.occupation];
+
+            // The total contribution of this priest is decomposed
+            // into two components: 
+            // 1. generic (segment-independent) recruitment power
+            const myGenericPower = 
+                // Base recruitment power for priests
+                CR.basePriestMult *
+                // Priests use their contact skill for recruiting
+                (1 + priest.stats.contacts.value/100);
+            // 2. this power is doubled for the specific caste
+            const myCastePower = myGenericPower * noncultcasteratio[caste];
+
+            priestBasePower += myGenericPower + myCastePower;
+
+            // Unlike the base power, when computing the per-caste final 
+            // power, we pre-multiply by the bonuses.
+            const bonuses = 1 + this.priestRecruitEffect.value;
+            genericRecruitingPower += myGenericPower * bonuses;
+            castePower[caste/P.nbWealths] += myCastePower * bonuses;
+        }
+
+        // Compute recruitment power from members
+        // ======================================
+
+        let memberBasePower = 0;
+
+        for (let caste = 0; caste < P.nbCastes; ++caste) {
+            for (let w = 0; w < P.nbWealths; ++w) {
+                const seg  = off + caste * P.nbWealths + w;
+                const cult = cultratio[seg] * population[seg];
+
+                // The total contribution of this population segment is 
+                // decomposed into two components: 
+                // 1. generic (segment-independent) recruitment power
+                const ourGenericPower = 
+                    // Base recruitment power for members
+                    CR.baseMemberMult *
+                    // Each member contributes separately
+                    cult;
+                // 2. this power is doubled for the specific caste
+                const ourCastePower = ourGenericPower * noncultcasteratio[caste];
+                
+                memberBasePower += ourGenericPower + ourCastePower;
+                    
+                // Unlike the base power, when computing the per-caste final 
+                // power, we pre-multiply by the bonuses.
+                const bonuses = (1 + this.memberRecruitEffect.value);
+                genericRecruitingPower += ourGenericPower * bonuses;
+                castePower[caste] += ourGenericPower * bonuses;
+            }
+        }
+
+        // Compute recruitment power from exposure
+        // =======================================
+
+        const exposureBasePower = this.exposure * CR.baseExposureMult;
+
+        genericRecruitingPower += 
+            exposureBasePower * (1 + this.exposureRecruitEffect.value);
+
+        // Combine all recruitment powers into array
+        // =========================================
+
+        let totalPower = 0;
+        for (let caste = 0; caste < P.nbCastes; ++caste) {
+            totalPower += 
+                (castePower[caste] += genericRecruitingPower * noncultcasteratio[caste]);
+        }
+
+        return {
+            totalPower,
+            castePower,
+            priestPower: explain(this.priestRecruitEffect.reasons, priestBasePower),
+            memberPower: explain(this.memberRecruitEffect.reasons, memberBasePower),
+            exposurePower: explain(this.exposureRecruitEffect.reasons, exposureBasePower),
+            needPriest,
+            difficulty: explain([], CR.baseRecruit)
+        }
     }
 
     // Perform daily updates
     public daily() {
 
-        // Helper to contain the proportion of the population in a given 
-        // caste for a single location
-        const noncultcasteratio = new Float32Array(P.nbCastes);
-
-        // Helper to contain the caste-specific recruitment power for 
-        // a single location.
-        const casterecruitpower = new Float32Array(P.nbCastes);
-
-        // Index agents with the "priest" order by their location,
-        // for easy access. 
-        // TODO: this does not change from step to step, so it could
-        // be cached in the location.
-        const priestsByLocation : (Agent[]|undefined)[] = [];
-        for (const agent of this.world.agents())
-        {
-            if (agent.order.kind !== "priest-work") continue;
-            if (!agent.location) continue;
-            
-            const array = priestsByLocation[agent.location.id];
-            if (array)
-                array.push(agent);
-            else
-                priestsByLocation[agent.location.id] = [agent];
-        }
-
-        const population = this.world.population.count;
-        const cultratio  = this.world.population.cult;
-
         let hasRecruited = false;
+
+        const population        = this.world.population.count;
+        const cultratio         = this.world.population.cult;
+        const noncultcasteratio = this.noncultcasteratio;
 
         // Each location is treated separately.
         for (const location of this.world.locations()) {
 
+            const effects      = location.recruit;
+            
+            if (!effects) continue;
+            if (effects.needPriest) continue;
+            if (effects.totalPower == 0) continue;
+
             const totalpop     = location.population;
             const totalcult    = location.cultpop;
             const totalnoncult = totalpop - totalcult;
-            const priests      = priestsByLocation[location.id];
 
             const off = location.id * P.stride;
-
-            // Do we need to process this location at all ? 
-            // ============================================
-
-            let hasCult = !!priests;
-            if (!hasCult && this.recruitment.priestRequired) continue;
-
-            for (let i = 0; i < P.stride && !hasCult; ++i)
-                hasCult = cultratio[off + i] != 0;
-
-            if (!hasCult) continue;
-
-            // Compute caste distribution of non-cult population
-            // =================================================
 
             for (let c = 0; c < P.nbCastes; ++c) {
                 let noncult = 0;
@@ -101,62 +229,8 @@ export class Cult {
                 noncultcasteratio[c] = noncult / totalnoncult;
             }
 
-            // Compute recruiting power for the location
-            // =========================================
-
-            // The recruit power is computed caste-by-caste, but there
-            // is a generic component that contributes to all castes which
-            // is computed separately and added to the caste-specific value
-            // at the end.
-
-            let genericRecruitingPower = 0;
-            casterecruitpower.fill(0);
-            
-            if (priests) {
-                for (const priest of priests) {
-                    const priestRecruitPower = 
-                        // Base recruitment power for priests
-                        CR.basePriestMult *
-                        // Priests use their contact skill for recruiting
-                        (1 + priest.stats.contacts.value/100) *
-                        // Apply all the recruitment effects from policies
-                        (1 + this.recruitment.priestEffect);
-                    
-                    genericRecruitingPower += priestRecruitPower;
-                    
-                    const caste = P.casteOfOccupation[priest.occupation];
-                    casterecruitpower[caste] += priestRecruitPower;
-                }
-            }
-
-            for (let c = 0; c < P.nbCastes; ++c) {
-                for (let w = 0; w < P.nbWealths; ++w) {
-                    const seg  = off + c * P.nbWealths + w;
-                    const cult = cultratio[seg] * population[seg];
-                    const memberRecruitPower = 
-                        // Base recruitment power for members
-                        CR.baseMemberMult *
-                        // Each member contributes separately
-                        cult *
-                        // Apply all the recruitment effects from policies
-                        (1 + this.recruitment.memberEffect);
-
-                    genericRecruitingPower += memberRecruitPower;
-                    casterecruitpower[c] += memberRecruitPower;
-                }
-            }
-
-            genericRecruitingPower += 
-                this.exposure * 
-                (1 + this.recruitment.exposureEffect);
-
-            let totalRecruitingPower = 0;
-            for (let caste = 0; caste < P.nbCastes; ++caste) {
-                totalRecruitingPower += 
-                    (casterecruitpower[caste] = 
-                        (casterecruitpower[caste] + genericRecruitingPower)
-                            * noncultcasteratio[caste]);
-            }
+            const totalRecruitingPower = effects.totalPower;
+            const casterecruitpower = effects.castePower;
 
             // At this point, 'totalRecruitingPower' is the sum of all 
             // individual recruiting powers for all castes (with each caste's
