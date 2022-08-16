@@ -133,6 +133,7 @@ const suffixes : ByLocationKind<RandomBag<string>> = {
         "-cut", "-rune", "-range", 
         "_pit", "_fog", "_leap", "_hole", "_yell", "_candle",
         "|castle", "|grave", "|cairn", "|circle", "|crown", "|tower",
+        "|ghosts", "-thorns"
     ]),
     town: new RandomBag<string>([
         "+ton", "+bury", "+ham", "+stead", "+wich", "+side",
@@ -187,9 +188,9 @@ const customSuffixProbability : ByLocationKind<number> = {
 
 const commonPrefixes = new RandomBag<string>([
     "archer$", "autumn§", "alms-",
-    "blue-", "big-", "broad-", "black-", "bright-", "burn+",
-    "cold-", "cloud$", "copper+", 
-    "deep-", "dun+", "dawn+",
+    "blue-", "big-", "broad-", "black-", "bramble+", "bright-", "burn+",
+    "cling§", "cold-", "cloud$", "copper+", "cull+",
+    "deep-", "dour-", "dun+", "dawn+",
     "elder-", "ever+", "even+", "end$", "east-",
     "first-", "found+", "#four-", "#five_", "finch+", "fair-", "feather-",
     "great-", "greater_", "giant-", "gutter+", "grim$",
