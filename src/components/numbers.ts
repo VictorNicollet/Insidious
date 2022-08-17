@@ -20,13 +20,13 @@ export function population(pop: number, info: number) {
     return integer(Math.floor(pop));
 }
 
-export function decimal(n: number): string {
+export function decimal(n: number, max: number = 15): string {
     let i = 0;
     for (let m = 1; i < 15; ++i, m *= 10) {
         if (Math.abs(m * n - Math.round(m * n)) < 0.001)
             break;
     }
-    return n.toFixed(i);
+    return n.toFixed(Math.min(max, i));
 }
 
 // Like 'decimal', but always with a '+' or '-' in front of
