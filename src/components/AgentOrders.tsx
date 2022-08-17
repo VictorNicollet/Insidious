@@ -7,13 +7,13 @@ import { useState, useMemo, useCallback } from 'preact/hooks';
 import { Tooltip } from './Tooltip';
 import { occupations } from '../model/occupation';
 import * as Help from '../text/help';
-import { Explained } from '../model/explainable';
 import { useWorld } from './Context';
 import { WorldView } from '../view/world';
 import { recruitOrder, travelOrder, gatherInfoOrder, workAsPriestOrder } from '../model/neworder';
 import { zero } from '../model/resources';
 import { toHTML } from '../text/format';
 import { acks } from '../text/acks'
+import { Explain } from "./Explain";
 
 function DescribeOrder(props: {order: Order}): JSX.Element {
     const world = useWorld();
@@ -43,21 +43,6 @@ function DescribeOrder(props: {order: Order}): JSX.Element {
             return <td>Priest</td>
         default: return never<JSX.Element>(order);
     }
-}
-
-function Explain(props: {left?: string, value: Explained}): JSX.Element {
-    const e = props.value;
-    if (e.multiplier) {
-        return <span>
-            {typeof props.left === "undefined" ? " = " : " " + props.left + " "}
-            {decimal(e.multiplier)}&nbsp;<span style={{opacity:0.5}}>(Base)</span> {e.reasons.map(r => 
-                <span>{r.contrib > 0 ? " +" : " -"}&nbsp;{integer(Math.abs(r.contrib * 100))}%&nbsp;<span style={{opacity:0.5}}>({r.why})</span></span>)}
-        </span>
-    }
-    return <span>
-        {e.reasons.map((r,i) => 
-            <span>{i == 0 ? " =" : " +"}&nbsp;{decimal(r.contrib)}&nbsp;<span style={{opacity:0.5}}>({r.why})</span></span>)}
-    </span>
 }
 
 function Order(props: {
