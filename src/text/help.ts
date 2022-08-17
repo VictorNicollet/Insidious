@@ -113,3 +113,28 @@ export const undercoverTip : TxtFormat = `
 Every day provides the agent's *income* as :gold:,
 and decreases their :exposure: by 1, though it cannot cause the
 :exposure: to go below the agent's *authority*.`
+
+export const recruitmentDifficultyTip : TxtFormat = `
+The *recruitment difficulty* is the power necessary to recruit a 
+member in a given location. `
+
+export function recruitmentPowerTip(needPriest: boolean) : TxtFormat {
+
+  return `
+The *recruitment power* measures the combined efforts of *priests*
+and cult *members* in #location# to recruit new members for the cult.
+` + (needPriest ? "\n\n" + 
+"!!Your recruitment policy requires a priest to be present in order to " +
+"recruit new members.!!" : "");
+}
+
+export const priestRecruitmentPowerTip : TxtFormat = `
+Your *agents*, when ordered to act as *priests*, contribute to the 
+member recruitment effort based on their *contact* ability.`
+
+export const memberRecruitmentPowerTip : TxtFormat = `
+The *members* of your cult contribute to the member recruitment effort.`
+
+export const exposureRecruitmentPowerTip : TxtFormat = `
+A higher :exposure: of your *cult* means it is easier for prospective
+*members* to notice it and ask to join.`
