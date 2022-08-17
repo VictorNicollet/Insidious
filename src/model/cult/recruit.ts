@@ -1,6 +1,8 @@
 import { build, int7, Pack } from "../serialize"
 import { format, TxtFormatEx } from "../../text/format"
 import type { Explained } from "../explainable"
+import type { Agent } from "../agents"
+import * as P from "../population"
 
 // The number of priests in a location is multiplied by this number
 // and added to the total recruitment power for that location.
@@ -149,4 +151,74 @@ export type RecruitEffect = {
     readonly needPriest : boolean
     // Recruitment power for each caste in the location
     readonly castePower : Float32Array
+}
+
+// Compute the per-caste recruiting power derived from priests.
+export function priestsRecruit(
+    priests: Agent[],
+    nonCultCasteRatio: Float32Array,
+    into: Float32Array
+) {
+
+    into.fill(0);
+
+    let totalGenericPower = 0;
+
+    for (const priest of priests) {
+
+        const caste = P.casteOfOccupation[priest.occupation] / P.nbWealths;
+
+        // The total contribution of this priest is decomposed
+        // into two components: 
+        // 1. generic (segment-independent) recruitment power
+        const myGenericPower = 
+            // Base recruitment power for priests
+            basePriestMult /
+            // Priests use their contact skill for recruiting
+            (1 - priest.stats.contacts.value/100);
+        // 2. this power is doubled for the specific caste
+        const myCastePower = myGenericPower * nonCultCasteRatio[caste];
+
+        totalGenericPower += myGenericPower;
+        into[caste] += myCastePower;
+    }
+
+    for (let caste = 0; caste < into.length; ++caste)
+        into[caste] += totalGenericPower * nonCultCasteRatio[caste];
+}
+
+export function membersRecruit(
+    population: Float32Array,
+    cultratio: Float32Array,
+    nonCultCasteRatio: Float32Array,
+    into: Float32Array
+) {
+
+    into.fill(0);
+
+    let totalGenericPower = 0;
+
+    for (let caste = 0; caste < P.nbCastes; ++caste) {
+        for (let w = 0; w < P.nbWealths; ++w) {
+            const seg  = caste * P.nbWealths + w;
+            const cult = cultratio[seg] * population[seg];
+
+            // The total contribution of this population segment is 
+            // decomposed into two components: 
+            // 1. generic (segment-independent) recruitment power
+            const ourGenericPower = 
+                // Base recruitment power for members
+                baseMemberMult *
+                // Each member contributes separately
+                cult;
+            // 2. this power is doubled for the specific caste
+            const ourCastePower = ourGenericPower * nonCultCasteRatio[caste];
+            
+            totalGenericPower += ourGenericPower;
+            into[caste] += ourCastePower;
+        }
+    }
+
+    for (let caste = 0; caste < into.length; ++caste)
+        into[caste] += totalGenericPower * nonCultCasteRatio[caste];
 }
