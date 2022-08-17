@@ -78,6 +78,11 @@ export class Location {
         if (!cult) return undefined;
         return this._recruit = cult.recruitEffect(this);
     }
+
+    // Reset all caches (because of a dependency change)
+    public refresh() {
+        this._recruit = undefined;
+    }
 }
 
 export const pack_location : Pack<Location> = build<Location>()

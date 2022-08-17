@@ -94,6 +94,13 @@ export class Agent {
         }
         return accumulated < 10;
     } 
+
+    // Change the order of this agent, refreshing any related values
+    public setOrder(order: Order) {
+        this.order = order;
+        this.location?.refresh();
+        this.world.refresh();
+    }
 }
 
 export function pack_agent(loc: Pack<Location>) : Pack<Agent> {

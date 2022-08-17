@@ -374,9 +374,7 @@ export function AgentOrders(props: {
     for (let d of descent) nodes = (nodes[d].children || []);
 
     const setOrder = useCallback((order: Order) => {
-        const agent = props.agent.agent;
-        agent.order = order;
-        agent.world.refresh();
+        props.agent.agent.setOrder(order);
         setDescent([])
         setDespiteAlready(false)
     }, [props.agent, setDescent]);
