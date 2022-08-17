@@ -58,8 +58,10 @@ export class World {
 
         this._routes = undefined
 
-        if (this._cult)
+        if (this._cult) {
             (this._cult as {world: World}).world = this;
+            this._cult.refreshEffects();
+        }
     }
 
     static create(
@@ -185,6 +187,7 @@ export class World {
     public createCult(name: string) {
         this._cult = Cult.create(name);
         (this._cult as {world: World}).world = this;
+        this._cult.refreshEffects();
         this.refresh();
     }
  

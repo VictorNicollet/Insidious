@@ -33,8 +33,6 @@ export class Cult {
             this.memberRecruitEffect = 
             this.exposureRecruitEffect = explain([])
 
-        this.refreshEffects();
-
         // We cheat by injecting the world reference later, when
         // this instance is added to the world
         // (because Cult and World are mutually recursive)
@@ -57,7 +55,13 @@ export class Cult {
         this.world.refresh();
     }
 
-    private refreshEffects() {
+    // Refresh all effects of the cult policies, then refresh anything that might 
+    // depend on them. 
+    public refreshEffects() {
+        
+        // Effect refresh 
+        // ==============
+
         let priestEffect = [];
         let memberEffect = [];
         let exposureEffect = [];
@@ -73,6 +77,12 @@ export class Cult {
         this.priestRecruitEffect = explain(priestEffect);
         this.memberRecruitEffect = explain(memberEffect);
         this.exposureRecruitEffect = explain(exposureEffect);
+
+        // Dependency refresh
+        // ==================
+
+        for (const location of this.world.locations())
+            location.refresh();
     }
 
     public recruitEffect(location: Location) : CR.RecruitEffect {
@@ -258,6 +268,9 @@ export class Cult {
                         break;
                     }
                 }
+
+                // Recruitment will likely affect location stats
+                location.refresh();
 
                 hasRecruited = true;
             }
