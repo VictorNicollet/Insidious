@@ -37,11 +37,11 @@ export function Screen(props: { world: World }): JSX.Element {
     
     // View management =======================================================
 
-    const [world, setWorld] = useState(WorldView.world(props.world));
+    const [world, setWorld] = useState<WorldView.WorldView>(() => WorldView.world(props.world));
 
     useEffect(() => 
         props.world.addListener(() => 
-            setWorld(WorldView.world(props.world))), 
+            setWorld(WorldView.world(props.world))),
         [props.world])
 
     // Screen size management ================================================
