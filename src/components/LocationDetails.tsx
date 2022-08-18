@@ -68,8 +68,12 @@ function LocationCultPage(props: {
         <hr/>
         <table class="gui-info-table">
             <TipInfoLine label="Recruitment Difficulty" 
-                value={integer(1000)} 
-                tooltip={<Tooltip tip={Help.recruitmentDifficultyTip} inserts={[]} ctx={{}}/>}/>
+                value={integer(recruit.difficulty.value)} 
+                tooltip={<Tooltip tip={Help.recruitmentDifficultyTip} ctx={{}}
+                    inserts={[<Fragment>
+                        {integer(recruit.difficulty.value)}
+                        <Explain value={recruit.difficulty}/>
+                    </Fragment>]}/>}/>
             <TipInfoLine label="Recruitment Power" 
                 value={recruit.needPriest ? "0" : integer(recruit.totalPower)}
                 tooltip={<Tooltip 

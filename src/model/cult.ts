@@ -173,6 +173,9 @@ export class Cult {
                 priestRecruitPower[caste]);
         }
 
+        const nonCultRatio = (location.population + 1 - location.cultpop) / (location.population + 1);
+        const baseDifficulty = CR.baseRecruit / (nonCultRatio * nonCultRatio);
+
         return {
             totalPower,
             castePower,
@@ -180,7 +183,7 @@ export class Cult {
             memberPower: explain(this.memberRecruitEffect.reasons, memberBasePower),
             exposurePower: explain(this.exposureRecruitEffect.reasons, exposureBasePower),
             needPriest,
-            difficulty: explain([], CR.baseRecruit)
+            difficulty: explain([], baseDifficulty)
         }
     }
 
@@ -219,6 +222,7 @@ export class Cult {
 
             const totalRecruitingPower = effects.totalPower;
             const casterecruitpower = effects.castePower;
+            const difficulty = effects.difficulty.value;
 
             // At this point, 'totalRecruitingPower' is the sum of all 
             // individual recruiting powers for all castes (with each caste's
@@ -231,10 +235,10 @@ export class Cult {
             // Roll the dice to pick the number of members to recruit.
             // =======================================================
 
-            const sureRecruited = Math.floor(totalRecruitingPower / CR.baseRecruit);
+            const sureRecruited = Math.floor(totalRecruitingPower / difficulty);
             const randomRecruited = 
-                ((totalRecruitingPower - CR.baseRecruit * sureRecruited)
-                    > Math.random() * CR.baseRecruit)
+                ((totalRecruitingPower - difficulty * sureRecruited)
+                    > Math.random() * difficulty)
                 ? 1 : 0;
             const totalRecruited = sureRecruited + randomRecruited;
 

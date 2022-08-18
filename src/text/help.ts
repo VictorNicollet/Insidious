@@ -122,8 +122,16 @@ and decreases their :exposure: by 1, though it cannot cause the
 :exposure: to go below the agent's *authority*.`
 
 export const recruitmentDifficultyTip : TxtFormat = `
-The *recruitment difficulty* is the power necessary to recruit a 
-member in a given location. `
+The *recruitment difficulty* is the effort necessary to recruit a 
+member in a given location. 
+
+Recruitment is easy for the first members, but increases 
+abruptly as the cult takes over a location. The last few 
+members in a location may be nearly impossible to convert.
+
+***
+
+%0`
 
 export function recruitmentPowerTip(needPriest: boolean) : TxtFormat {
 
