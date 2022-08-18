@@ -4,11 +4,13 @@ import { decimal } from './numbers';
 import { useState } from 'preact/hooks';
 import { Tooltip } from './Tooltip';
 import type { AgentView } from '../view/agents';
-import type { Explained } from '../model/explainable';
-import { statTip } from '../text/help';
+import { explain, Explained } from '../model/explainable';
+import { statTip, upkeepTip } from '../text/help';
+import type { TxtFormat } from "../text/format";
+import { upkeep } from "../model/occupation";
 
 const statName : StatsOf<string> = {
-    contacts:    "Recruitment",
+    contacts:   "Recruitment",
     idleIncome: "Income",
     outdoors:   "Outdoors",
     combat:     "Combat",
@@ -20,18 +22,21 @@ const statName : StatsOf<string> = {
 // A single stat/ability in the agent's detail page, formatted as
 //  {statName} [============== {statValue} ==]
 // (the value is in a fillable progress-bar).
-function Stat(props: {
-    stat: keyof(Stats),
+function RawStat(props: {
+    tip: TxtFormat
+    name: string
     value: Explained
+    max: number
+    children: JSX.Element|undefined|(JSX.Element|undefined)[]
+    unit: string
 }): JSX.Element {
     const [tip, setTip] = useState(false);
     const value = props.value.value;
-    const max = maxStats[props.stat];
     return <div className="stat" 
                 onMouseEnter={() => setTip(true)} 
                 onMouseLeave={() => setTip(false)}>
         {tip && <Tooltip 
-            tip={statTip[props.stat] + "\n\n%0"}
+            tip={props.tip + "\n\n%0"}
             ctx={{}}
             inserts={[
 <p style={{textAlign:"center"}}>
@@ -39,17 +44,36 @@ function Stat(props: {
         <span key={i}>{i > 0 ? " +" : ""}&nbsp;{decimal(reason.contrib)}&nbsp;<span style={{opacity:0.5}}>({reason.why})</span>
         </span>)}
 </p>]}/>}
-        <span className="stat-name">{statName[props.stat]}</span>
+        <span className="stat-name">{props.name}</span>
         <div className="progress">
-            <div style={{width: (Math.max(0, value/max) * 100) + "%"}} />
+            <div style={{width: (Math.max(0, value/props.max) * 100) + "%"}} />
         </div>
         <div className="value">
-            {props.stat === "idleIncome" && <span className="gold"/>}
-            {props.stat === "conduit" && <span className="touch"/>}
+            {props.children}
             {decimal(props.value.value)}
-            {props.stat !== "idleIncome" && props.stat !== "conduit" ? "%" : ""}
+            {props.unit}
         </div>
     </div>
+}
+
+
+// A single stat/ability in the agent's detail page, formatted 
+// using RawStat
+function Stat(props: {
+    stat: keyof(Stats),
+    value: Explained
+}): JSX.Element {
+    return <RawStat
+        tip={statTip[props.stat]}
+        max={maxStats[props.stat]}
+        name={statName[props.stat]}
+        value={props.value}
+        unit={props.stat !== "idleIncome" && props.stat !== "conduit" ? "%" : ""}
+    >
+        {props.stat === "idleIncome" ? <span className="gold"/> :
+         props.stat === "conduit" ? <span className="touch"/> : 
+         undefined}
+    </RawStat>
 }
 
 // A block containing all stats of an agent, for display in the 
@@ -59,6 +83,12 @@ export function AgentStats(props: { agent: AgentView }) {
         <div style={{padding:4,textAlign:"center"}}>☙ Resources ❧</div>
         {resources.map(stat => 
             <Stat key={stat} stat={stat} value={props.agent.stats[stat]}/>)}
+        <RawStat name="Upkeep" 
+                 value={explain([{ why: props.agent.occupation, contrib: upkeep[props.agent.occupation].gold}])}
+                 tip={upkeepTip}
+                 unit=""
+                 // Use the idle income max for the two values to be comparable.
+                 max={maxStats["idleIncome"]}><b className="gold"/></RawStat>
         <div style={{padding:4,textAlign:"center"}}>☙ Skills ❧</div>
         {skills.map(stat => 
             <Stat key={stat} stat={stat} value={props.agent.stats[stat]}/>)}

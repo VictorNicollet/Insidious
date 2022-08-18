@@ -92,6 +92,13 @@ and spread lies and rumors. Also makes the agent less
 suspicious, gaining less exposure from their actions.`
 }
 
+export const upkeepTip : TxtFormat = `
+Amount of :gold: needed by this agent for their daily needs. This
+is determined by the agent's *occupation*, but not their *level*.
+
+Being unable to pay this cost will reduce the agent's effectiveness, 
+and may even lead them to abandon or betray your cause.`
+
 export const exposureTip : TxtFormat = `
 An agent's :exposure: measures how noticeable that agent's actions 
 are—assuming that your enemies choose to look. 
