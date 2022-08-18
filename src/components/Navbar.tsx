@@ -34,7 +34,7 @@ and from the tithes of your cult.
 `} ctx={{}} inserts={[
         <p style={{textAlign:"center"}}>
             {signedDecimal(props.daily.value)}/day&nbsp;={props.daily.reasons.map((reason, i) => 
-                <span key={i}>{i > 0 ? " +" : ""}&nbsp;{decimal(reason.contrib)}&nbsp;<span style={{opacity:0.5}}>({reason.why})</span>
+                <span key={i}>{i == 0 ? "" : reason.contrib < 0 ? " -" : " +"}&nbsp;{decimal(Math.abs(reason.contrib))}&nbsp;<span style={{opacity:0.5}}>({reason.why})</span>
                 </span>)}
         </p>
             ]}/>
@@ -51,7 +51,7 @@ your agents can perform rituals to channel your power.
 `} ctx={{}} inserts={[
         <p style={{textAlign:"center"}}>
             {signedDecimal(props.daily.value)}/day&nbsp;={props.daily.reasons.map((reason, i) => 
-                <span key={i}>{i > 0 ? " +" : ""}&nbsp;{decimal(reason.contrib)}&nbsp;<span style={{opacity:0.5}}>({reason.why})</span>
+                <span key={i}>{i == 0 ? "" : reason.contrib < 0 ? " -" : " +"}&nbsp;{decimal(Math.abs(reason.contrib))}&nbsp;<span style={{opacity:0.5}}>({reason.why})</span>
                 </span>)}
         </p>
             ]}/>
