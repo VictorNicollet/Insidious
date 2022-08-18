@@ -1,9 +1,9 @@
-// Each agent has a current (outward) occupation, but can have skills
-
+import type { Reason } from './explainable';
 import { ByLocationKind } from './locations';
-import { Resources, zero } from './resources';
+import { Resources, ResourcesOf, zero } from './resources';
 import { enm, Pack, obj } from './serialize';
 
+// Each agent has a current (outward) occupation, but can have skills
 // (and levels) in more than one occupation.
 export type Occupation = keyof(ByOccupation<number>)
 export type ByOccupation<T> = {
@@ -49,6 +49,25 @@ export const recruitCost : ByOccupation<Resources> = {
     Criminal: { gold: 5, touch: 0 },
     Mage: { gold: 50, touch: 0 },
     Noble: { gold: 100, touch: 0 }
+}
+
+export const upkeep : ByOccupation<Resources> = {
+    Farmer: { gold: 1, touch: 0 },
+    Smith: { gold: 2, touch: 0 },
+    Hunter: zero, 
+    Merchant: { gold: 5, touch: 0 },
+    Mercenary: { gold: 2, touch: 0 },
+    Criminal: { gold: 1, touch: 0 },
+    Mage: { gold: 8, touch: 0 },
+    Noble: { gold: 10, touch: 0 }  
+}
+
+export function countUpkeepDelta(occupation: Occupation, resources: ResourcesOf<{daily:Reason[],once:number}>) {
+    const cost = upkeep[occupation];
+    if (cost.gold > 0) 
+        resources.gold.daily.push({ why: "Agent upkeep", contrib: -cost.gold});
+    if (cost.touch > 0)
+        resources.touch.daily.push({ why: "Agent upkeep", contrib: -cost.touch});
 }
 
 // The total experience needed to reach a level. One unit of XP equals
