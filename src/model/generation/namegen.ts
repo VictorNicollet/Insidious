@@ -1,4 +1,4 @@
-import type { PersonName, LocationName } from "../names"
+import type { PersonName, LocationName, DistrictName } from "../names"
 import type { LocationKind, ByLocationKind } from "../locations"
 import { RandomBag } from './randombag';
 
@@ -350,8 +350,17 @@ function location(kind: LocationKind) : LocationName {
     return notBad(() => locationOfKind(kind)) 
 }
 
+// DISTRICT GENERATION =======================================================
+
+function district(kind: LocationKind) : DistrictName {
+    return { short: location(kind).short };
+}
+
 // Generate a random person name
 export function randomPerson() : PersonName { return notAlready(person); }
 
 // Generate a random location name
 export function randomLocation(kind: LocationKind) : LocationName { return notAlready(() => location(kind)); }
+
+// Generate a random district name
+export function randomDistrict(kind: LocationKind) : DistrictName { return notAlready(() => district(kind)); }

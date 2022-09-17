@@ -29,3 +29,11 @@ export const pack_personName : Pack<PersonName> = obj<PersonName>({
     title: option(string),
     short: string,
 })
+
+export type DistrictName = {
+    short: string
+}
+
+export const pack_districtName : Pack<DistrictName> = obj<DistrictName>({
+    short: string,
+});

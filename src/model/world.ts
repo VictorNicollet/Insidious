@@ -17,6 +17,7 @@ import { God, pack_god, sample } from './god'
 import { Cult, pack_cult } from "./cult";
 import * as S from "./serialize";
 import { saveToLocalStore } from "../localStoreSave";
+import { District } from "./districts";
 
 export class World {
     
@@ -25,6 +26,8 @@ export class World {
     // Pathfinding cache, cleared every time map visibility changes.
     private _routes : Routes|undefined
 
+    // All districts by identifier, for direct access
+    private readonly _districts : readonly District[]
 
     private readonly _sagas : Sagas
 
@@ -46,8 +49,18 @@ export class World {
         private readonly messages : Message[],
         public readonly map : WorldMap)
     {
+        const districts : District[] = [];
         for (const location of this._locations) 
+        {
             (location as {world: World}).world = this;
+            for (const district of location.districts) {
+                if (district.id != districts.length) throw "DistrictId"
+                console.log("In %s district %s", location.name.short, district.name.short);
+                districts.push(district)
+            }
+        }
+
+        this._districts = districts;
 
         for (const agent of this._agents)
             (agent as {world: World}).world = this;
@@ -68,8 +81,13 @@ export class World {
         locations : {population:number,cell:Cell}[],
         map : WorldMap
     ) {
-        const locs = locations.map((l, id) => 
-            Location.create(map.cells[l.cell], id, l.cell, l.population));
+        let nextDistrict = 0;
+        const locs = locations.map((l, id) => { 
+            const loc = Location.create(
+                map.cells[l.cell], id, nextDistrict, l.cell, l.population);
+            nextDistrict += loc.districts.length;
+            return loc;
+        });
 
         return new World(
             locs,
