@@ -244,6 +244,36 @@
     text-align: right;
 }
 
+/* .gui-districts */
+
+ul.gui-districts {
+    padding: 0;
+    margin: 0;
+}
+
+ul.gui-districts li {
+    list-style-type: none;
+    position: relative;
+    height: 50px;
+    padding: 4px 4px 4px 52px;
+    cursor: pointer;
+}
+
+ul.gui-districts li:hover {
+    background: linear-gradient(90deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 35%, rgba(255,255,255,0) 100%);
+}
+
+ul.gui-districts li.empty {
+    text-align: center;
+    padding: 8px;
+    font-size: 16px;
+    color: #877;
+}
+
+ul.gui-districts li.empty:hover {
+    background: none;
+}
+
 /* .gui-agents */
 
 ul.gui-agents {

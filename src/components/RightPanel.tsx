@@ -5,6 +5,7 @@ import { AgentDetails } from './AgentDetails';
 import type { Selection } from './Screen'
 import { never } from '../never';
 import { CultDetails } from "./CultDetails";
+import { DistrictDetails } from "./DistrictDetails";
 
 export type RightPanelProps = {
     screenH: number
@@ -47,6 +48,10 @@ export function RightPanel(props: RightPanelProps): JSX.Element {
                 page={selected.page}
                 height={height}
                 close={close} /> :
+        selected.selected === "district" ?
+            <DistrictDetails district={selected.id} 
+                height={height}
+                close={close} /> : 
         selected.selected === "plan" ? 
             <div>Plan</div> : 
         selected.selected === "cult" ?

@@ -1,28 +1,20 @@
-// Population is categorized by caste and wealth. 
+// Population is categorized by caste, within each district of a location
 
 import { Location, ByLocationKind } from './locations'
 import { ByOccupation, presenceByLocationKind, occupations } from './occupation'
 import { objmap } from '../objmap'
 import { build, float32array } from './serialize'
-
-// WEALTH ====================================================================
-
-export const destitute = 0
-export const poor      = 1
-export const middle    = 2
-export const wealthy   = 3
-
-export const nbWealths = 4
+import { District } from './districts'
 
 // CASTES ====================================================================
 
 export const laborers  = 0
-export const artisans  = 4
-export const criminals = 8
-export const fighters  = 12
-export const bourgeois = 16
-export const mystics   = 20
-export const gentry    = 24
+export const artisans  = 1
+export const criminals = 2
+export const fighters  = 3
+export const bourgeois = 4
+export const mystics   = 5
+export const gentry    = 6
 
 export const nbCastes  = 7
 
@@ -47,10 +39,10 @@ export const casteOfOccupation : ByOccupation<number> = {
     Noble: gentry
 }
 
-// The stride (number of population segments in a location). 
-// The segment for a given caste and wealth in a location is at index: 
-//   (location * stride) + wealth + caste
-export const stride    = 28
+// The stride (number of population segments in a district). 
+// The segment for a given caste in a district is at index: 
+//   district * stride + caste
+export const stride    = 7
 
 // For every location kind, a population distribution as fractions of the total.
 // Example: 
@@ -76,23 +68,6 @@ const casteByLocationKind : ByLocationKind<Float32Array> = objmap(presenceByLoca
         return byOccupation;
     })
 
-const wealthByCaste = new Float32Array([
-    // Laborers
-    0.9, 0.09, 0.01, 0,
-    // Artisans
-    0.4, 0.5, 0.09, 0.01,
-    // Criminals
-    0.5, 0.4, 0.08, 0.02,
-    // Fighters
-    0.6, 0.3, 0.1, 0,
-    // Bourgeois
-    0.01, 0.2, 0.5, 0.29,
-    // Mystics
-    0, 0.1, 0.6, 0.3,
-    // Gentry
-    0, 0.05, 0.3, 0.65
-])
-
 // Keeps track of the population of the entire game world, location by location,
 // both count and properties.
 export class Population {
@@ -100,47 +75,41 @@ export class Population {
     public readonly cultTotal : number
 
     constructor(
-        // The number of people in each caste/wealth segment, for all locations
+        // The number of people in each caste, for all districts
         public readonly count : Float32Array,
-        // The optimism level (from -1 to 1) for each segment.
-        public readonly optimism : Float32Array,
         // The proportion of cult members in each segment (0..1)
         public readonly cult : Float32Array,
-        // All locations in the world, used to update the location's population fields        
-        public readonly locations: readonly Location[])
+        // All locations in the world, used to update their population fields        
+        public readonly locations: readonly Location[],
+        // All districts in the world, used to update their population fields
+        public readonly districts: readonly District[])
     {
         this.cultTotal = 0;
         for (let seg = 0; seg < this.cult.length; ++seg)
             this.cultTotal += Math.floor(this.cult[seg] * this.count[seg]);
     }
 
-    static create(locations: readonly Location[]) {
-        const nb = locations.length * stride;
+    static create(locations: readonly Location[], districts: readonly District[]) {
+        const nb = districts.length * stride;
         const count = new Float32Array(nb);
-        const optimism = new Float32Array(nb);
         const cult = new Float32Array(nb);
 
         for (let seg = 0; seg < nb; ++seg) {
-            const location = locations[Math.floor(seg/stride)];
-            const s = seg % stride;
-            const caste = s - (s % 4);
+            const district = districts[Math.floor(seg/stride)];
+            const location = district.location;
+            const caste = seg % stride;
             const casteMult  = casteByLocationKind[location.kind][caste];
-            const wealthMult = wealthByCaste[s];
-            count[seg] = location.population * casteMult * wealthMult;
+            count[seg] = Math.floor(district.population * casteMult);
         }
 
-        return new Population(count, optimism, cult, locations);
+        return new Population(count, cult, locations, districts);
     }
 
     public segname(seg: number) {
-        const loc = Math.floor(seg / stride);
-        const caste = Math.floor((seg % stride) / nbWealths);
-        const wealth = seg % nbWealths;
+        const dis = Math.floor(seg / stride);
+        const caste = seg % stride;
 
-        return this.locations[loc].name.short + " " +
-            (wealth == 0 ? "destitute" : 
-             wealth == 1 ? "poor" : 
-             wealth == 2 ? "middle" : "wealthy") + " " + 
+        return this.districts[dis].name.short + " (" + this.districts[dis].location.name.short + ") " +
             casteName(caste);
     }
 
@@ -160,65 +129,55 @@ export class Population {
                 "mystics": wealthSum(mystics),
                 "gentry": wealthSum(gentry),
             }
-            function casteSum(wealth: number) {
-                let sum = 0;
-                for (let i = 0; i < stride; i += 4) sum += c[o + i + wealth]
-                return Math.floor(sum)
-            }
-            const byWealth = {
-                "destitute": casteSum(destitute),
-                "poor": casteSum(poor),
-                "middle": casteSum(middle),
-                "wealthy": casteSum(wealthy)
-            }
-            console.log("%s (%s): %d (%d) = %o %o", 
+            console.log("%s (%s): %d (%d) = %o", 
                 this.locations[l].name.short, 
                 this.locations[l].kind, 
                 this.locations[l].population,
                 this.locations[l].cultpop,
-                byCaste,
-                byWealth);
+                byCaste);
         }
     }
 
     // Perform weekly computations
-    public weekly() {
-        const {count,optimism} = this;
-
-        // Population increase.
-        for (let seg = 0; seg < count.length; ++seg) {
-            const current = count[seg];
-            if (current < 10) continue;
-            const fertility = 1 + (1 + optimism[seg]) / 100;
-            count[seg] = current * fertility;
-        }
-
-    }
+    public weekly() { }
 
     // Refresh the location-stored properties for a location
     public refreshAll() {
         const {count,cult} = this;
-        let pop = 0;
-        let cultPop = 0;
+        let districtPop = 0;
+        let districtCultPop = 0;
+        let locationPop = 0;
+        let locationCultPop = 0;
         for (let seg = 0; seg < count.length; ++seg) {
-            pop += Math.floor(count[seg])
-            cultPop += Math.floor(count[seg] * cult[seg]);
+            districtPop += Math.floor(count[seg])
+            districtCultPop += Math.floor(count[seg] * cult[seg]);
             if ((seg % stride) == stride - 1) {
-                const location = this.locations[Math.floor(seg/stride)];
-                location.population = pop;
-                location.cultpop = cultPop;
-                pop = 0;
-                cultPop = 0;
+                const district = this.districts[Math.floor(seg/stride)];
+                district.population = districtPop;
+                district.cultpop = districtCultPop;
+                locationPop += districtPop;
+                locationCultPop += districtCultPop;
+                if (district.id + 1 == this.districts.length ||
+                    this.districts[district.id].location.id != district.location.id)
+                {
+                    const location = district.location;
+                    location.population = locationPop;
+                    location.cultpop = locationCultPop;
+                    locationPop = 0;
+                    locationCultPop = 0;
+                }
             }
         }
     }
 }
 
-export function pack_population(locations: readonly Location[]) {
+export function pack_population(
+    locations: readonly Location[], 
+    districts: readonly District[]) 
+{
     return build<Population>()
         .pass("count", float32array)
-        .pass("optimism", float32array)
         .pass("cult", float32array)
-        .call((count, optimism, cult) => 
-            new Population(count, optimism, cult, locations));
+        .call((count, cult) => 
+            new Population(count, cult, locations, districts));
 }

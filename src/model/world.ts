@@ -26,13 +26,11 @@ export class World {
     // Pathfinding cache, cleared every time map visibility changes.
     private _routes : Routes|undefined
 
-    // All districts by identifier, for direct access
-    private readonly _districts : readonly District[]
-
     private readonly _sagas : Sagas
 
     constructor(
         private readonly _locations: readonly Location[],
+        private readonly _districts: readonly District[],
         public readonly seenLocations : Location[],
         private readonly _agents : Agent[],
         private readonly _plans : Plan[],
@@ -51,16 +49,7 @@ export class World {
     {
         const districts : District[] = [];
         for (const location of this._locations) 
-        {
             (location as {world: World}).world = this;
-            for (const district of location.districts) {
-                if (district.id != districts.length) throw "DistrictId"
-                console.log("In %s district %s", location.name.short, district.name.short);
-                districts.push(district)
-            }
-        }
-
-        this._districts = districts;
 
         for (const agent of this._agents)
             (agent as {world: World}).world = this;
@@ -81,21 +70,23 @@ export class World {
         locations : {population:number,cell:Cell}[],
         map : WorldMap
     ) {
-        let nextDistrict = 0;
+        const districts : District[] = []
         const locs = locations.map((l, id) => { 
             const loc = Location.create(
-                map.cells[l.cell], id, nextDistrict, l.cell, l.population);
-            nextDistrict += loc.districts.length;
+                map.cells[l.cell], id, districts.length, l.cell, l.population);
+            for (const d of loc.districts) 
+                districts.push(d);
             return loc;
         });
 
         return new World(
             locs,
+            districts,
             [],
             [],
             [],
             undefined,
-            Population.create(locs),
+            Population.create(locs, districts),
             { gold: 0, touch: 0 },
             worldFlags,
             sample,
@@ -117,17 +108,24 @@ export class World {
         const turn = S.int7[1](reader);
         const locations = S.array(pack_location)[1](reader);
 
-        // Everything below needs to resolve locations based on their id.
+        const districts : District[] = []
+        for (const l of locations) 
+            for (const d of l.districts) 
+                districts.push(d);
+
+        // Everything below needs to resolve locations and districts based on 
+        // their id.
         const pack_loc = pack_locationRef(locations);
 
         const agents = S.rwarray(pack_agent(pack_loc))[1](reader);
         const plans = S.rwarray(pack_plan(pack_loc))[1](reader);
         const seen = S.rwarray(pack_loc)[1](reader);
         const cult = S.option(pack_cult)[1](reader);
-        const population = pack_population(locations)[1](reader);
+        const population = pack_population(locations, districts)[1](reader);
 
         return new World(
             locations,
+            districts,
             seen,
             agents,
             plans,
@@ -157,7 +155,7 @@ export class World {
         S.rwarray(pack_plan(pack_loc))[0](writer, this._plans);
         S.array(pack_loc)[0](writer, this.seenLocations);
         S.option(pack_cult)[0](writer, this._cult);
-        pack_population(this._locations)[0](writer, this.population);
+        pack_population(this._locations, this._districts)[0](writer, this.population);
     }
 
     // Add a new message, to be displayed on the next render.
@@ -180,6 +178,8 @@ export class World {
     }
 
     public locations() : readonly Location[] { return this._locations; }
+
+    public districts() : readonly District[] { return this._districts; }
 
     public newAgent(
         name: PersonName,

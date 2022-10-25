@@ -1,4 +1,5 @@
 import { location, LocationView } from "./locations"
+import { district, DistrictView } from "./districts"
 import { agent, AgentView } from "./agents"
 import { map, MapView } from "./map"
 import type { World } from '../model/world'
@@ -12,7 +13,10 @@ import { IdxArray, index } from '../idindexed'
 import { CultView, cult } from "./cult"
 
 export type WorldView = {
+    // All visible locations
     readonly locations: readonly LocationView[]
+    // All districts (including those not visible yet). 
+    readonly districts: readonly DistrictView[]
     readonly agents: IdxArray<AgentView>
     readonly plans: IdxArray<PlanView>
     readonly map: MapView
@@ -30,7 +34,8 @@ export type WorldView = {
 }
 
 export function world(w: World): WorldView {
-    const locations = w.seenLocations
+    const locations = w.seenLocations.map(location)
+    const districts = w.districts()
     const agents = index(w.agents().map(agent))
 
     // We subtract the 'once' delta from the available resources, to 
@@ -54,7 +59,8 @@ export function world(w: World): WorldView {
 
     return {
         world: w,
-        locations: locations.map(location),
+        locations,
+        districts: districts.map(d => district(d, locations)),
         agents,
         map: map(w, w.map),
         cult: cult(w, agents),

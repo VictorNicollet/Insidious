@@ -5,8 +5,9 @@ import * as WorldView from '../view/world';
 import { Navbar } from './Navbar';
 import { useState, useEffect, useCallback } from 'preact/hooks';
 import { RightPanel } from './RightPanel';
-import { LocationView } from '../view/locations';
-import { AgentView } from '../view/agents';
+import type { LocationView } from '../view/locations';
+import type { DistrictView } from "../view/districts";
+import type { AgentView } from '../view/agents';
 import { Context } from './Context';
 import { World } from '../model/world';
 import { Notifications } from './Notification';
@@ -14,7 +15,7 @@ import { Message as MessageBox } from './Message';
 import { PlanView } from '../view/plans';
 
 export type CultPages = "pretense"|"recruitment"
-export type LocationPages = "Agents"|"Cult"
+export type LocationPages = "Agents"|"Districts"
 
 export type Selection = {
     selected: "agent"
@@ -23,6 +24,9 @@ export type Selection = {
     selected: "location"
     id: number
     page: LocationPages
+} | {
+    selected: "district"
+    id: number
 } | {
     selected: "plan"
     id: number
@@ -96,12 +100,17 @@ export function Screen(props: { world: World }): JSX.Element {
         setSelected({selected: "cult", page })
     }, [setSelected])
 
+    const selectDistrict = useCallback((district: DistrictView) => {
+        setSelected({selected: "district", id: district.id})
+    }, [setSelected])
+
     return <div>
         <Context world={world} 
                  agent={selectAgent} 
                  location={selectLocation} 
                  plan={selectPlan}
-                 cult={selectCult}>
+                 cult={selectCult}
+                 district={selectDistrict}>
             <MapScroller 
                 screenH={screenH}
                 screenW={screenW}

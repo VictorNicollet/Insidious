@@ -5,7 +5,6 @@ import type { Cell } from "./grid"
 import * as M from './map'
 import { randomDistrict, randomLocation } from './generation/namegen'
 import { Pack, build, int7, array } from './serialize'
-import type { RecruitEffect } from "./cult/recruit"
 
 export type ByLocationKind<T> = {
     ruins: T
@@ -31,9 +30,6 @@ export class Location {
     public readonly kind : LocationKind
     public readonly world : World
 
-    // Recruitment stats, computed lazily when first accessed.
-    private _recruit : RecruitEffect|undefined
-    
     constructor(
         public readonly cellkind: M.CellKind,
         // Position of this location in the "all locations" array
@@ -109,22 +105,14 @@ export class Location {
             cell, 
             randomLocation(locationKind),
             districts,
-            population,
+            realPopulation,
             0,
             0)
     }
 
-    // Recruitment stats for this location
-    get recruit() : RecruitEffect|undefined {
-        if (this._recruit) return this._recruit;
-        const cult = this.world.cult;
-        if (!cult) return undefined;
-        return this._recruit = cult.recruitEffect(this);
-    }
-
     // Reset all caches (because of a dependency change)
     public refresh() {
-        this._recruit = undefined;
+        for (const d of this.districts) d.refresh();
     }
 }
 

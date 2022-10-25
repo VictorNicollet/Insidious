@@ -4,33 +4,33 @@ import * as CP from "./cult/pretense";
 import { build, float, Pack, string } from "./serialize"
 import * as P from "./population"
 import type { World } from "./world"
-import type { Location } from "./locations"
 import { Explained, explain } from "./explainable";
+import { District } from "./districts";
 
 export class Cult {
-    
+
     public readonly world: World
 
-    public priestRecruitEffect : Explained
-    public memberRecruitEffect : Explained
-    public exposureRecruitEffect : Explained
-    
+    public priestRecruitEffect: Explained
+    public memberRecruitEffect: Explained
+    public exposureRecruitEffect: Explained
+
     // Helpers reused between calls to recruitEffect()
-    private nonCultCasteRatio : Float32Array
-    private priestRecruitPower : Float32Array
-    private memberRecruitPower : Float32Array
+    private nonCultCasteRatio: Float32Array
+    private priestRecruitPower: Float32Array
+    private memberRecruitPower: Float32Array
 
     constructor(
-        public name : string,
-        public pretense : CP.Pretense,
-        public recruitment : CR.Recruitment,
-        public exposure : number
+        public name: string,
+        public pretense: CP.Pretense,
+        public recruitment: CR.Recruitment,
+        public exposure: number
     ) {
         this.nonCultCasteRatio = new Float32Array(P.nbCastes);
         this.priestRecruitPower = new Float32Array(P.nbCastes);
         this.memberRecruitPower = new Float32Array(P.nbCastes);
-        this.priestRecruitEffect = 
-            this.memberRecruitEffect = 
+        this.priestRecruitEffect =
+            this.memberRecruitEffect =
             this.exposureRecruitEffect = explain([])
 
         // We cheat by injecting the world reference later, when
@@ -58,7 +58,7 @@ export class Cult {
     // Refresh all effects of the cult policies, then refresh anything that might 
     // depend on them. 
     public refreshEffects() {
-        
+
         // Effect refresh 
         // ==============
 
@@ -67,12 +67,12 @@ export class Cult {
         let exposureEffect = [];
 
         const r = this.recruitment;
-        if (r.priestEffect) 
-            priestEffect.push({why: r.name, contrib: r.priestEffect});
+        if (r.priestEffect)
+            priestEffect.push({ why: r.name, contrib: r.priestEffect });
         if (r.memberEffect)
-            memberEffect.push({why: r.name, contrib: r.memberEffect});
+            memberEffect.push({ why: r.name, contrib: r.memberEffect });
         if (r.exposureEffect)
-            exposureEffect.push({why: r.name, contrib: r.exposureEffect});
+            exposureEffect.push({ why: r.name, contrib: r.exposureEffect });
 
         this.priestRecruitEffect = explain(priestEffect);
         this.memberRecruitEffect = explain(memberEffect);
@@ -85,34 +85,31 @@ export class Cult {
             location.refresh();
     }
 
-    public recruitEffect(location: Location) : CR.RecruitEffect {
-        
+    public recruitEffect(district: District): CR.RecruitEffect {
+
         const nonCultCasteRatio = this.nonCultCasteRatio;
         const priestRecruitPower = this.priestRecruitPower;
         const memberRecruitPower = this.memberRecruitPower;
 
         const population = this.world.population.count;
-        const cultratio  = this.world.population.cult;
+        const cultratio = this.world.population.cult;
 
-        const totalpop     = location.population;
-        const totalcult    = location.cultpop;
+        const totalpop = district.population;
+        const totalcult = district.cultpop;
         const totalnoncult = totalpop - totalcult;
-        const priests      = this.world.agents().filter(agent => 
-            agent.order.kind === "priest-work" && 
-            agent.location && 
-            agent.location.id === location.id);
+        const priests = this.world.agents().filter(agent =>
+            agent.order.kind === "priest-work" &&
+            agent.location &&
+            // TODO: consider actual distrct!
+            agent.location.id === district.location.id);
 
-        const off = location.id * P.stride;
+        const off = district.id * P.stride;
 
         // Compute caste distribution of non-cult population
         // =================================================
 
         for (let c = 0; c < P.nbCastes; ++c) {
-            let noncult = 0;
-            for (let w = 0; w < P.nbWealths; ++w) {
-                const seg = off + c * P.nbWealths + w;
-                noncult += (1 - cultratio[seg]) * population[seg];
-            }
+            let noncult = (1 - cultratio[off + c]) * population[off + c];
             nonCultCasteRatio[c] = noncult / totalnoncult;
         }
 
@@ -120,9 +117,9 @@ export class Cult {
         // ======================================
 
         const needPriest = this.recruitment.priestRequired && !priests.length;
-        
+
         CR.priestsRecruit(priests, nonCultCasteRatio, priestRecruitPower)
-        
+
         const priestRecruitBonus = 1 + this.priestRecruitEffect.value;
 
         // Sum the base (non-bonus) power, and apply the multiplier to the actual power.
@@ -136,9 +133,12 @@ export class Cult {
         // Compute recruitment power from members
         // ======================================
 
+        const locoff = district.location.districts[0].id * P.stride;
+        const loccount = district.location.districts.length * P.stride;
+
         CR.membersRecruit(
-            population.subarray(off, off + P.stride),
-            cultratio.subarray(off, off + P.stride),
+            population.subarray(locoff, locoff + loccount),
+            cultratio.subarray(locoff, locoff + loccount),
             nonCultCasteRatio,
             memberRecruitPower);
 
@@ -167,13 +167,13 @@ export class Cult {
 
         let totalPower = 0;
         for (let caste = 0; caste < P.nbCastes; ++caste) {
-            totalPower += (castePower[caste] = 
+            totalPower += (castePower[caste] =
                 genericRecruitPower * nonCultCasteRatio[caste] +
                 memberRecruitPower[caste] +
                 priestRecruitPower[caste]);
         }
 
-        const nonCultRatio = (location.population + 1 - location.cultpop) / (location.population + 1);
+        const nonCultRatio = (district.population + 1 - district.cultpop) / (district.population + 1);
         const baseDifficulty = CR.baseRecruit / (nonCultRatio * nonCultRatio);
 
         return {
@@ -192,91 +192,94 @@ export class Cult {
 
         let hasRecruited = false;
 
-        const population        = this.world.population.count;
-        const cultratio         = this.world.population.cult;
+        const population = this.world.population.count;
+        const cultratio = this.world.population.cult;
         const noncultcasteratio = this.nonCultCasteRatio;
 
-        // Each location is treated separately.
+        // Each district is treated separately.
         for (const location of this.world.locations()) {
 
-            const effects      = location.recruit;
-            
-            if (!effects) continue;
-            if (effects.needPriest) continue;
-            if (effects.totalPower == 0) continue;
+            // Run a first pass to compute all the effects in the
+            // location (since the district's recruitment effects depend
+            // on other districts, we want these to be computed before
+            // we start applying recruitment changes)
+            for (const district of location.districts)
+                district.recruit;
 
-            const totalpop     = location.population;
-            const totalcult    = location.cultpop;
-            const totalnoncult = totalpop - totalcult;
+            let locationHasRecruited = false;
 
-            const off = location.id * P.stride;
+            for (const district of location.districts) {
 
-            for (let c = 0; c < P.nbCastes; ++c) {
-                let noncult = 0;
-                for (let w = 0; w < P.nbWealths; ++w) {
-                    const seg = off + c * P.nbWealths + w;
-                    noncult += (1 - cultratio[seg]) * population[seg];
+                const effects = district.recruit;
+
+                if (!effects) continue;
+                if (effects.needPriest) continue;
+                if (effects.totalPower == 0) continue;
+
+                const totalpop = district.population;
+                const totalcult = district.cultpop;
+                const totalnoncult = totalpop - totalcult;
+
+                const off = district.id * P.stride;
+                const dcultratio = cultratio.subarray(off, P.stride);
+                const dpopulation = population.subarray(off, P.stride);
+
+                for (let c = 0; c < P.nbCastes; ++c) {
+                    let noncult = (1 - dcultratio[c]) * dpopulation[c];
+                    noncultcasteratio[c] = noncult / totalnoncult;
                 }
-                noncultcasteratio[c] = noncult / totalnoncult;
+
+                const totalRecruitingPower = effects.totalPower;
+                const casterecruitpower = effects.castePower;
+                const difficulty = effects.difficulty.value;
+
+                // At this point, 'totalRecruitingPower' is the sum of all 
+                // individual recruiting powers for all castes (with each caste's
+                // power being weighted by the ratio of its non-cult population out
+                // of the total non-cult population of the location).
+
+                console.log("Recruiting power in %o (%o): %f (%d cult, %d non-cult)",
+                    location.name.short, district.name.short, totalRecruitingPower, totalcult, totalnoncult);
+
+                // Roll the dice to pick the number of members to recruit.
+                // =======================================================
+
+                const sureRecruited = Math.floor(totalRecruitingPower / difficulty);
+                const randomRecruited =
+                    ((totalRecruitingPower - difficulty * sureRecruited)
+                        > Math.random() * difficulty)
+                        ? 1 : 0;
+                const totalRecruited = sureRecruited + randomRecruited;
+
+                for (let i = 0; i < totalRecruited; ++i) {
+
+                    // Pick the caste weighted by recruiting power
+                    let roll = Math.random() * totalRecruitingPower;
+                    let caste = 0;
+                    while (roll >= 0 && caste < casterecruitpower.length)
+                        roll -= casterecruitpower[caste++];
+                    if (caste-- >= P.nbCastes)
+                        continue;
+
+                    const totalNonCultPop = dpopulation[caste] * (1 - dcultratio[caste]);
+
+                    if (totalNonCultPop < 1)
+                        continue;
+
+                    console.log("Joins cult: %s", this.world.population.segname(caste));
+
+                    dcultratio[caste] = Math.min(1, dcultratio[caste] + 1 / dpopulation[caste]);
+                    
+                    locationHasRecruited = true;
+                }
             }
 
-            const totalRecruitingPower = effects.totalPower;
-            const casterecruitpower = effects.castePower;
-            const difficulty = effects.difficulty.value;
-
-            // At this point, 'totalRecruitingPower' is the sum of all 
-            // individual recruiting powers for all castes (with each caste's
-            // power being weighted by the ratio of its non-cult population out
-            // of the total non-cult population of the location).
-
-            console.log("Recruiting power in %o: %f (%d cult, %d non-cult)", 
-                location.name.short, totalRecruitingPower, totalcult, totalnoncult);
-
-            // Roll the dice to pick the number of members to recruit.
-            // =======================================================
-
-            const sureRecruited = Math.floor(totalRecruitingPower / difficulty);
-            const randomRecruited = 
-                ((totalRecruitingPower - difficulty * sureRecruited)
-                    > Math.random() * difficulty)
-                ? 1 : 0;
-            const totalRecruited = sureRecruited + randomRecruited;
-
-            for (let i = 0; i < totalRecruited; ++i) {
-
-                // Pick the caste weighted by recruiting power
-                let roll = Math.random() * totalRecruitingPower;
-                let caste = 0;
-                while (roll >= 0 && caste < casterecruitpower.length) 
-                    roll -= casterecruitpower[caste++];
-                if (caste-- >= P.nbCastes)
-                    continue;
-                
-                // Pick the wealth with the highest non-cult pop
-                let totalNonCultPop = 0;
-                for (let w = 0; w < P.nbWealths; ++w) {
-                    const seg = off + caste * P.nbWealths + w;
-                    totalNonCultPop += population[seg] * (1 - cultratio[seg]);
-                }
-
-                if (totalNonCultPop < 1)
-                    continue;
-
-                roll = Math.random() * totalNonCultPop;
-                for (let w = 0; w < P.nbWealths; ++w) {
-                    const seg = off + caste * P.nbWealths + w;
-                    roll -= population[seg] * (1 - cultratio[seg]);
-                    if (roll < 0) {
-                        console.log("Joins cult: %s", this.world.population.segname(seg));
-                        cultratio[seg] = Math.min(1, cultratio[seg] + 1 / population[seg]);
-                        break;
-                    }
-                }
-
-                // Recruitment will likely affect location stats
-                location.refresh();
-
+            if (locationHasRecruited) {
                 hasRecruited = true;
+
+                // Recruitment has likely changed further recruitment stats
+                // for all districts in the location. 
+                location.refresh();
             }
         }
 
@@ -285,10 +288,10 @@ export class Cult {
     }
 }
 
-export const pack_cult : Pack<Cult> = build<Cult>()
+export const pack_cult: Pack<Cult> = build<Cult>()
     .pass("name", string)
     .pass("pretense", CP.pack_pretense)
     .pass("recruitment", CR.pack_recruitment)
     .pass("exposure", float)
-    .call((name, pretense, recruitment, exposure) => 
+    .call((name, pretense, recruitment, exposure) =>
         new Cult(name, pretense, recruitment, exposure));

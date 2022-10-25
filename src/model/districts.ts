@@ -1,11 +1,15 @@
 import type { Location } from "./locations"
 import { build, int7, Pack } from "./serialize"
 import { DistrictName, pack_districtName } from "./names"
+import { RecruitEffect } from "./cult/recruit"
 
 export class District {
 
     public readonly location : Location
 
+    // Recruitment stats, computed lazily when first accessed.
+    private _recruit : RecruitEffect|undefined
+    
     public constructor(
         // Unique identifier of this district
         public readonly id: number,
@@ -31,6 +35,19 @@ export class District {
             name, 
             population,
             0);    
+    }
+
+    // Recruitment stats for this district
+    get recruit() : RecruitEffect|undefined {
+        if (this._recruit) return this._recruit;
+        const cult = this.location.world.cult;
+        if (!cult) return undefined;
+        return this._recruit = cult.recruitEffect(this);
+    }
+    
+    // Reset all caches (because of a dependency change)
+    public refresh() {
+        this._recruit = undefined;
     }
 }
 

@@ -166,7 +166,7 @@ export function priestsRecruit(
 
     for (const priest of priests) {
 
-        const caste = P.casteOfOccupation[priest.occupation] / P.nbWealths;
+        const caste = P.casteOfOccupation[priest.occupation];
 
         // The total contribution of this priest is decomposed
         // into two components: 
@@ -187,36 +187,46 @@ export function priestsRecruit(
         into[caste] += totalGenericPower * nonCultCasteRatio[caste];
 }
 
+// Member recruitment power, per caste, at the district level. 
+// Based on the number of members in the entire location.
 export function membersRecruit(
+    // The population of all districts in the location
     population: Float32Array,
+    // The cult ratio of all districts in the location
     cultratio: Float32Array,
+    // At the *district* level, the proportion of each caste 
+    // that is not yet in the cult 
     nonCultCasteRatio: Float32Array,
+    // Output: for each caste, the recruitment power at the 
+    // level of this district
     into: Float32Array
 ) {
-
-    into.fill(0);
-
+    const districts = population.length / nonCultCasteRatio.length;
     let totalGenericPower = 0;
 
     for (let caste = 0; caste < P.nbCastes; ++caste) {
-        for (let w = 0; w < P.nbWealths; ++w) {
-            const seg  = caste * P.nbWealths + w;
-            const cult = cultratio[seg] * population[seg];
 
-            // The total contribution of this population segment is 
-            // decomposed into two components: 
-            // 1. generic (segment-independent) recruitment power
-            const ourGenericPower = 
-                // Base recruitment power for members
-                baseMemberMult *
-                // Each member contributes separately
-                cult;
-            // 2. this power is doubled for the specific caste
-            const ourCastePower = ourGenericPower * nonCultCasteRatio[caste];
-            
-            totalGenericPower += ourGenericPower;
-            into[caste] += ourCastePower;
+        // Total number of cult members in this caste for the 
+        // entire location.
+        let cult = 0;
+        for (let d = 0; d < districts; ++d) {
+            const off = caste + d * P.stride;
+            cult += cultratio[off] * population[off];
         }
+
+        // The total contribution of this population segment is 
+        // decomposed into two components: 
+        // 1. generic (segment-independent) recruitment power
+        const ourGenericPower = 
+            // Base recruitment power for members
+            baseMemberMult *
+            // Each member contributes separately
+            cult;
+        // 2. this power is doubled for the specific caste
+        const ourCastePower = ourGenericPower * nonCultCasteRatio[caste];
+       
+        totalGenericPower += ourGenericPower;
+        into[caste] = ourCastePower;
     }
 
     for (let caste = 0; caste < into.length; ++caste)
