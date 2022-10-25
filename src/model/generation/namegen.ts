@@ -96,7 +96,9 @@ const genitive = (s: string) =>
     s.charAt(s.length -1) == 's' ? s + "'" : s + "'s";
 
 const collapse = (s: string) => 
-    s.replace(/(?<=.)[aeiou]+[bcdfghj-np-tvwxz]+(?=[aeiou])/, "");
+    Math.random() < 0.5 
+        ? s.replace(/(?<=.)[aeiou]+[bcdfghj-np-tvwxz]+(?=[aeiou])/, "")
+        : s;
 
 const demonym = (s: string) => {
     switch (s.charAt(s.length - 1)) {
