@@ -1,7 +1,58 @@
 import type { Location } from "./locations"
-import { build, int7, Pack } from "./serialize"
+import { build, enm, int7, obj, Pack } from "./serialize"
 import { DistrictName, pack_districtName } from "./names"
 import { RecruitEffect } from "./cult/recruit"
+
+export type ByDistrictKind<T> = {
+    residential: T,
+    commercial: T,
+    barracks: T,
+    ironworks: T,
+    lumber: T,
+    castle: T,
+    academy: T,
+    docks: T,
+    greens: T,
+    temple: T,
+    ruins: T,
+    mine: T
+}
+
+export function pack_byDistrictKind<T>(pack: Pack<T>): Pack<ByDistrictKind<T>> {
+    return obj<ByDistrictKind<T>>({
+        residential: pack,
+        commercial: pack,
+        barracks: pack,
+        ironworks: pack,
+        lumber: pack,
+        castle: pack,
+        academy: pack,
+        docks: pack,
+        greens: pack,
+        temple: pack,
+        ruins: pack,
+        mine: pack
+    })
+}
+
+export type DistrictKind = keyof(ByDistrictKind<boolean>)
+
+export const districtKinds : readonly DistrictKind[] = [
+    "residential",
+    "commercial",
+    "barracks",
+    "ironworks",
+    "lumber",
+    "castle",
+    "academy",
+    "docks",
+    "greens",
+    "temple",
+    "ruins",
+    "mine"
+]
+
+export const pack_districtKind = enm<DistrictKind>(districtKinds);
 
 export class District {
 
@@ -13,6 +64,8 @@ export class District {
     public constructor(
         // Unique identifier of this district
         public readonly id: number,
+        // Kind of district
+        public readonly kind : DistrictKind,
         // Name of this district
         public readonly name : DistrictName,
         // Population of this district, integer, cached from the population system
@@ -27,11 +80,13 @@ export class District {
 
     static create(
         id: number,
+        kind: DistrictKind,
         population: number,
         name: DistrictName) 
     {
         return new District(
             id,
+            kind,
             name, 
             population,
             0);    
@@ -53,8 +108,9 @@ export class District {
 
 export const pack_district : Pack<District> = build<District>()
     .pass("id", int7)
+    .pass("kind", pack_districtKind)
     .pass("name", pack_districtName)
     .pass("population", int7)
     .pass("cultpop", int7)
-    .call((id, name, population, cultpop) =>
-        new District(id, name, population, cultpop));
+    .call((id, kind, name, population, cultpop) =>
+        new District(id, kind, name, population, cultpop));

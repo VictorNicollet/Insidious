@@ -116,7 +116,27 @@ export const presenceByLocationKind : ByLocationKind<ByOccupation<number>> = {
         Mage: 0,
         Noble: 0 
     },
-    workcamp: {
+    lumber: {
+        Merchant: 3,
+        Farmer: 3,
+        Smith: 5,
+        Hunter: 3,
+        Mercenary: 3,
+        Criminal: 3,
+        Mage: 0,
+        Noble: 0
+    },
+    iron: {
+        Merchant: 3,
+        Farmer: 3,
+        Smith: 5,
+        Hunter: 3,
+        Mercenary: 3,
+        Criminal: 3,
+        Mage: 0,
+        Noble: 0
+    },
+    mine: {
         Merchant: 3,
         Farmer: 3,
         Smith: 5,

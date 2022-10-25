@@ -1,5 +1,6 @@
 import type { PersonName, LocationName, DistrictName } from "../names"
 import type { LocationKind, ByLocationKind } from "../locations"
+import type { DistrictKind, ByDistrictKind } from "../districts";
 import { RandomBag } from './randombag';
 
 // Avoid returning the same name more than once.
@@ -144,9 +145,14 @@ const suffixes : ByLocationKind<RandomBag<string>> = {
         "|square", "|greens", "|field", "|inn", "|orchard",
         "|hearth"
     ]),
-    workcamp: new RandomBag<string>([
-        "|mine", "|camp", "-wood", "_pit", "_fall", "_step", "-coal",
-        "_clearing"
+    mine: new RandomBag<string>([
+        "|mine", "|camp", "_pit", "_fall", "_step", "-coal"
+    ]),
+    lumber: new RandomBag<string>([
+        "|camp", "-wood", "_pit", "_fall", "_step", "_clearing"
+    ]),
+    iron: new RandomBag<string>([
+        "|camp", "_pit", "-fire", "_works", "-coal", "-smith"
     ]),
     city: new RandomBag<string>([
         "+ton", "+bury", "+over", "+ley", "+worth",
@@ -176,7 +182,9 @@ const customSuffixProbability : ByLocationKind<number> = {
     ruins: 0.5,
     town: 0.5,
     city: 0.5,
-    workcamp: 0.4,
+    lumber: 0.4,
+    mine: 0.4,
+    iron: 0.4,
     fortress: 0.7,
     academy: 1
 }
@@ -235,9 +243,15 @@ const prefixes : ByLocationKind<RandomBag<string>> = {
         "sword$", "shield$", "eagle_", "tiger_", "lion§", "hawk_",
         "dragon§", "hero$",
     ]),
-    workcamp: new RandomBag<string>([
-        "iron-", "steel-", "hot-", "wood+", "autumn_", 
-        "winter_", "charred_", "summer_"
+    iron: new RandomBag<string>([
+        "iron-", "steel-", "hot-", "charred_", "hammer-", "anvil-"
+    ]),
+    lumber: new RandomBag<string>([
+        "wood+", "autumn_", "winter_", "summer_", "lumber$", "timber-", "log$"
+    ]),
+    mine: new RandomBag<string>([
+        "deep-", "dig$", "ore+", "rock+", "stone+", 
+        "under-"
     ])
 }
 
@@ -249,7 +263,9 @@ const customPrefixProbability : ByLocationKind<number> = {
     city: 0.01,
     academy: 1,
     fortress: 0.8,
-    workcamp: 0.1
+    iron: 0.2,
+    lumber: 0.2,
+    mine: 0.2
 }
 
 function locationOfKind(kind: LocationKind): LocationName {
@@ -354,8 +370,194 @@ function location(kind: LocationKind) : LocationName {
 
 // DISTRICT GENERATION =======================================================
 
-function district(kind: LocationKind) : DistrictName {
-    return { short: location(kind).short };
+function byDistrictKind(raw: readonly string[]): ByDistrictKind<RandomBag<string>> {
+
+    function pick(n: number) {
+        const picked : string[] = []
+        for (let i = 0; i < raw.length; i += 2)
+            if (raw[i].charAt(n) == "+")
+                picked.push(raw[i+1]);
+        return new RandomBag<string>(picked);
+    }
+
+    return {
+        residential: pick(0),
+        commercial: pick(1),
+        barracks: pick(2),
+        ironworks: pick(3),
+        lumber: pick(4),
+        castle: pick(5),
+        academy: pick(6),
+        docks: pick(7),
+        greens: pick(8),
+        temple: pick(9),
+        ruins: pick(10),
+        mine: pick(11)
+    }
+}
+
+const adjectivesByKind = byDistrictKind([
+  // /- residential
+  // |/- commercial
+  // ||/- barracks
+  // |||/- ironworks
+  // ||||/- lumber
+  // |||||/- castle
+  // ||||||/- academy
+  // |||||||/- docks
+  // ||||||||/- greens
+  // |||||||||/- temple
+  // ||||||||||/- ruins
+  // |||||||||||/- mine
+    "      +   + ", "aether",
+    "++   ++  +++", "amber",
+    " ++++     ++", "anvil",
+    "+ +++     ++", "ash",
+    "+ + +   + ++", "badger",
+    "+ + +   + ++", "bear",
+    "+ +++ +  +++", "brass",
+    "+ +++ +  +++", "bronze",
+    "++++++  + ++", "bull",
+    "++      ++  ", "castle",
+    "+   +   + + ", "clearing",
+    "++++++++++++", "dawn's",
+    "+ + +   + ++", "deer",
+    "++   ++  +++", "diamond",
+    "+++++  +++++", "castle",
+    "+ +++     ++", "charing",
+    "++   ++  +++", "crown",
+    "+++++ ++++++", "east",
+    "++++++  + ++", "eagle",
+    "+ + +   + ++", "elk",
+    "++   ++  +++", "emerald",
+    "+ +++     ++", "ember",
+    "++++++  + ++", "falconer",
+    "+ +++ +  +++", "flame",
+    "+ +++ +  +++", "fire",
+    "+ + +   + ++", "fox",
+    "++   ++  +++", "gold",
+    " ++++     ++", "hammer",
+    "++++++++ +++", "high",
+    "+++++  ++ ++", "hunter's",
+    "+ +++ +  +++", "iron",
+    "++      ++  ", "keep",
+    "+++++  ++ ++", "knight's",
+    "+++++ +++ ++", "king's",
+    "+++++++  +++", "lion",
+    "+++++  +++++", "lord's",
+    "   +  +   + ", "master's",
+    " +     ++   ", "market",
+    "++++++++++ +", "new",
+    " +++    + ++", "needle",
+    "+++++ ++++++", "north",
+    "++ ++   + ++", "oak",
+    "++++++++++++", "old",
+    "+++++ +++ ++", "queen's",
+    "++ ++    +++", "rose",
+    "++   ++  +++", "ruby",
+    "    +       ", "sawmill",
+    " +++ +   ++ ", "shield",
+    "++   ++  +++", "silver",
+    " ++  +  +++ ", "sky",
+    "+ + +   + ++", "snake",
+    "++  +++ ++++", "snow",
+    "+++++ ++++++", "south",
+    "+ +++ +  +++", "steel",
+    "++  +++ ++++", "stone",
+    " +++ +   ++ ", "sword",
+    "++  +  ++ ++", "thistle",
+    "+ + +   + ++", "thorn",
+    "+++++++  +++", "tiger",
+    "+   +       ", "timber",
+    "++ ++ +  +++", "tin",
+    "++   ++  +++", "topaz",
+    "++      +++ ", "victory",
+    "+ + +   + ++", "viper",
+    "++++   +++++", "wall",
+    "+ +++ +  +++", "water",
+    "+++++ ++++++", "west",
+    "+++++++  +++", "white",
+    "  +++  ++ ++", "whistle",
+    "++ ++   + ++", "yew"
+]);
+
+const nounByKind = byDistrictKind([
+  // /- residential
+  // |/- commercial
+  // ||/- barracks
+  // |||/- ironworks
+  // ||||/- lumber
+  // |||||/- castle
+  // ||||||/- academy
+  // |||||||/- docks
+  // ||||||||/- greens
+  // |||||||||/- temple
+  // ||||||||||/- ruins
+  // |||||||||||/- mine
+    "+++++       ", "alley",
+    "       +    ", "anchorage",
+    "       +    ", "bay",
+    "++          ", "bridge",
+    "     +    + ", "castle",
+    "      + + + ", "circle",
+    "+++++  +++  ", "crossing",
+    "+++++  +++ +", "district",
+    "       +    ", "docks",
+    "     +    + ", "fortress",
+    "  +  +    + ", "guard",
+    "++      +++ ", "gardens",
+    "         +  ", "green",
+    "   +      + ", "forge",
+    "++++      ++", "gate",
+    "  +  ++    +", "hall",
+    "++++      ++", "hill",
+    "  +  +    + ", "keep",
+    "       +    ", "landing",
+    "+++++  +++  ", "lane",
+    " +      +   ", "market",
+    "          ++", "mine",
+    " +      +   ", "park",
+    "++      +++ ", "plaza",
+    "        + + ", "pond",
+    "+++++  +++ +", "quarter",
+    "       +    ", "quay",
+    "+++++  +++  ", "road",
+    "          + ", "ruins",
+    "        +++ ", "stones",
+    "+++++  +++  ", "street",
+    "     ++    +", "tower",
+    "++++      ++", "well",
+    "+++++  +++ +", "yard",
+]);
+
+function district(loc: LocationName, kind: DistrictKind) : DistrictName {
+    
+    // Special: name the castle after the city/fortress it's in.
+    if (kind == "castle") {
+        const beforeSpace = /^[^ ]*/.exec(loc.short);
+        const first = beforeSpace ? beforeSpace[0] : loc.short;
+        if (/castle/i.test(loc.short))
+            return { short: first + " Keep" };
+        else
+            return { short: first + " Castle" };
+    }
+
+    const kn = capitalize(nounByKind[kind].pick());
+
+    if (Math.random() < 0.25) 
+        // Person + district-kind
+        return { short: person().short + " " + kn };
+    
+    const prefix = Math.random() < 0.25 
+        ? person().short 
+        : capitalize(adjectivesByKind[kind].pick());
+    
+    const full = prefix + " " + kn;
+
+    if (Math.random() < 0.25 && !full.includes(' ') && !full.includes(kn))
+        return { short: full + " " + kn }
+        
+    return { short: full };
 }
 
 // Generate a random person name
@@ -365,4 +567,6 @@ export function randomPerson() : PersonName { return notAlready(person); }
 export function randomLocation(kind: LocationKind) : LocationName { return notAlready(() => location(kind)); }
 
 // Generate a random district name
-export function randomDistrict(kind: LocationKind) : DistrictName { return notAlready(() => district(kind)); }
+export function randomDistrict(loc: LocationName, kind: DistrictKind) : DistrictName { 
+    return notAlready(() => district(loc, kind)); 
+}

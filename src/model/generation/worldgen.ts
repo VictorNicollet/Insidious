@@ -117,6 +117,7 @@ const tinyBag = new RandomBag<Map.CellKind>(Map.tinyLocationCells);
 const smallBag = new RandomBag<Map.CellKind>(Map.smallLocationCells);
 const mediumBag = new RandomBag<Map.CellKind>(Map.mediumLocationCells);
 const largeBag = new RandomBag<Map.CellKind>(Map.largeLocationCells);
+const hugeBag = new RandomBag<Map.CellKind>(Map.hugeLocationCells);
 
 const mountainsBag = new RandomBag<Map.CellKind>(
     [Map.mountain, Map.forest, Map.hills, Map.moor, Map.plains], 
@@ -166,8 +167,9 @@ function generateTiles(map: Map.WorldMap, locations: {population: number, cell: 
         
         const locBag = population < 900 ? tinyBag : 
                         population < 1200 ? smallBag : 
-                        population < 8000 ? mediumBag : 
-                        largeBag;
+                        population < 8000 ? mediumBag :
+                        population < 75000 ? largeBag : 
+                        hugeBag;
                         
         let kind = locBag.pick()
  
@@ -223,7 +225,10 @@ function popFromBaseline(popBaseline: number) {
         + 5 * Math.random() 
         + 5 * Math.random()
         + 10 ) / 5;
-    return Math.floor(Math.pow(10, exponent));
+    
+    let pop = Math.floor(Math.pow(10, exponent));
+    if (pop > 150000) pop = 150000 + (pop % 10000);
+    return pop;
 }
 
 const occupationBagsByLocation : ByLocationKind<RandomBag<Occupation>> = 

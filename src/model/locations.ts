@@ -5,11 +5,14 @@ import type { Cell } from "./grid"
 import * as M from './map'
 import { randomDistrict, randomLocation } from './generation/namegen'
 import { Pack, build, int7, array } from './serialize'
+import { makeDistricts } from "./generation/districtgen"
 
 export type ByLocationKind<T> = {
     ruins: T
     town: T
-    workcamp: T
+    mine: T
+    iron: T,
+    lumber: T,
     city: T
     fortress: T
     academy: T
@@ -19,7 +22,9 @@ export type LocationKind = keyof(ByLocationKind<boolean>)
 
 function locationKindOfCellKind(ck: M.CellKind): LocationKind {
     return ck.is(M.castleA, M.castleB, M.castleC, M.castleE) ? "city" : 
-           ck.is(M.mountainMine, M.hillsMine, M.foresterA, M.foresterB, M.smithy) ? "workcamp" : 
+           ck.is(M.mountainMine, M.hillsMine) ? "mine" :
+           ck.is(M.foresterA, M.foresterB) ? "lumber" : 
+           ck.is(M.smithy) ? "iron" : 
            ck.is(M.castleD, M.fortA, M.fortB) ? "fortress" :
            ck.is(M.academy) ? "academy" : 
            ck.is(M.village, M.villageUnder, M.villageSmall, M.inn) ? "town" : "ruins";
@@ -53,7 +58,7 @@ export class Location {
         this.world = undefined as any
 
         // Inject references to self into the districts
-        for (const district of this.districts)
+        for (const district of this.districts) 
             (district as { location: Location }).location = this;
     }
 
@@ -65,47 +70,20 @@ export class Location {
         population: number) : Location
     {
         const locationKind = locationKindOfCellKind(cellkind);
-
-        // Population is distributed by taking a random 
-        // fraction of the not-already assigned population and
-        // building a district out of it, until the remaining population
-        // is smaller than the district threshold.
-        let remainingPopulation = population;
-        let realPopulation = 0
-        const popThreshold = 500;
-        const minDistrictSize = 25;
-        const districts : District[] = []
-        while (districts.length < 3 || 
-               remainingPopulation > popThreshold && districts.length < 10)
-        {
-            // Fraction in 20%..80%
-            const fraction = 0.2 + Math.random() * 0.6;
-            // Don't allow districts smaller than 25
-            const inNewDistrict = Math.max(minDistrictSize, Math.floor(remainingPopulation * fraction));
-            remainingPopulation = Math.max(minDistrictSize, remainingPopulation - inNewDistrict);
-
-            districts.push(District.create(
-                nextDistrictId + districts.length,
-                inNewDistrict,
-                randomDistrict(locationKind)));
-
-            realPopulation += inNewDistrict;
-        }
-
-        districts.push(District.create(
-            nextDistrictId + districts.length,
-            remainingPopulation,
-            randomDistrict(locationKind)));
-
-        realPopulation += remainingPopulation;
+        const locationName = randomLocation(locationKind);
+        const districts = makeDistricts(
+            nextDistrictId, 
+            population, 
+            locationName,
+            locationKind);
 
         return new Location(
             cellkind,
             id, 
             cell, 
-            randomLocation(locationKind),
+            locationName,
             districts,
-            realPopulation,
+            population,
             0,
             0)
     }

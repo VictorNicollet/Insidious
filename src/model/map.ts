@@ -6,6 +6,7 @@ export const tinyLocationCells : CellKind[] = []
 export const smallLocationCells : CellKind[] = []
 export const mediumLocationCells : CellKind[] = []
 export const largeLocationCells : CellKind[] = []
+export const hugeLocationCells : CellKind[] = []
 
 export class CellKind {
     public readonly id : number
@@ -18,14 +19,15 @@ export class CellKind {
         public readonly name: string,
         public readonly hasVariants: boolean,
         maxCount?: number,
-        size?: "xs"|"s"|"sm"|"m"|"l") 
+        size?: "xs"|"s"|"sm"|"m"|"l"|"xl") 
     {
         this.id = allCells.length;
         allCells.push(this);
         if (size == "xs") tinyLocationCells.push(this);
         if (size == "s" || size == "sm") smallLocationCells.push(this);
         if (size == "m" || size == "sm") mediumLocationCells.push(this);
-        if (size == "l") largeLocationCells.push(this);
+        if (size == "l" || size == "xl") largeLocationCells.push(this);
+        if (size == "xl") hugeLocationCells.push(this);
         this.maxCount = maxCount || 100000
         this.isLocation = !!size;
     }
@@ -70,12 +72,12 @@ export const inn          = new CellKind("inn",             1, "an",  "Inn",    
 export const academy      = new CellKind("temple",          1, "the", "Magic Academy",    false, 1, "s")
 export const villageSmall = new CellKind("village-small",   1, "a",   "Town",             true,  0, "sm")
 export const village      = new CellKind("village",         1, "a",   "Town",             true,  0, "m")
-export const elvenLodge   = new CellKind("elven-lodge",     1, "a",   "Lodge",            false, 1, "l")
-export const castleA      = new CellKind("castle-red",      1, "a",   "City",             false, 0, "l")
-export const castleB      = new CellKind("castle-green",    1, "a",   "City",             false, 0, "l")
-export const castleC      = new CellKind("castle-blue",     1, "a",   "City",             false, 0, "l")
+export const elvenLodge   = new CellKind("elven-lodge",     1, "a",   "Lodge",            false, 1, "xl")
+export const castleA      = new CellKind("castle-red",      1, "a",   "City",             false, 0, "xl")
+export const castleB      = new CellKind("castle-green",    1, "a",   "City",             false, 0, "xl")
+export const castleC      = new CellKind("castle-blue",     1, "a",   "City",             false, 0, "xl")
 export const castleD      = new CellKind("mountain-castle", 1, "a",   "Fortress",         false, 1, "l")
-export const castleE      = new CellKind("walled-city",     1, "a",   "City",             false, 0, "l")
+export const castleE      = new CellKind("walled-city",     1, "a",   "City",             false, 0, "xl")
 export const fortA        = new CellKind("fortress",        1, "a",   "Fortress",         false, 0, "l")
 export const fortB        = new CellKind("dwarven-fort",    1, "a",   "Fortress",         false, 1, "l")
 
