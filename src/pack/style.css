@@ -274,6 +274,11 @@ ul.gui-districts li.empty:hover {
     background: none;
 }
 
+ul.gui-districts .info {
+    font-size: 14px;
+    color: #877;
+}
+
 /* .gui-agents */
 
 ul.gui-agents {

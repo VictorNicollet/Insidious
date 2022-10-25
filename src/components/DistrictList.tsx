@@ -3,9 +3,25 @@ import { useState } from "preact/hooks"
 import * as P from './Pagination'
 import { DistrictView } from '../view/districts'
 import { useSelectors } from './Context'
+import { ByDistrictKind } from '../model/districts'
 
 // The height, in pixels, of an element in the districts list
 const ITEMSIZE = 50;
+
+const districtKindName : ByDistrictKind<string> = {
+    academy: "Academy",
+    barracks: "Military",
+    castle: "Castle",
+    commercial: "Market", 
+    docks: "Docks",
+    greens: "Green",
+    ironworks: "Iron Works",
+    lumber: "Lumber Yard", 
+    mine: "Mine", 
+    residential: "Residential",
+    ruins: "Ruins",
+    temple: "Temple"
+}
 
 // The district list, intended to be placed inside a box.
 export function InnerDistrictList(props: {
@@ -37,6 +53,9 @@ export function InnerDistrictList(props: {
                     onClick={() => selectors.district(district)}>
                     <div className="name">
                         {district.name.short}
+                    </div>
+                    <div className="info">
+                        {districtKindName[district.kind]}
                     </div>
                 </li>
             })}

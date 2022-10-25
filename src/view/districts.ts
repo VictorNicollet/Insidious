@@ -1,6 +1,6 @@
 import type { DistrictName } from '../model/names';
 import type { RecruitEffect } from '../model/cult/recruit';
-import type { District } from '../model/districts';
+import type { District, DistrictKind } from '../model/districts';
 import type { LocationView } from './locations';
 
 export type DistrictView = {
@@ -8,6 +8,7 @@ export type DistrictView = {
     // Index of the location among the seen locations, -1 if 
     // the location of this district was not seen yet 
     readonly location : number
+    readonly kind : DistrictKind
     readonly name : DistrictName
     readonly population : number
     readonly cultpop : number
@@ -20,6 +21,7 @@ export function district(d: District, ls: LocationView[]): DistrictView {
         id: d.id,
         location: ls.findIndex(l => l.cell == d.location.cell),
         name: d.name,
+        kind: d.kind,
         cultpop: d.cultpop,
         population: d.population,
         cultrecruit: d.recruit
