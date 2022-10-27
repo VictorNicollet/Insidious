@@ -51,25 +51,6 @@ export const recruitCost : ByOccupation<Resources> = {
     Noble: { gold: 100, touch: 0 }
 }
 
-export const upkeep : ByOccupation<Resources> = {
-    Farmer: { gold: 1, touch: 0 },
-    Smith: { gold: 2, touch: 0 },
-    Hunter: zero, 
-    Merchant: { gold: 5, touch: 0 },
-    Mercenary: { gold: 2, touch: 0 },
-    Criminal: { gold: 1, touch: 0 },
-    Mage: { gold: 8, touch: 0 },
-    Noble: { gold: 10, touch: 0 }  
-}
-
-export function countUpkeepDelta(occupation: Occupation, resources: ResourcesOf<{daily:Reason[],once:number}>) {
-    const cost = upkeep[occupation];
-    if (cost.gold > 0) 
-        resources.gold.daily.push({ why: "Agent upkeep", contrib: -cost.gold});
-    if (cost.touch > 0)
-        resources.touch.daily.push({ why: "Agent upkeep", contrib: -cost.touch});
-}
-
 // The total experience needed to reach a level. One unit of XP equals
 // one day of staying undercover. 
 export const lvlxp = (function() {

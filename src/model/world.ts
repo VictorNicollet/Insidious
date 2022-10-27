@@ -3,7 +3,7 @@ import { Agent, pack_agent } from "./agents"
 import type { PersonName } from './names';
 import { pack_worldMap, WorldMap } from './map';
 import type { Cell } from './grid';
-import { ByOccupation, countUpkeepDelta, Occupation } from './occupation';
+import { ByOccupation, Occupation } from './occupation';
 import { pack_resourcesOf, Resources, ResourcesOf } from './resources';
 import { countResourceDelta, executeOrder } from './execute';
 import { Explained, Reason, explain, dedup } from './explainable';
@@ -253,11 +253,10 @@ export class World {
     public resourceDelta(): ResourcesOf<{daily:Explained, once:number}> {
         const total : ResourcesOf<{daily:Reason[], once:number}> = { 
             gold: { daily:[], once: 0 },
-            touch: { daily:[], once: 0 }
+            touch: { daily:[{ why: "Base", contrib: 5 }], once: 0 }
         };
         for (let agent of this._agents) {
             countResourceDelta(agent, total);
-            countUpkeepDelta(agent.occupation, total);
         }
         return {
             gold: {

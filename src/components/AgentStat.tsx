@@ -7,10 +7,10 @@ import type { AgentView } from '../view/agents';
 import { explain, Explained } from '../model/explainable';
 import { statTip, upkeepTip } from '../text/help';
 import type { TxtFormat } from "../text/format";
-import { upkeep } from "../model/occupation";
 
 const statName : StatsOf<string> = {
     contacts:   "Recruitment",
+    upkeep:     "Upkeep",
     idleIncome: "Income",
     outdoors:   "Outdoors",
     combat:     "Combat",
@@ -68,9 +68,9 @@ function Stat(props: {
         max={maxStats[props.stat]}
         name={statName[props.stat]}
         value={props.value}
-        unit={props.stat !== "idleIncome" && props.stat !== "conduit" ? "%" : ""}
+        unit={props.stat !== "idleIncome" && props.stat !== "upkeep" && props.stat !== "conduit" ? "%" : ""}
     >
-        {props.stat === "idleIncome" ? <span className="gold"/> :
+        {props.stat === "idleIncome" || props.stat === "upkeep" ? <span className="gold"/> :
          props.stat === "conduit" ? <span className="touch"/> : 
          undefined}
     </RawStat>
@@ -83,12 +83,6 @@ export function AgentStats(props: { agent: AgentView }) {
         <div style={{padding:4,textAlign:"center"}}>☙ Resources ❧</div>
         {resources.map(stat => 
             <Stat key={stat} stat={stat} value={props.agent.stats[stat]}/>)}
-        <RawStat name="Upkeep" 
-                 value={explain([{ why: props.agent.occupation, contrib: upkeep[props.agent.occupation].gold}])}
-                 tip={upkeepTip}
-                 unit=""
-                 // Use the idle income max for the two values to be comparable.
-                 max={maxStats["idleIncome"]}><b className="gold"/></RawStat>
         <div style={{padding:4,textAlign:"center"}}>☙ Skills ❧</div>
         {skills.map(stat => 
             <Stat key={stat} stat={stat} value={props.agent.stats[stat]}/>)}

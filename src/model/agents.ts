@@ -3,10 +3,12 @@ import { pack_personName, PersonName } from './names'
 import type { Location } from "./locations"
 import type { Cell } from './grid'
 import { Occupation, ByOccupation, lvlxp, pack_occupation, pack_byOccupation } from './occupation'
-import { Stats, computeStats } from './stats'
+import { Stats, computeStats, skills } from './stats'
 import { Order, done, pack_order } from "./orders"
 import { objmap } from '../objmap'
 import { build, int7, option, Pack } from "./serialize"
+import { ResourcesOf } from "./resources"
+import { Reason } from "./explainable"
 
 export class Agent {
     // Cached stats computed from the agent's other properties

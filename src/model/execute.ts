@@ -19,13 +19,18 @@ function countResourceDeltaForOrder(
         resources.gold.once -= order.cost.gold;
     }
 
-    resources.touch.daily.push({ why: "Agents", contrib: stats.conduit.value });
+    if (stats.upkeep.value > 0) 
+        resources.gold.daily.push({ why: "Agent upkeep", contrib: -stats.upkeep.value});
+
+    if (stats.conduit.value > 0)
+        resources.touch.daily.push({ why: "Agent upkeep", contrib: -stats.upkeep.value});
+
     if (order.progress >= order.difficulty.value) return;
 
     switch (order.kind) {
         case "undercover": 
             resources.gold.daily.push(
-                { why: "Undercover agents", contrib: stats.idleIncome.value });
+                { why: "Undercover revenue", contrib: stats.idleIncome.value });
             return;
         case "recruit-agent":
             return;

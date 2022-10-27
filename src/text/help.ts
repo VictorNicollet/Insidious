@@ -68,17 +68,24 @@ through their occupation, or actively through an existing network.
 Covers how quickly this agent can recruit other agents. Skill is
 doubled when recruiting an agent of the same occupation.`,
     idleIncome: `
-Amount of :gold: produced (or consumed) by this agent, for every 
-day spent under cover.`,
+Amount of :gold: produced by this agent's day-to-day occupation,
+collected for every day spent *undercover*. 
+
+At low levels, acting undercover as some occupations (such 
+as *merchant* or *noble*) may cost :gold: instead.`,
+    upkeep: `
+Amount of :gold: spent daily by this agent, regardless of the
+orders given.`,
     outdoors: `
 How fast this agent can travel outdoors. Also reduces the risk of 
 encountering bandits or wild beasts. Does not apply to sailing.`,
     combat: `
 How well this agent can fight.`,
     conduit: `
-How well this agent can act as a conduit for your :touch:.
-Rituals performed by a good conduit are more effective. 
-Also increases your :touch: by this amount every day.`,
+Amount of :touch: spend to maintain your link to this agent. 
+Increases with. the level of the agent. 
+
+Rituals performed by a good conduit are more effective.`,
     authority: `
 This agent's authority over non-believers, whether through 
 wealth, rank or reputation. 

@@ -6,9 +6,10 @@ import { Explained, Reason, explain } from './explainable';
 // agent's situation. This is DENSE.
 export type StatsOf<T> = {
     // Gold income produced every day by the 'idle' 
-    // action. Fractional values are interpreted as a 
-    // probability of producing one unit. 
+    // action.  
     idleIncome: T
+    // Gold upkeep for every day. 
+    upkeep: T
     // Number of "standard agent recruitment units" produced 
     // by the "recruit agent" action every day. Recruitment 
     // succeeds when the number of units (based on the 
@@ -19,7 +20,7 @@ export type StatsOf<T> = {
     outdoors: T
     // General ability to fight
     combat: T
-    // Daily touch increase, and ability to perform rituals
+    // Daily touch upkeep, and ability to perform rituals
     conduit: T, 
     // Ability to lie and manipulate others, used to reduce 
     // exposure gain and to spread lies and rumors
@@ -120,6 +121,18 @@ const authorityByOccupation : ByOccupation<number> = {
     Hunter: 0
 }
 
+export const upkeep : ByOccupation<number> = {
+    // Upkeep depends only on primary occupation
+    Farmer: 1,
+    Smith: 2,
+    Hunter: 0, 
+    Merchant: 5,
+    Mercenary: 2,
+    Criminal: 1,
+    Mage: 8,
+    Noble: 10  
+}
+
 // The rules to compute all the stats based on an agent.
 const rules: StatsOf<(reasons: Reason[], agent: Agent) => void> = {
     idleIncome: function(reasons: Reason[], agent: Agent) {
@@ -132,6 +145,9 @@ const rules: StatsOf<(reasons: Reason[], agent: Agent) => void> = {
             else if (value > 0) 
                 reasons.push({ why: occupation + " Lv." + level, contrib: value/2});       
         }
+    },
+    upkeep: function(reasons: Reason[], agent: Agent) {
+        reasons.push({why : agent.occupation, contrib: upkeep[agent.occupation]})
     },
     conduit: function(reasons: Reason[], agent: Agent) {
         reasons.push({ why: "Base", contrib: 0.4 })
@@ -194,13 +210,14 @@ const rules: StatsOf<(reasons: Reason[], agent: Agent) => void> = {
 
 export const allStats = Object.keys(rules) as StatKey[]
 
-export const resources : StatKey[] = ["idleIncome", "conduit"]
-export const skills : StatKey[] = allStats.filter(c => c != "idleIncome" && c != "conduit")
+export const resources : StatKey[] = ["idleIncome", "upkeep", "conduit"]
+export const skills : StatKey[] = allStats.filter(c => c != "idleIncome" && c != "upkeep" && c != "conduit")
 
 // Not actually the maximum, we just advertise this as a reasonable 
 // maximum that can be used for comparison.
 export const maxStats : StatsOf<number> = {
     idleIncome: 50,
+    upkeep:     50, // same as idleIncome, to be comparable
     conduit:    5,
     contacts:   100,
     outdoors:   100,
