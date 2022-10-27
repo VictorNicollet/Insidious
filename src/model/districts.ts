@@ -12,7 +12,6 @@ export type ByDistrictKind<T> = {
     castle: T,
     academy: T,
     docks: T,
-    greens: T,
     temple: T,
     ruins: T,
     mine: T
@@ -28,7 +27,6 @@ export function pack_byDistrictKind<T>(pack: Pack<T>): Pack<ByDistrictKind<T>> {
         castle: pack,
         academy: pack,
         docks: pack,
-        greens: pack,
         temple: pack,
         ruins: pack,
         mine: pack
@@ -46,7 +44,6 @@ export const districtKinds : readonly DistrictKind[] = [
     "castle",
     "academy",
     "docks",
-    "greens",
     "temple",
     "ruins",
     "mine"

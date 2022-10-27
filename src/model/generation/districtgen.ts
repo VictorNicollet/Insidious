@@ -17,15 +17,10 @@ const locationDistricts : ByLocationKind<KindList> = {
     town: [
         ["residential", 1],
         ["residential", 0.75],
-        ["greens", 0.75],
-        ["residential", 0.75],
         ["temple", 0.25],
-        ["lumber", 0.1],
-        ["ironworks", 0.1],
-        ["mine", 0.1],
-        ["temple", 0.5],
-        ["residential", 0.75],
-        ["greens", 0.75],
+        ["lumber", 0.25],
+        ["ironworks", 0.25],
+        ["mine", 0.25],
         ["residential", 1]
     ],
     city: [
@@ -38,12 +33,10 @@ const locationDistricts : ByLocationKind<KindList> = {
         ["barracks", 0.25],
         ["docks", 1],
         ["temple", 1],
-        ["greens", 0.75],
         ["residential", 0.5],
         ["commercial", 0.5], 
         ["ironworks", 0.25],
         ["temple", 0.25],
-        ["greens", 0.25],
         ["residential", 1]
     ],
     fortress: [
@@ -54,13 +47,11 @@ const locationDistricts : ByLocationKind<KindList> = {
         ["temple", 0.25],
         ["barracks", 0.25],
         ["docks", 0.25],
-        ["greens", 0.5],
         ["barracks", 1]
     ],
     ruins: [
         ["ruins", 1],
         ["residential", 0.75],
-        ["greens", 0.75],
         ["ruins", 0.75],
         ["temple", 0.1],
         ["lumber", 0.1],
@@ -71,7 +62,6 @@ const locationDistricts : ByLocationKind<KindList> = {
     mine: [
         ["residential", 1],
         ["mine", 1],
-        ["greens", 0.1],
         ["temple", 0.1],
         ["ironworks", 0.1],
         ["residential", 0.5],
@@ -80,7 +70,6 @@ const locationDistricts : ByLocationKind<KindList> = {
     lumber: [
         ["residential", 1],
         ["lumber", 1],
-        ["greens", 0.1],
         ["temple", 0.1],
         ["ironworks", 0.1],
         ["residential", 0.5],
@@ -89,7 +78,6 @@ const locationDistricts : ByLocationKind<KindList> = {
     iron: [
         ["residential", 1],
         ["ironworks", 1],
-        ["greens", 0.1],
         ["temple", 0.1],
         ["mine", 0.5],
         ["residential", 0.5],
@@ -102,7 +90,6 @@ const locationDistricts : ByLocationKind<KindList> = {
         ["residential", 0.5],
         ["academy", 0.5],
         ["ruins", 0.25],
-        ["greens", 0.25],
         ["residential", 0.5],
         ["academy", 1]
     ]
@@ -116,7 +103,6 @@ const factorOfKind : ByDistrictKind<number> = {
     commercial: 1,
     castle: 0.2,
     docks: 0.2, 
-    greens: 0.1,
     ironworks: 0.3,
     lumber: 0.3, 
     mine: 0.3, 

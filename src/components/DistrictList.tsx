@@ -14,7 +14,6 @@ const districtKindName : ByDistrictKind<string> = {
     castle: "Castle",
     commercial: "Market", 
     docks: "Docks",
-    greens: "Green",
     ironworks: "Iron Works",
     lumber: "Lumber Yard", 
     mine: "Mine", 
