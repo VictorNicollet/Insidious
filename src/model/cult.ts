@@ -118,7 +118,7 @@ export class Cult {
 
         const needPriest = this.recruitment.priestRequired && !priests.length;
 
-        CR.priestsRecruit(priests, nonCultCasteRatio, priestRecruitPower)
+        CR.priestsRecruit(priests, nonCultCasteRatio, priestRecruitPower);
 
         const priestRecruitBonus = 1 + this.priestRecruitEffect.value;
 
@@ -266,7 +266,7 @@ export class Cult {
                     if (totalNonCultPop < 1)
                         continue;
 
-                    console.log("Joins cult: %s", this.world.population.segname(caste));
+                    console.log("Joins cult: %s", this.world.population.segname(off + caste));
 
                     dcultratio[caste] = Math.min(1, dcultratio[caste] + 1 / dpopulation[caste]);
                     

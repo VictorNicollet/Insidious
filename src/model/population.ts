@@ -115,25 +115,24 @@ export class Population {
 
     public print() {
         const c = this.count;
-        for (let l = 0; l < this.locations.length; ++l) {
-            const o = l * stride;
-            function wealthSum(caste: number) {
-                return Math.floor(c[o + caste] + c[o + caste + 1] + c[o + caste + 2] + c[o + caste + 3])
-            }
+        for (let d = 0; d < this.districts.length; ++d) {
+            const o = d * stride;
             const byCaste = {
-                "laborers": wealthSum(laborers),
-                "artisans": wealthSum(artisans),
-                "criminals": wealthSum(criminals),
-                "fighters": wealthSum(fighters),
-                "bourgeois": wealthSum(bourgeois),
-                "mystics": wealthSum(mystics),
-                "gentry": wealthSum(gentry),
+                "laborers": c[o + laborers],
+                "artisans": c[o + artisans],
+                "criminals": c[o + criminals],
+                "fighters": c[o + fighters],
+                "bourgeois": c[o + bourgeois],
+                "mystics": c[o + mystics],
+                "gentry": c[o + gentry],
             }
-            console.log("%s (%s): %d (%d) = %o", 
-                this.locations[l].name.short, 
-                this.locations[l].kind, 
-                this.locations[l].population,
-                this.locations[l].cultpop,
+            console.log("%s (%s) -> %s (%s): %d (%d) = %o", 
+                this.districts[d].location.name.short,
+                this.districts[d].location.kind,
+                this.districts[d].name.short, 
+                this.districts[d].kind, 
+                this.districts[d].population,
+                this.districts[d].cultpop,
                 byCaste);
         }
     }
@@ -152,17 +151,25 @@ export class Population {
             districtPop += Math.floor(count[seg])
             districtCultPop += Math.floor(count[seg] * cult[seg]);
             if ((seg % stride) == stride - 1) {
+                
                 const district = this.districts[Math.floor(seg/stride)];
                 district.population = districtPop;
                 district.cultpop = districtCultPop;
+                
                 locationPop += districtPop;
                 locationCultPop += districtCultPop;
+                
+                districtPop = 0;
+                districtCultPop = 0;
+                
                 if (district.id + 1 == this.districts.length ||
-                    this.districts[district.id].location.id != district.location.id)
+                    this.districts[district.id + 1].location.id != district.location.id)
                 {
                     const location = district.location;
+                
                     location.population = locationPop;
                     location.cultpop = locationCultPop;
+                
                     locationPop = 0;
                     locationCultPop = 0;
                 }
