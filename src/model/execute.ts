@@ -23,7 +23,7 @@ function countResourceDeltaForOrder(
         resources.gold.daily.push({ why: "Agent upkeep", contrib: -stats.upkeep.value});
 
     if (stats.conduit.value > 0)
-        resources.touch.daily.push({ why: "Agent upkeep", contrib: -stats.upkeep.value});
+        resources.touch.daily.push({ why: "Agent upkeep", contrib: -stats.conduit.value});
 
     if (order.progress >= order.difficulty.value) return;
 
