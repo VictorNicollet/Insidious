@@ -3,7 +3,7 @@
 import { Location, ByLocationKind } from './locations'
 import { ByOccupation, presenceByLocationKind, occupations } from './occupation'
 import { objmap } from '../objmap'
-import { build, float32array } from './serialize'
+import { build, uint32array } from './serialize'
 import { District } from './districts'
 
 // CASTES ====================================================================
@@ -77,9 +77,10 @@ export class Population {
 
     constructor(
         // The number of people in each caste, for all districts
-        public readonly count : Float32Array,
-        // The proportion of cult members in each segment (0..1)
-        public readonly cult : Float32Array,
+        public readonly count : Uint32Array,
+        // The number of cult members in each caste, for all districts
+        // cult[i] is always between 0 and count[i] (obviously)
+        public readonly cult : Uint32Array,
         // All locations in the world, used to update their population fields        
         public readonly locations: readonly Location[],
         // All districts in the world, used to update their population fields
@@ -87,13 +88,13 @@ export class Population {
     {
         this.cultTotal = 0;
         for (let seg = 0; seg < this.cult.length; ++seg)
-            this.cultTotal += Math.floor(this.cult[seg] * this.count[seg]);
+            this.cultTotal += this.cult[seg];
     }
 
     static create(locations: readonly Location[], districts: readonly District[]) {
         const nb = districts.length * stride;
-        const count = new Float32Array(nb);
-        const cult = new Float32Array(nb);
+        const count = new Uint32Array(nb);
+        const cult = new Uint32Array(nb);
 
         for (let seg = 0; seg < nb; ++seg) {
             const district = districts[Math.floor(seg/stride)];
@@ -152,8 +153,8 @@ export class Population {
         let locationPop = 0;
         let locationCultPop = 0;
         for (let seg = 0; seg < count.length; ++seg) {
-            districtPop += Math.floor(count[seg])
-            districtCultPop += Math.floor(count[seg] * cult[seg]);
+            districtPop += count[seg];
+            districtCultPop += cult[seg];
             if (cult[seg] > 0) 
                 console.log("count: %f cult: %f pop: %f", count[seg], cult[seg], districtCultPop)
             
@@ -190,8 +191,8 @@ export function pack_population(
     districts: readonly District[]) 
 {
     return build<Population>()
-        .pass("count", float32array)
-        .pass("cult", float32array)
+        .pass("count", uint32array)
+        .pass("cult", uint32array)
         .call((count, cult) => 
             new Population(count, cult, locations, districts));
 }

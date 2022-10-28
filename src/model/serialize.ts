@@ -243,6 +243,21 @@ export const float32array : Pack<Float32Array> = [
     }
 ]
 
+export const uint32array : Pack<Uint32Array> = [
+    function(writer: Writer, array: Uint32Array) {
+        int7write(writer, array.length);
+        writer.bytes(
+            new Uint8Array(array.buffer, array.byteOffset, array.byteLength),
+            /* align */ 4);
+    },
+    function(reader: Reader) {
+        const bytes = reader.bytes(
+            /* sizeof(uint32) */ 4 * int7read(reader),
+            /* align */ 4);
+        return new Uint32Array(bytes.buffer, bytes.byteOffset, bytes.byteLength / 4);
+    }
+]
+
 export type ObjPack<T> = {
     readonly [Property in keyof T]: Pack<T[Property]>
 }

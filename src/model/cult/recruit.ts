@@ -190,10 +190,8 @@ export function priestsRecruit(
 // Member recruitment power, per caste, at the district level. 
 // Based on the number of members in the entire location.
 export function membersRecruit(
-    // The population of all districts in the location
-    population: Float32Array,
-    // The cult ratio of all districts in the location
-    cultratio: Float32Array,
+    // The cult population of all districts in the location
+    cultpop: Uint32Array,
     // At the *district* level, the proportion of each caste 
     // that is not yet in the cult 
     nonCultCasteRatio: Float32Array,
@@ -201,7 +199,7 @@ export function membersRecruit(
     // level of this district
     into: Float32Array
 ) {
-    const districts = population.length / nonCultCasteRatio.length;
+    const districts = cultpop.length / nonCultCasteRatio.length;
     let totalGenericPower = 0;
 
     for (let caste = 0; caste < P.nbCastes; ++caste) {
@@ -211,7 +209,7 @@ export function membersRecruit(
         let cult = 0;
         for (let d = 0; d < districts; ++d) {
             const off = caste + d * P.stride;
-            cult += cultratio[off] * population[off];
+            cult += cultpop[off];
         }
 
         // The total contribution of this population segment is 

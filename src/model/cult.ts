@@ -92,7 +92,7 @@ export class Cult {
         const memberRecruitPower = this.memberRecruitPower;
 
         const population = this.world.population.count;
-        const cultratio = this.world.population.cult;
+        const cultpop = this.world.population.cult;
 
         const totalpop = district.population;
         const totalcult = district.cultpop;
@@ -109,7 +109,7 @@ export class Cult {
         // =================================================
 
         for (let c = 0; c < P.nbCastes; ++c) {
-            let noncult = (1 - cultratio[off + c]) * population[off + c];
+            let noncult = population[off + c] - cultpop[off + c];
             nonCultCasteRatio[c] = noncult / totalnoncult;
         }
 
@@ -137,8 +137,7 @@ export class Cult {
         const loccount = district.location.districts.length * P.stride;
 
         CR.membersRecruit(
-            population.subarray(locoff, locoff + loccount),
-            cultratio.subarray(locoff, locoff + loccount),
+            cultpop.subarray(locoff, locoff + loccount),
             nonCultCasteRatio,
             memberRecruitPower);
 
@@ -221,11 +220,11 @@ export class Cult {
                 const totalnoncult = totalpop - totalcult;
 
                 const off = district.id * P.stride;
-                const dcultratio = cultratio.subarray(off, off + P.stride);
+                const dcult = cultratio.subarray(off, off + P.stride);
                 const dpopulation = population.subarray(off, off + P.stride);
 
                 for (let c = 0; c < P.nbCastes; ++c) {
-                    let noncult = (1 - dcultratio[c]) * dpopulation[c];
+                    let noncult = dpopulation[c] - dcult[c];
                     noncultcasteratio[c] = noncult / totalnoncult;
                 }
 
@@ -253,22 +252,23 @@ export class Cult {
 
                 for (let i = 0; i < totalRecruited; ++i) {
 
-                    // Pick the caste weighted by recruiting power
+                    // Pick the caste weighted by recruiting power. This: 
+                    //  1. picks a roll between 0 and the sum of casterecruitpower[]
+                    //  2. finds the smallest 'caste' such that sum(casterecruitpower[..caste]) is
+                    //     greater than the roll
+                    //  3. subtracts 1 to get the caste that went from below to above the roll
                     let roll = Math.random() * totalRecruitingPower;
                     let caste = 0;
                     while (roll >= 0 && caste < casterecruitpower.length)
                         roll -= casterecruitpower[caste++];
-                    if (caste-- >= P.nbCastes)
+                    caste--;
+
+                    if (dpopulation[caste] <= dcult[caste])
                         continue;
 
-                    const totalNonCultPop = dpopulation[caste] * (1 - dcultratio[caste]);
+                    console.log("Joins cult: %s (%o)", this.world.population.segname(off + caste), casterecruitpower);
 
-                    if (totalNonCultPop < 1)
-                        continue;
-
-                    console.log("Joins cult: %s", this.world.population.segname(off + caste));
-
-                    dcultratio[caste] = Math.min(1, dcultratio[caste] + 1 / dpopulation[caste]);
+                    dcult[caste]++;
 
                     locationHasRecruited = true;
                 }
