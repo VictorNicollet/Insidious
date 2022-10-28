@@ -56,6 +56,8 @@ export function MapScroller(props: MapScrollerProps): JSX.Element {
         ? agentCellAndPath(world.agents.idx(selected.id)!) :
         selected.selected === "location" 
         ? [world.locations[selected.id].cell,undefined] :
+        selected.selected === "district"
+        ? [world.locations[world.districts[selected.id].location].cell,undefined] :
             [undefined,undefined], 
         [selected, world]);
         
