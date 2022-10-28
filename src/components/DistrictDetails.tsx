@@ -6,6 +6,7 @@ import * as Help from "../text/help"
 import { TipInfoLine, Tooltip } from "./Tooltip"
 import { Explain } from "./Explain"
 import type { DistrictView } from "../view/districts"
+import { LocationListItem } from "./LocationList"
 
 function DistrictCultPage(props: {
     district: DistrictView,
@@ -78,13 +79,26 @@ export function DistrictDetails(props: {
     close: () => void
 }): JSX.Element {
     
-    const sel = useSelectors();
+    // Height of the "District of" header
+    const locationHeight = 69;
+
+    const selectors = useSelectors();
     const world = useWorld();
     const district = world.districts[props.district]; 
-    const innerHeight = B.innerHeight(props.height);
+    const location = world.locations[district.location];
+    const innerHeight = B.innerHeight(props.height) - locationHeight;
 
     return <B.Box title={district.name.short} 
             close={props.close}>
+        <div style={{position: "relative", height: 50, lineHeight: "50px"}}>
+            District of 
+            <ul className="gui-locations"
+                style={{position:"absolute", left: 75, top: 0, right: 0, lineHeight: "normal"}}>
+                <LocationListItem location={location} 
+                    select={() => selectors.location(location, "Districts")}/>
+            </ul>
+        </div>
+        <hr/>
         <DistrictCultPage district={district} height={innerHeight}/>
     </B.Box>
 }

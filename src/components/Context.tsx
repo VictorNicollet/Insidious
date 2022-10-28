@@ -7,7 +7,7 @@ import type { PlanView } from '../view/plans';
 import type { CultPages, LocationPages } from "./Screen";
 import type { DistrictView } from "../view/districts"
 
-type Selectors = {
+export type Selectors = {
     location: (location: LocationView, page?: LocationPages) => void
     agent: (agent: AgentView) => void
     plan: (plan: PlanView) => void
