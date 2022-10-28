@@ -4,6 +4,7 @@ import { Cell } from './grid'
 import { pack_resourcesOf, ResourcesOf } from './resources'
 import { Location } from './locations'
 import { array, boolean, enm, float, int7, ObjPack, Pack, pair, union } from './serialize'
+import { District } from './districts'
 
 export type Common = {
     // The difficulty, expressed in days.
@@ -29,13 +30,13 @@ export type RecruitAgentOrder = {
     // The occupation that should be recruited
     readonly occupation: Occupation
     // The location where the recruitment happens
-    readonly location : Location
+    readonly district : District
 } & Common
 
 export type WorkAsPriestOrder = {
     readonly kind : "priest-work"
     // Where the priest works
-    readonly location : Location
+    readonly district : District
 } & Common
 
 // An order to travel along a path
@@ -93,7 +94,7 @@ export function daysRemaining(order: Order) {
     return Math.ceil(order.difficulty.value - order.progress)
 }
 
-export function pack_order(pack_loc: Pack<Location>) : Pack<Order> {
+export function pack_order(pack_dis: Pack<District>) : Pack<Order> {
 
     const common : ObjPack<Common> = {
         difficulty: pack_explained,
@@ -106,7 +107,7 @@ export function pack_order(pack_loc: Pack<Location>) : Pack<Order> {
         .or<"recruit-agent", Omit<RecruitAgentOrder, "kind">>("recruit-agent", {
             ...common,
             occupation: pack_occupation,
-            location: pack_loc
+            district: pack_dis
         })
         .or<"travel", Omit<TravelOrder, "kind">>("travel", {
             ...common,
@@ -119,7 +120,7 @@ export function pack_order(pack_loc: Pack<Location>) : Pack<Order> {
         })
         .or<"priest-work", Omit<WorkAsPriestOrder, "kind">>("priest-work", {
             ...common,
-            location: pack_loc
+            district: pack_dis
         })
         .pack();
 }

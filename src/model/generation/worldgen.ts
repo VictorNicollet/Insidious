@@ -281,7 +281,7 @@ export function generate() : World {
     last.information = 4;
     world.seenLocations.push(last)
     const [occupation, levels] = initialOccupationAndLevels(last);
-    const agent = world.newAgent(randomPerson(), last, occupation, levels);
+    const agent = world.newAgent(randomPerson(), last.districts[0], occupation, levels);
     
     // Initial saga !
     const intro = Intro.saga(agent, last)

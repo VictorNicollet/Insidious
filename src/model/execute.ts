@@ -107,7 +107,7 @@ export function executeOrder(agent: Agent): Order {
                 levels[order.occupation] = Math.max(1, agent.levels[agent.occupation]-1);
                 agent.world.newAgent(
                     randomPerson(),
-                    order.location,
+                    order.district,
                     order.occupation,
                     levels);
             }

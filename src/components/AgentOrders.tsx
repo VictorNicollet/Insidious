@@ -146,7 +146,7 @@ class OrderNode {
 
 function makeOrderTree(agent: AgentView, world: WorldView): OrderNode[] {
     
-    const location = agent.agent.location;
+    const district = agent.agent.district;
     const hasCult = !!world.cult;
     
     // If an order's initial cost is too high, prevent it from being selected.
@@ -216,7 +216,7 @@ still give them new orders before that.
 
 #name# will pray to you every night, providing :touch: and letting you 
 give them different orders before they are done.`,
-            location === undefined
+            district === undefined
             ? {disabled:`!!Cannot gather information outdoors.!!`}
             : [
                 new OrderNode(
@@ -226,7 +226,7 @@ and occasionally expressing socially acceptable levels of surprise.
 
 Costs no :gold: or :exposure:, but cannot provide information beyond the 
 *Basic* level.`,
-                    location.information >= 1 
+                    district.location.information >= 1 
                     ? {disabled:"!!Cannot provide information beyond the *Basic* level.!!"}
                     : checkResources(gatherInfoOrder(agent.agent, "street"))),
                 new OrderNode(
@@ -238,7 +238,7 @@ Strangers tend to share less information with agents with a high :exposure:.
 
 Slightly increases :exposure: and cannot provide information beyond the 
 *Moderate* level.`,
-                    location.information >= 3
+                    district.location.information >= 3
                     ? {disabled:"!!Cannot provide information beyond the *Moderate* level.!!"}
                     : checkResources(gatherInfoOrder(agent.agent, "tavern"))
                 ),
@@ -288,12 +288,12 @@ so that they may both serve you. This will likely take several days.
 
 #name# will pray to you every night, providing :touch: and letting you 
 give them different orders before they are done.`, 
-            location === undefined 
+            district === undefined 
             ? {disabled:`!!New agents cannot be recruited outdoors.!!`}
             : occupations.map(occupation => new OrderNode(
                 "Recruit a " + occupation,
                 Help.occupationTooltip[occupation],
-                checkResources(recruitOrder(occupation, agent.agent, agent.agent.location))))
+                checkResources(recruitOrder(occupation, agent.agent, agent.agent.district))))
         ),
 
         // TRAVELING =========================================================
@@ -336,8 +336,8 @@ will.
 
 Agents continue working as priests until you give them a different order.`,
             !hasCult ? {disabled:"!!You need to found a cult in order to have priests.!!"} :
-            !location ? {disabled:"!!Cannot work as a priest outdoors.!!"} :
-            checkResources(workAsPriestOrder(agent.agent, location))),
+            !district ? {disabled:"!!Cannot work as a priest outdoors.!!"} :
+            checkResources(workAsPriestOrder(agent.agent, district))),
     ];
 }
 

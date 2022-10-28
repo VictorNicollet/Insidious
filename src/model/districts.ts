@@ -111,3 +111,9 @@ export const pack_district : Pack<District> = build<District>()
     .pass("cultpop", int7)
     .call((id, kind, name, population, cultpop) =>
         new District(id, kind, name, population, cultpop));
+
+export function pack_districtRef(districts: readonly District[]) : Pack<District> {
+    return build<District>()
+        .pass("id", int7)
+        .call(id => districts[id]);
+}

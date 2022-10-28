@@ -92,6 +92,45 @@ export class Location {
     public refresh() {
         for (const d of this.districts) d.refresh();
     }
+
+    // Return the district with the most agents (the first one, if
+    // tie-breaker).
+    public districtWithMostAgents() : District {
+        // TODO: use an index, somehow
+        // We optimize to avoid allocation if there are zero agents in 
+        // the location, or if all agents are in the same district
+        let first = -1
+        let firstCount = 0
+        let others : Uint32Array | undefined 
+        for (const agent of this.world.agents()) {
+            
+            const district = agent.district;
+            if (!district) continue;
+            if (district.location.id != this.id) continue;
+            
+            const id = district.id - this.districts[0].id;
+            if (first < 0) first = id;
+
+            if (first == id) {
+                ++firstCount;
+            } else {
+                if (typeof others === "undefined") 
+                    others = new Uint32Array(this.districts.length);
+                others[id]++;
+            }
+        }
+
+        if (typeof others === "undefined") 
+            return this.districts[first < 0 ? 0 : first];
+
+        others[first] = firstCount;
+        let best = 0;
+        for (let i = 1; i < others.length; ++i)
+            if (others[i] > others[best]) 
+                best = i;
+
+        return this.districts[best];
+    }
 }
 
 export const pack_location : Pack<Location> = build<Location>()

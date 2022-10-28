@@ -1,4 +1,3 @@
-import { Agent } from "./agents";
 import * as CR from "./cult/recruit";
 import * as CP from "./cult/pretense";
 import { build, float, Pack, string } from "./serialize"
@@ -99,9 +98,8 @@ export class Cult {
         const totalnoncult = totalpop - totalcult;
         const priests = this.world.agents().filter(agent =>
             agent.order.kind === "priest-work" &&
-            agent.location &&
-            // TODO: consider actual distrct!
-            agent.location.id === district.location.id);
+            agent.district &&
+            agent.district.id === district.id);
 
         const off = district.id * P.stride;
 

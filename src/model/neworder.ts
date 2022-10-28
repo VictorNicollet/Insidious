@@ -6,17 +6,19 @@ import { explain, Reason, Explained } from './explainable';
 import { Route } from './routes';
 import { Cell } from './grid';
 import { zero } from './resources';
+import { District } from "./districts";
 
 function exposureOf(agent: Agent, base: number) {
     return explain([{why: "Deceit", contrib: -agent.stats.deceit.value/100}], base, 0);
 }
 
 // Produces a "recruit-agent" order, or an impossibility message
-export function recruitOrder(occupation: Occupation, agent: Agent, location: Location|undefined): Order|string {
+export function recruitOrder(occupation: Occupation, agent: Agent, district: District|undefined): Order|string {
     
-    if (location === undefined)
+    if (district === undefined)
         return `!!Cannot recruit agents outdoors.!!`
 
+    const location = district.location;
     const ease = presenceByLocationKind[location.kind][occupation];
     const cellKind = location.world.map.cells[location.cell];
 
@@ -49,7 +51,7 @@ export function recruitOrder(occupation: Occupation, agent: Agent, location: Loc
         kind: "recruit-agent",
         occupation,
         difficulty,
-        location,
+        district,
         exposure: exposureOf(agent, 2),
         cost: recruitCost[occupation],
         progress: 0
@@ -147,11 +149,11 @@ export function gatherInfoOrder(agent: Agent, mode: GatherInfoMode): Order|strin
     }
 }
 
-export function workAsPriestOrder(agent: Agent, location: Location): Order {
+export function workAsPriestOrder(agent: Agent, district: District): Order {
     return {
         kind: "priest-work",
         difficulty: { value: Number.POSITIVE_INFINITY, reasons: [] },
-        location,
+        district,
         exposure: exposureOf(agent, 2),
         cost: {gold: 0, touch: 0},
         progress: 0

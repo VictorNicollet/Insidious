@@ -1,14 +1,13 @@
 import type { World } from "./world"
 import { pack_personName, PersonName } from './names'
 import type { Location } from "./locations"
+import type { District } from "./districts"
 import type { Cell } from './grid'
 import { Occupation, ByOccupation, lvlxp, pack_occupation, pack_byOccupation } from './occupation'
-import { Stats, computeStats, skills } from './stats'
+import { Stats, computeStats } from './stats'
 import { Order, done, pack_order } from "./orders"
 import { objmap } from '../objmap'
 import { build, int7, option, Pack } from "./serialize"
-import { ResourcesOf } from "./resources"
-import { Reason } from "./explainable"
 
 export class Agent {
     // Cached stats computed from the agent's other properties
@@ -16,7 +15,7 @@ export class Agent {
     public readonly world : World
     constructor(
         public name: PersonName,
-        public location: Location|undefined,
+        public district: District|undefined,
         public cell: Cell,
         public occupation: Occupation,
         public levels: ByOccupation<number>,
@@ -34,20 +33,24 @@ export class Agent {
 
     static create(
         name: PersonName,
-        location: Location|undefined,
+        district: District|undefined,
         cell: Cell,
         occupation: Occupation,
         levels: ByOccupation<number>): Agent
     {
         return new Agent(
             name,
-            location,
+            district,
             cell, 
             occupation,
             levels,
             objmap(levels, lvl => lvlxp[lvl]),
             0,
             done);
+    }
+
+    public get location() : Location|undefined {
+        return this.district?.location;
     }
 
     // Add experience to the specified occupation of this agent.
@@ -81,10 +84,10 @@ export class Agent {
         // Is the new cell a location ? 
         if (map.cells[cell].isLocation) {
             const location = this.world.seenLocations.find(l => l.cell == cell)!;
-            this.location = location;
+            this.district = location.districtWithMostAgents();
             this.world.visitLocation(location);
         } else {
-            this.location = undefined;
+            this.district = undefined;
         }
     }
 
@@ -100,21 +103,21 @@ export class Agent {
     // Change the order of this agent, refreshing any related values
     public setOrder(order: Order) {
         this.order = order;
-        this.location?.refresh();
+        this.district?.location.refresh();
         this.world.refresh();
     }
 }
 
-export function pack_agent(loc: Pack<Location>) : Pack<Agent> {
+export function pack_agent(loc: Pack<Location>, dis: Pack<District>) : Pack<Agent> {
     return build<Agent>()
         .pass("name", pack_personName)
         .pass("cell", int7)
-        .pass("location", option(loc))
+        .pass("district", option(dis))
         .pass("occupation", pack_occupation)
         .pass("levels", pack_byOccupation(int7))
         .pass("experience", pack_byOccupation(int7))
         .pass("exposure", int7)
-        .pass("order", pack_order(loc))
-        .call((name, cell, location, occupation, levels, experience, exposure, order) => 
-            new Agent(name, location, cell, occupation, levels, experience, exposure, order));
+        .pass("order", pack_order(dis))
+        .call((name, cell, district, occupation, levels, experience, exposure, order) => 
+            new Agent(name, district, cell, occupation, levels, experience, exposure, order));
 }

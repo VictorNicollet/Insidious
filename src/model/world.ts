@@ -17,7 +17,7 @@ import { God, pack_god, sample } from './god'
 import { Cult, pack_cult } from "./cult";
 import * as S from "./serialize";
 import { saveToLocalStore } from "../localStoreSave";
-import { District } from "./districts";
+import { District, pack_districtRef } from "./districts";
 
 export class World {
     
@@ -116,8 +116,9 @@ export class World {
         // Everything below needs to resolve locations and districts based on 
         // their id.
         const pack_loc = pack_locationRef(locations);
+        const pack_dis = pack_districtRef(districts);
 
-        const agents = S.rwarray(pack_agent(pack_loc))[1](reader);
+        const agents = S.rwarray(pack_agent(pack_loc, pack_dis))[1](reader);
         const plans = S.rwarray(pack_plan(pack_loc))[1](reader);
         const seen = S.rwarray(pack_loc)[1](reader);
         const cult = S.option(pack_cult)[1](reader);
@@ -150,8 +151,9 @@ export class World {
 
         // Everything below needs to resolve locations based on their id.
         const pack_loc = pack_locationRef(this._locations);
+        const pack_dis = pack_districtRef(this._districts);
 
-        S.rwarray(pack_agent(pack_loc))[0](writer, this._agents);
+        S.rwarray(pack_agent(pack_loc, pack_dis))[0](writer, this._agents);
         S.rwarray(pack_plan(pack_loc))[0](writer, this._plans);
         S.array(pack_loc)[0](writer, this.seenLocations);
         S.option(pack_cult)[0](writer, this._cult);
@@ -183,15 +185,15 @@ export class World {
 
     public newAgent(
         name: PersonName,
-        location: Location,
+        district: District,
         occupation: Occupation, 
         levels: ByOccupation<number>) : Agent
     {
-        const agent = Agent.create(name, location, location.cell, occupation, levels);
+        const agent = Agent.create(name, district, district.location.cell, occupation, levels);
         (agent as {world: World}).world = this;
         this._agents.push(agent);
-        this.visitLocation(location);
-        this.map.addViewer(location.cell);
+        this.visitLocation(district.location);
+        this.map.addViewer(district.location.cell);
         return agent;
     }
 
