@@ -72,7 +72,8 @@ const casteByLocationKind : ByLocationKind<Float32Array> = objmap(presenceByLoca
 // both count and properties.
 export class Population {
     
-    public readonly cultTotal : number
+    // Total number of cult members (aggregated from this.cult)
+    public cultTotal : number
 
     constructor(
         // The number of people in each caste, for all districts
@@ -143,6 +144,9 @@ export class Population {
     // Refresh the location-stored properties for a location
     public refreshAll() {
         const {count,cult} = this;
+
+        this.cultTotal = 0;
+
         let districtPop = 0;
         let districtCultPop = 0;
         let locationPop = 0;
@@ -150,15 +154,18 @@ export class Population {
         for (let seg = 0; seg < count.length; ++seg) {
             districtPop += Math.floor(count[seg])
             districtCultPop += Math.floor(count[seg] * cult[seg]);
+            if (cult[seg] > 0) 
+                console.log("count: %f cult: %f pop: %f", count[seg], cult[seg], districtCultPop)
+            
             if ((seg % stride) == stride - 1) {
                 
                 const district = this.districts[Math.floor(seg/stride)];
                 district.population = districtPop;
                 district.cultpop = districtCultPop;
-                
                 locationPop += districtPop;
                 locationCultPop += districtCultPop;
-                
+                this.cultTotal += districtCultPop;
+                    
                 districtPop = 0;
                 districtCultPop = 0;
                 

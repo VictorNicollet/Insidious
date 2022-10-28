@@ -221,8 +221,8 @@ export class Cult {
                 const totalnoncult = totalpop - totalcult;
 
                 const off = district.id * P.stride;
-                const dcultratio = cultratio.subarray(off, P.stride);
-                const dpopulation = population.subarray(off, P.stride);
+                const dcultratio = cultratio.subarray(off, off + P.stride);
+                const dpopulation = population.subarray(off, off + P.stride);
 
                 for (let c = 0; c < P.nbCastes; ++c) {
                     let noncult = (1 - dcultratio[c]) * dpopulation[c];
@@ -269,7 +269,7 @@ export class Cult {
                     console.log("Joins cult: %s", this.world.population.segname(off + caste));
 
                     dcultratio[caste] = Math.min(1, dcultratio[caste] + 1 / dpopulation[caste]);
-                    
+
                     locationHasRecruited = true;
                 }
             }
